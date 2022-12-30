@@ -1,0 +1,3 @@
+[submodule "observatory/models/TURL"]
+	path = observatory/models/TURL
+	url = git@github.com:sunlab-osu/TURL.git
