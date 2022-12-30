@@ -1,0 +1,5 @@
+pycache/
+
+artifacts/*/*.pkl
+data/
+TURL/
