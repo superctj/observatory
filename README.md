@@ -17,7 +17,7 @@ Assume using Conda for Python package management on Linux machines.
 
 2. Add [TURL](https://github.com/sunlab-osu/TURL) as a submodule
 
-    ```git submodule add <TURL repo url> observatory/models```
+    ```git submodule add <TURL repo url> observatory/models/TURL```
 
 3. Import Observatory and TURL as editable packages to the conda environment
 
