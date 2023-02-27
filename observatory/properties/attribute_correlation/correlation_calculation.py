@@ -1,14 +1,13 @@
 import torch
 import pickle
 
-from observatory.models.TURL.utils.util import load_entity_vocab
+from observatory.models.turl import load_entity_vocab, load_turl_model, WikiHybridTableDataset
 from observatory.models.transformers import load_transformers_model, load_transformers_tokenizer
-from observatory.models.turl import load_turl_model
 from observatory.datasets.gittable_schemas import build_lm_input, build_t5_input, build_tapas_input, build_turl_input
 
 from torch import nn
 from scipy import stats
-from observatory.models.TURL.data_loader.hybrid_data_loaders import WikiHybridTableDataset
+
 
 def get_topk_schemas_and_attr_cooccurence(data_dir, k):
     """
