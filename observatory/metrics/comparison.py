@@ -20,3 +20,9 @@ def overlap(m1, m2, count, k, knn):
 
     print(m1 + ' and ' + m2 + ' overlap:')
     print(sum/count)
+
+
+def jaccard(t1, t2):
+    intersection = len(set(t1).intersection(t2))
+    union = len(t1) + len(t2) - intersection
+    return intersection / union
