@@ -1,7 +1,7 @@
 # Observatory
 
 ## Codebase and Development Environment Setup
-Assume using Conda for Python package management on Linux machines. 
+Assume using [Miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html) for Python package management on Linux machines. 
 
 1. Clone this repo in your working directory:
 
