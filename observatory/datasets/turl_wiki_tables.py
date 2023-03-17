@@ -14,33 +14,32 @@ from torch.utils.data import Dataset
 from tqdm.autonotebook import tqdm
 
 from observatory.models.TURL.data_loader.hybrid_data_loaders import WikiHybridTableDataset
-from observatory.models.TURL.utils.util import load_entity_vocab
 
 
-def build_entity_id_map(data_dir: str, min_ent_count: int, sample_size: int) -> Tuple[dict, dict]:
-    """
-    Build a dictionary that maps entity ID in Wikipedia to entity ID in TURL.
+# def build_entity_id_map(data_dir: str, min_ent_count: int, sample_size: int) -> Tuple[dict, dict]:
+#     """
+#     Build a dictionary that maps entity ID in Wikipedia to entity ID in TURL.
 
-    Args:
-        min_ent_count: consider only entities that appear at least 'min_ent_count' times.
+#     Args:
+#         min_ent_count: consider only entities that appear at least 'min_ent_count' times.
 
-    'entity_vocab' looks like
-    {
-        0: {'count': -1, 'mid': -1, 'wiki_id': '[PAD]', 'wiki_title': '[PAD]'},
-        1: {'count': -1, 'mid': -1, 'wiki_id': '[ENT_MASK]', 'wiki_title': '[ENT_MASK]'},
-        2: {'count': -1, 'mid': -1, 'wiki_id': '[PG_ENT_MASK]', 'wiki_title': '[PG_ENT_MASK]'},
-        3: {'count': -1, 'mid': -1, 'wiki_id': '[CORE_ENT_MASK]', 'wiki_title': '[CORE_ENT_MASK]'},
-        4: {'count': 17865, 'mid': 'm.09c7w0', 'wiki_id': 3434750, 'wiki_title': 'United_States'},
-        ...
-    }
-    The first four IDs are reserved for special tokens in TURL and entity records start at ID 4.
-    """
+#     'entity_vocab' looks like
+#     {
+#         0: {'count': -1, 'mid': -1, 'wiki_id': '[PAD]', 'wiki_title': '[PAD]'},
+#         1: {'count': -1, 'mid': -1, 'wiki_id': '[ENT_MASK]', 'wiki_title': '[ENT_MASK]'},
+#         2: {'count': -1, 'mid': -1, 'wiki_id': '[PG_ENT_MASK]', 'wiki_title': '[PG_ENT_MASK]'},
+#         3: {'count': -1, 'mid': -1, 'wiki_id': '[CORE_ENT_MASK]', 'wiki_title': '[CORE_ENT_MASK]'},
+#         4: {'count': 17865, 'mid': 'm.09c7w0', 'wiki_id': 3434750, 'wiki_title': 'United_States'},
+#         ...
+#     }
+#     The first four IDs are reserved for special tokens in TURL and entity records start at ID 4.
+#     """
 
-    entity_vocab = load_entity_vocab(data_dir, ignore_bad_title=True, min_ent_count=min_ent_count)
+#     entity_vocab = load_entity_vocab(data_dir, ignore_bad_title=True, min_ent_count=min_ent_count)
 
-    entity_id_map = {int(entity_vocab[x]["wiki_id"]): x for x in entity_vocab if x <= sample_size + 3 and x >= 4}
+#     entity_id_map = {int(entity_vocab[x]["wiki_id"]): x for x in entity_vocab if x <= sample_size + 3 and x >= 4}
 
-    return entity_vocab, entity_id_map
+#     return entity_vocab, entity_id_map
 
 
 def build_metadata_input_for_turl(page_title: str, section_title: str, caption: str, headers: List[str], config) -> Tuple[torch.LongTensor, torch.LongTensor, torch.LongTensor]:
@@ -552,6 +551,7 @@ if __name__ == "__main__":
     # pprint(entity_id_map)
 
     from observatory.models.TURL.model.transformers import BertTokenizer
+    from observatory.models.TURL.utils.util import load_entity_vocab
 
     data_dir = "/home/congtj/observatory/data/"
     min_ent_count = 2
