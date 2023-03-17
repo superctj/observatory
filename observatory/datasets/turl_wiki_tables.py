@@ -524,9 +524,6 @@ class TurlWikiTableDataset(Dataset):
     def __getitem__(self, index):
         return self.data[index]
 
-    def prepare_inputs_for_column_representations(self):
-        pass
-
 
 if __name__ == "__main__":
     """
