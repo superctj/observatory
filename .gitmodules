@@ -1,6 +1,3 @@
 [submodule "observatory/models/TURL"]
 	path = observatory/models/TURL
 	url = git@github.com:sunlab-osu/TURL.git
-[submodule "observatory/models/doduo"]
-	path = observatory/models/doduo
-	url = git@github.com:megagonlabs/doduo.git
