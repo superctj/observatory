@@ -2,7 +2,7 @@ import torch
 import pickle
 
 from observatory.models.turl import load_entity_vocab, load_turl_model, WikiHybridTableDataset
-from observatory.models.transformers import load_transformers_model, load_transformers_tokenizer
+from observatory.models.huggingface_models import load_transformers_model, load_transformers_tokenizer
 from observatory.datasets.gittable_schemas import build_lm_input, build_t5_input, build_tapas_input, build_turl_input
 
 from torch import nn

@@ -1,7 +1,7 @@
 import torch
 
 from observatory.datasets.turl_wiki_tables import prepare_data_for_turl
-from observatory.models.transformers import load_transformers_tokenizer
+from observatory.models.huggingface_models import load_transformers_tokenizer
 from observatory.models.turl import load_turl_model
 
 from observatory.common_util.util import save_embeddings_to_pickle
