@@ -10,7 +10,7 @@ from typing import List, Tuple
 import numpy as np
 import torch
 
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 from tqdm.autonotebook import tqdm
 
 from observatory.models.TURL.data_loader.hybrid_data_loaders import WikiHybridTableDataset
@@ -165,7 +165,12 @@ def prepare_data_for_lm(data_dir, entity_id_map) -> dict[int, List[List[str]]]:
 
 def process_single_table_for_columns(input_table, config):
     table_id, pg_title, pg_entity, sec_title, caption, headers, entities = input_table
-    pg_entity = -1 # do not take page entity as input
+
+    # Do not take in any metadata except headers as inputs
+    pg_title = ""
+    pg_entity = -1 
+    sec_title = ""
+    caption = ""
 
     tokenized_pg_title = config.tokenizer.encode(pg_title, max_length=config.max_title_length, add_special_tokens=False)
     tokenized_meta = tokenized_pg_title + \
@@ -262,23 +267,20 @@ def process_single_table_for_columns(input_table, config):
     else:
         input_tok_mask[1] = np.concatenate([np.zeros([len(input_tok), 1], dtype=int), input_tok_mask[1]], axis=1)
 
-    """
-    The following code is commented out so that page entity and page title are not included in entities and entity mentions
-    """
-    # input_ent = [pg_entity if pg_entity != -1 else 0] + input_ent
-    # input_ent_text = [tokenized_pg_title[:config.max_cell_length]] + input_ent_text
-    # input_ent_type = [2] + input_ent_type
+    input_ent = [pg_entity if pg_entity != -1 else 0] + input_ent
+    input_ent_text = [tokenized_pg_title[:config.max_cell_length]] + input_ent_text
+    input_ent_type = [2] + input_ent_type
 
-    # new_input_ent_mask = [np.ones([len(input_ent), len(input_tok)], dtype=int), np.ones([len(input_ent), len(input_ent)], dtype=int)]
-    # new_input_ent_mask[0][1:, :] = input_ent_mask[0]
-    # new_input_ent_mask[1][1:, 1:] = input_ent_mask[1]
-    # if pg_entity == -1:
-    #     new_input_ent_mask[1][:, 0] = 0
-    #     new_input_ent_mask[1][0, :] = 0
-    # column_entity_mask = np.concatenate([np.zeros([len(headers), 1], dtype=int),column_entity_mask],axis=1)
+    new_input_ent_mask = [np.ones([len(input_ent), len(input_tok)], dtype=int), np.ones([len(input_ent), len(input_ent)], dtype=int)]
+    new_input_ent_mask[0][1:, :] = input_ent_mask[0]
+    new_input_ent_mask[1][1:, 1:] = input_ent_mask[1]
+    if pg_entity == -1:
+        new_input_ent_mask[1][:, 0] = 0
+        new_input_ent_mask[1][0, :] = 0
+    column_entity_mask = np.concatenate([np.zeros([len(headers), 1], dtype=int),column_entity_mask],axis=1)
+    input_ent_mask = new_input_ent_mask
 
-    # input_ent_mask = new_input_ent_mask
-    # labels = np.zeros([len(type_annotations), config.type_num], dtype=int)
+    labels = np.zeros([len(headers), 100], dtype=int) # dummy variable
     # for j, types in enumerate(type_annotations):
     #     for t in types:
     #         labels[j, config.type_vocab[t]] = 1
@@ -288,9 +290,9 @@ def process_single_table_for_columns(input_table, config):
     for i, x in enumerate(input_ent_text):
         input_ent_text_padded[i, :len(x)] = x
 
-    return [table_id,np.array(input_tok),np.array(input_tok_type),np.array(input_tok_pos),(np.array(input_tok_mask[0]),np.array(input_tok_mask[1])),len(input_tok), \
-                np.array(input_ent),input_ent_text_padded,input_ent_cell_length,np.array(input_ent_type),(np.array(input_ent_mask[0]),np.array(input_ent_mask[1])),len(input_ent), \
-                column_header_mask,column_entity_mask]
+    return [table_id, np.array(input_tok), np.array(input_tok_type), np.array(input_tok_pos), (np.array(input_tok_mask[0]), np.array(input_tok_mask[1])), len(input_tok), \
+            np.array(input_ent), input_ent_text_padded, input_ent_cell_length, np.array(input_ent_type), (np.array(input_ent_mask[0]), np.array(input_ent_mask[1])), len(input_ent), \
+            column_header_mask, column_entity_mask, labels, len(labels)]
 
     # headers, entities = input_table
 
@@ -388,7 +390,7 @@ class TurlWikiTableDataset(Dataset):
         num_orig_tables = 0
         actual_tables = []
 
-        with open(os.path.join(data_dir, f"{self.split}_tables.jsonl"), "r") as f:
+        with open(os.path.join(self.data_dir, f"{self.split}_tables.jsonl"), "r") as f:
             for line in tqdm(f):
                 num_orig_tables += 1
                 table = json.loads(line.strip())
@@ -557,5 +559,5 @@ if __name__ == "__main__":
     entity_vocab = load_entity_vocab(data_dir, ignore_bad_title=True, min_ent_count=min_ent_count)
     tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 
-    test_data_loader = TurlWikiTableDataset(data_dir, entity_vocab, tokenizer, split="test")
-    print(len(test_data_loader))
+    test_dataset = TurlWikiTableDataset(data_dir, entity_vocab, tokenizer, split="test")
+    print(len(test_dataset))
