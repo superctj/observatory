@@ -214,10 +214,16 @@ def process_single_table_for_columns(input_table, config):
     
     # create column entity mask
     column_entity_mask = np.zeros([len(headers), len(input_ent)], dtype=int)
+
+    # print("=" * 50)
+    # print("Length of headers: ", len(headers))
+    # print("Length of column entity map: ", len(column_en_map))
+    # print("=" * 50)
+
     for j in range(len(headers)):
         for e_i_1 in column_en_map[j]:
             column_entity_mask[j, e_i_1] = 1
-
+    
     # create column header mask
     start_i = 0
     header_span = {}
@@ -240,11 +246,11 @@ def process_single_table_for_columns(input_table, config):
     ent_meta_mask = np.ones([len(input_ent), tokenized_meta_length], dtype=int)
     
     ent_ent_mask = np.eye(len(input_ent), dtype=int)
-    for _,e_is in column_en_map.items():
+    for _, e_is in column_en_map.items():
         for e_i_1 in e_is:
             for e_i_2 in e_is:
                 ent_ent_mask[e_i_1, e_i_2] = 1
-    for _,e_is in row_en_map.items():
+    for _, e_is in row_en_map.items():
         for e_i_1 in e_is:
             for e_i_2 in e_is:
                 ent_ent_mask[e_i_1, e_i_2] = 1
@@ -350,16 +356,17 @@ def process_single_table_for_columns(input_table, config):
 
 
 class TurlWikiTableDataset(Dataset):
-    def __init__(self, data_dir: str, entity_vocab: dict, split: str, tokenizer=None, max_columns: int = 10, max_cells: int = 100, max_input_tokens: int = 350, max_input_entities: int = 150, max_header_length: int = 10, max_cell_length: int = 10, force_new: bool = False):
+    def __init__(self, data_dir: str, entity_vocab: dict, tokenizer, split: str, max_columns: int = 10, max_cells: int = 100, max_input_tokens: int = 350, max_input_entities: int = 150, max_title_length: int = 50, max_header_length: int = 10, max_cell_length: int = 10, force_new: bool = False):
         self.data_dir = data_dir
-        self.split = split
         self.entity_vocab = entity_vocab
         self.entity_id_map = {entity_vocab[x]["wiki_id"]: x for x in self.entity_vocab} # A dictionary that maps entity ID in Wikipedia to entity ID in TURL.
         self.tokenizer = tokenizer
+        self.split = split
         self.max_columns = max_columns
         self.max_cells = max_cells
         self.max_input_tokens = max_input_tokens
-        self.max_input_entities = max_input_entities
+        self.max_input_entities = max_input_entities 
+        self.max_title_length = max_title_length
         self.max_header_length = max_header_length
         self.max_cell_length = max_cell_length
         self.force_new = force_new
@@ -374,8 +381,9 @@ class TurlWikiTableDataset(Dataset):
                 return pickle.load(f)
 
         print("Try creating preprocessed data in: ", preprocessed_filename)
-        if not os.path.exists(os.path.join(data_dir, "procressed_hybrid")):
-            os.mkdir(os.path.join(data_dir, "procressed_hybrid"))
+        base_dir = os.path.dirname(preprocessed_filename)
+        if not os.path.exists(base_dir):
+            os.makedirs(base_dir)
 
         num_orig_tables = 0
         actual_tables = []
@@ -390,24 +398,23 @@ class TurlWikiTableDataset(Dataset):
                 pg_entity = table.get("pgId", -1)
                 
                 if pg_entity != -1:
-                try:
-                    pg_entity = self.entity_id_map[pg_entity]
-                except:
-                    pg_entity = -1
+                    try:
+                        pg_entity = self.entity_id_map[pg_entity]
+                    except:
+                        pg_entity = -1
 
                 sec_title = table.get("sectionTitle", "").lower()
                 caption = table.get("tableCaption", "").lower()
                 headers = table.get("processed_tableHeaders", []) 
                 rows = table.get("tableData", [])
-                entity_columns = table.get("entityColumn", []) # Index of entity columns, e.g., [0, 1, 2]
-                entity_cells = np.array(table.get("entityCell",[[]])) # Whether a cell is an entity cell, e.g., [[1, 1, 1, 0, 0], ...]
-                headers = [headers[i] for i in entity_columns] # Headers for entity columns
+                entity_columns = table.get("entityColumn", []) # Index of entity columns, e.g., [0, 1, 3]
+                entity_cells = np.array(table.get("entityCell",[[]])) # Whether a cell is an entity cell, e.g., [[1, 1, 0, 1, 0], ...]
 
                 # Collect entities (entity ids in TURL and entity mentions)
                 num_rows = len(rows)
                 num_cols = len(rows[0])
                 entities = []
-                split = [0]
+                # split = [0]
                 tmp_entity_num = 0
 
                 for i in range(num_rows):
@@ -419,7 +426,7 @@ class TurlWikiTableDataset(Dataset):
                                 try:
                                     entity_id = self.entity_id_map[rows[i][j]["surfaceLinks"][0]["target"]["id"]]
                                     entity_text = rows[i][j]["text"]
-                                    tmp_entities.append([(i, j), (entity_id, entity_text)])
+                                    tmp_entities.append([[i, j], (entity_id, entity_text)])
                                 except:
                                     entity_cells[i][j] = 0
                         else:
@@ -431,18 +438,54 @@ class TurlWikiTableDataset(Dataset):
                         entities.append([index, entity])
                         tmp_entity_num += 1
 
-                    if tmp_entity_num >= self.max_cells:
-                        split.append(len(entities))
-                        tmp_entity_num = 0
+                    # if tmp_entity_num >= self.max_cells:
+                    #     split.append(len(entities))
+                    #     tmp_entity_num = 0
             
-                if split[-1] != len(entities):
-                    split.append(len(entities))
+                # if split[-1] != len(entities):
+                #     split.append(len(entities))
                 
                 # if split[-2] != 0 and split[-1] - split[-2] < 5:
                 #     split[-2] = split[-1]
                 #     split = split[:-1]
-                
-                for i in range(len(split) - 1):
+
+                """
+                If no entity cell is found under a header, this header needs to be removed
+
+                Entity column indices also need to be remapped for creating masks later, e.g., [2, 4, 5] --> [0, 1, 2]
+
+                Also check for empty tables with no entity texts
+                """
+                entity_cells = entity_cells[:, :self.max_columns]
+                actual_entity_columns = [i for i, num_entities in enumerate(entity_cells.sum(axis=0)) if num_entities > 0]
+                headers = [headers[i] for i in actual_entity_columns] # Headers for entity columns that actually contain entities
+                header_idx_map = {old_index: new_idx for new_idx, old_index in enumerate(actual_entity_columns)}
+
+                empty_table = True
+                for e_i, (idx, _) in enumerate(entities):
+                    # print("=" * 30)
+                    # print(entity_columns)
+                    # print(actual_entity_columns)
+                    # print(idx)
+                    entities[e_i][0][1] = header_idx_map[idx[1]]
+
+                    if len(entities[e_i][1][1]) > 0:
+                        empty_table = False
+                    # print(entities[e_i][0])
+                    # print("=" * 30)
+                assert(len(headers) == len(header_idx_map))
+ 
+                # for i in range(len(split) - 1):
+                #     actual_tables.append([
+                #         table_id,
+                #         pg_title,
+                #         pg_entity,
+                #         sec_title,
+                #         caption,
+                #         headers,
+                #         entities[split[i]:split[i+1]]])
+
+                if not empty_table:
                     actual_tables.append([
                         table_id,
                         pg_title,
@@ -450,15 +493,16 @@ class TurlWikiTableDataset(Dataset):
                         sec_title,
                         caption,
                         headers,
-                        entities[split[i]:split[i+1]]])
+                        entities
+                    ])
         
         num_actual_tables = len(actual_tables)
         print("=" * 50)
         print("Number of original tables: ", num_orig_tables)
         print("Number of actual tables: ", num_actual_tables)
-        print(actual_tables[0])
-        print("-" * 30)
-        print(actual_tables[2])
+        # print(actual_tables[0])
+        # print("-" * 30)
+        # print(actual_tables[2])
         print("=" * 50)
 
         pool = Pool(processes=4)
@@ -481,7 +525,6 @@ class TurlWikiTableDataset(Dataset):
 
     def prepare_inputs_for_column_representations(self):
         pass
-    
 
 
 if __name__ == "__main__":
@@ -506,10 +549,13 @@ if __name__ == "__main__":
     # pprint(entity_vocab)
     # pprint(entity_id_map)
 
+    from observatory.models.TURL.model.transformers import BertTokenizer
+
     data_dir = "/home/congtj/observatory/data/"
     min_ent_count = 2
 
     entity_vocab = load_entity_vocab(data_dir, ignore_bad_title=True, min_ent_count=min_ent_count)
+    tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 
-    test_data_loader = TurlWikiTableDataset(data_dir, entity_vocab, split="test")
+    test_data_loader = TurlWikiTableDataset(data_dir, entity_vocab, tokenizer, split="test")
     print(len(test_data_loader))
