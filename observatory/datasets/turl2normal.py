@@ -1,3 +1,7 @@
+"""
+convert turl dataset to normal* dataset
+"normal" means a dataset of table where tables are stored seperately in csv files, with only headers and cells.
+"""
 import argparse
 import json
 import pandas as pd

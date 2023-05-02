@@ -1,4 +1,6 @@
-# script_analyze.py
+"""
+analyze dataset statics for a normal table dataset
+"""
 
 import argparse
 import pandas as pd
