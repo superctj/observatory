@@ -13,7 +13,7 @@ import torch
 from torch.utils.data import Dataset
 from tqdm.autonotebook import tqdm
 
-from observatory.models.TURL.data_loader.hybrid_data_loaders import WikiHybridTableDataset
+from  observatory.models.TURL.data_loader.hybrid_data_loaders import WikiHybridTableDataset
 
 
 # def build_entity_id_map(data_dir: str, min_ent_count: int, sample_size: int) -> Tuple[dict, dict]:
