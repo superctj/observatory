@@ -1,11 +1,7 @@
-"""
-convert turl dataset to normal* dataset
-"normal" means a dataset of table where tables are stored seperately in csv files, with only headers and cells.
-"""
 import argparse
 import json
-import pandas as pd
 import os
+import pandas as pd
 
 def read_jsonl(file_path):
     data = []
@@ -21,7 +17,7 @@ def process_one_table(data):
     df = pd.DataFrame(formatted_table_data, columns=processed_table_headers)
     return df
 
-def main():
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="This script processes a jsonl file and saves each table as a separate csv file in the given directory.")
     parser.add_argument('-f', '--file_path', type=str, required=True, help="Path to the jsonl file to be processed. For example: -f dev_tables.jsonl")
     parser.add_argument('-d', '--directory', type=str, required=True, help="Directory where the csv files will be saved. For example: -d tables_csv")
@@ -37,7 +33,3 @@ def main():
         os.makedirs(args.directory)
     for i, table in enumerate(tables):
         table.to_csv(f"{args.directory}/table_{i}.csv", index=False, na_rep='')
-
-
-if __name__ == "__main__":
-    main()
