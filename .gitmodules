@@ -4,3 +4,6 @@
 [submodule "observatory/models/DODUO"]
 	path = observatory/models/DODUO
 	url = git@github.com:megagonlabs/doduo.git
+[submodule "observatory/models/TaBERT"]
+	path = observatory/models/TaBERT
+	url = git@github.com:facebookresearch/TaBERT.git
