@@ -109,7 +109,7 @@ if __name__ == "__main__":
                 
                 
                 
-            if len(test_dataset) < 2:
+            if len(test_dataset) < 24:
                 continue
             
             
