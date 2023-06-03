@@ -9,81 +9,62 @@ import matplotlib.pyplot as plt
 
 
 def process_directory(dir_path):
-    avg_cosine_similarities = []
-    mcvs = []
-    nan_count = 0
+    result_pairs = []
 
     for file_name in os.listdir(dir_path):
         if file_name.endswith(".pt"):
             results = torch.load(os.path.join(dir_path, file_name))
-            for val in results["avg_cosine_similarities"]:
-                if not np.isnan(val):
-                    avg_cosine_similarities.append(val)
-                else:
-                    nan_count += 1
-            for val in results["mcvs"]:
-                if not np.isnan(val):
-                    mcvs.append(val)
-                else:
-                    nan_count += 1
+            
+            # Iterate through the avg_cosine_similarities and mcvs simultaneously
+            for cos_sim, mcv in zip(results["avg_cosine_similarities"], results["mcvs"]):
+                # Check if both are not NaN before appending
+                if not np.isnan(cos_sim) and not np.isnan(mcv):
+                    result_pairs.append((cos_sim, mcv))
 
-    print(f'Total NaN values in directory {dir_path}: {nan_count}')
-    return avg_cosine_similarities, mcvs
+    return result_pairs
 
 
-def plot_result(directories, labels, avg_cosine_similarities_file, mcvs_file, plot_file):
+import json
+def plot_result(directories, labels, avg_cosine_similarities_file, mcvs_file, plot_file, result_pairs_file):
 
-    avg_cosine_similarities_result = []
+    result_pairs = {}
 
-    mcvs_result = []
+    for dir_path, label in zip(directories, labels):
+        pairs = process_directory(dir_path)
 
+        # Create dictionary entries for each label
+        result_pairs[label] = pairs
 
-    for dir_path in directories:
+    # Save dictionaries to json files
+    with open(result_pairs_file, 'w') as f:
+        json.dump(result_pairs, f)
 
-        avg_cosine_similarities, mcvs = process_directory(dir_path)
-        avg_cosine_similarities_result.append(avg_cosine_similarities)
-        mcvs_result.append(mcvs)
+    # Continue with the plot as before
+    fig, axs = plt.subplots(2)
 
+    # Calculate means and standard deviations for cosine similarities and mcvs
+    means_cosine = [np.mean([pair[0] for pair in data]) for data in result_pairs.values()]
+    std_cosine = [np.std([pair[0] for pair in data]) for data in result_pairs.values()]
 
-    # Write avg_cosine_similarities and mcvs to file
+    means_mcvs = [np.mean([pair[1] for pair in data]) for data in result_pairs.values()]
+    std_mcvs = [np.std([pair[1] for pair in data]) for data in result_pairs.values()]
+    
+    
     with open(avg_cosine_similarities_file, "w") as f:
-        for label, item in zip(labels, avg_cosine_similarities_result):
+        for label, item in zip(labels, means_cosine):
             f.write(f"{label}: {np.mean(item)}\n")
 
     with open(mcvs_file, "w") as f:
-        for label, item in zip(labels, mcvs_result):
+        for label, item in zip(labels, means_mcvs):
             f.write(f"{label}: {np.mean(item)}\n")
-
-
-    # Plot the results with error bars
-
-    fig, axs = plt.subplots(2)
-
-
-    # Calculate means and standard deviations
-
-    means_cosine = [np.mean(data) for data in avg_cosine_similarities_result]
-
-    std_cosine = [np.std(data) for data in avg_cosine_similarities_result]
-
-    means_mcvs = [np.mean(data) for data in mcvs_result]
-
-    std_mcvs = [np.std(data) for data in mcvs_result]
-
-
     axs[0].errorbar(labels, means_cosine, yerr=std_cosine, fmt='o')
-
     axs[0].set_title('Average Cosine Similarities')
 
-
     axs[1].errorbar(labels, means_mcvs, yerr=std_mcvs, fmt='o')
-
     axs[1].set_title('MCVS')
-
 
     # Save the plot to a file
     plt.savefig(plot_file)
-
 
 
 if __name__ == "__main__":
@@ -100,6 +81,8 @@ if __name__ == "__main__":
 
     parser.add_argument('--plot_file', required=True, help='File to save the plot.')
 
+    parser.add_argument('--result_pairs_file', required=True, help='File to save the result pairs.')
+    
     args = parser.parse_args()
     
 
@@ -109,5 +92,5 @@ if __name__ == "__main__":
 
         exit(1)
 
-    plot_result(args.dirs, args.labels, args.avg_cosine_similarities_file, args.mcvs_file, args.plot_file)
+    plot_result(args.dirs, args.labels, args.avg_cosine_similarities_file, args.mcvs_file, args.plot_file, args.result_pairs_file)
 
