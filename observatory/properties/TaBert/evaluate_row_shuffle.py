@@ -19,7 +19,7 @@ from table_bert import TableBertModel
 
 
 def convert_to_table(df, tokenizer):
-    df = df.fillna(' ')
+
     header = []
     data = []
 
@@ -37,9 +37,13 @@ def convert_to_table(df, tokenizer):
 
         # Create a Column object
         header.append(Column(col, col_type, sample_value=sample_value))
+        
         # Add the column data to 'data' list
-        data.append(list(df[col]))
-    
+    for row_index in len(df):
+        data.append(list(df.iloc[row_index]))
+        # print()
+        # print(col_type)
+        # print(sample_value)
     # Create the Table
     table = Table(id='', header=header, data=data)
 
@@ -47,6 +51,7 @@ def convert_to_table(df, tokenizer):
     table.tokenize(tokenizer)
 
     return table
+
 
 
 def fisher_yates_shuffle(seq):

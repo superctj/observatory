@@ -33,7 +33,7 @@ def get_subsets(n, m, portion):
 
 def shuffle_df(df, m, portion):
     subsets = get_subsets(len(df), m, portion)
-    dfs = []
+    dfs = [df]
     for subset in subsets:
         dfs.append(df.iloc[subset].copy())
     return dfs

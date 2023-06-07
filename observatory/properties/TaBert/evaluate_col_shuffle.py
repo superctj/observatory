@@ -51,8 +51,6 @@ from mcv import compute_mcv
 #     return table
 
 def convert_to_table(df, tokenizer):
-    # Fill in empty cells with a default value
-    df = df.fillna(' ')
 
     header = []
     data = []
@@ -71,13 +69,13 @@ def convert_to_table(df, tokenizer):
 
         # Create a Column object
         header.append(Column(col, col_type, sample_value=sample_value))
+        
         # Add the column data to 'data' list
-        data.append(list(df[col]))
-     
-    # Check if header and data are consistent
-    if len(header) != len(data):
-        raise ValueError('Header and data are not consistent')
-    
+    for row_index in len(df):
+        data.append(list(df.iloc[row_index]))
+        # print()
+        # print(col_type)
+        # print(sample_value)
     # Create the Table
     table = Table(id='', header=header, data=data)
 
@@ -85,6 +83,7 @@ def convert_to_table(df, tokenizer):
     table.tokenize(tokenizer)
 
     return table
+
 
 
 

@@ -316,7 +316,9 @@ if __name__ == "__main__":
     table_files = [f for f in os.listdir(
 
         args.read_directory) if f.endswith('.csv')]
-
+    with open('table_list', 'w') as file:
+        for index, filename in enumerate(table_files, start=0):
+            file.write(f'Table {index}: {filename}\n')
     normal_tables = []
 
     for file in table_files:
@@ -325,6 +327,8 @@ if __name__ == "__main__":
 
             f"{args.read_directory}/{file}", keep_default_na=False)
         normal_tables.append(table)
+
+    model_name = args.model_name
     model_name = args.model_name
     print()
 
