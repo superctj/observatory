@@ -75,20 +75,24 @@ def get_permutations(n, m):
 def shuffle_lists(lists, perms):
     # Add the original list to the shuffled lists
     shuffled_lists = [lists.copy()] 
+    # print(lists)
     # Apply permutations to lists
     for perm in perms:
         shuffled_list = [[row[i] for i in perm] for row in lists]
         shuffled_lists.append(shuffled_list)
+        # print(shuffled_list)
     return shuffled_lists
 
 
 def shuffle_elements(elements, perms):
     # Add the original list to the shuffled elements
     shuffled_elements = [elements.copy()] 
+    # print(shuffled_elements)
     # Apply permutations to elements
     for perm in perms:
         shuffled_element = [elements[i] for i in perm]
         shuffled_elements.append(shuffled_element)
+        # print(shuffled_element)
     return shuffled_elements
 
 def get_new_indices(indices, perm):
@@ -107,6 +111,21 @@ def shuffle_indices(indices, perms):
         new_indices = get_new_indices(indices, perm)
         shuffled_indices.append(new_indices)
     return shuffled_indices
+
+
+def keep_indices(indices, perms):
+    # print(indices.copy())
+    keep_indices = [indices.copy()]
+    for perm in perms:
+        remain_indices = []
+        for index in perm:
+            if index in indices:
+                remain_indices.append(index)
+        keep_indices.append(remain_indices)
+        # print(remain_indices)
+    return keep_indices
+
+
 
 def build_metadata_input_for_turl(page_title: str, section_title: str, caption: str, headers: List[str], config) -> Tuple[torch.LongTensor, torch.LongTensor, torch.LongTensor]:
     tokenized_page_title = config.tokenizer.encode(
@@ -439,7 +458,7 @@ class TurlWikiTableDataset(Dataset):
         self.force_new = force_new
         self.num_change = num_change 
         self.line = line
-        self.data, self.perms,  self.shuffled_entity_columns= self._preprocess_data()
+        self.data, self.perms,  self.keepeded_entity_columns= self._preprocess_data()
         
     
     def _preprocess_data(self):
@@ -500,13 +519,23 @@ class TurlWikiTableDataset(Dataset):
         else:
             rest_permutation = list(range(primary_columns, len(original_rows[0]))) 
             perms = [perm + rest_permutation for perm in primary_permutations]
+        # print(original_entity_cells)
+        # # print(original_rows)
+        # print(original_headers)
+        # print(actual_entity_columns)
+
         list_entity_cells = shuffle_lists(original_entity_cells, perms)
         list_rows = shuffle_lists(original_rows, perms)
         shuffled_headers = shuffle_elements(original_headers, perms)
         shuffled_entity_columns = shuffle_indices(actual_entity_columns, perms)
+        keepeded_entity_columns = keep_indices(actual_entity_columns, perms)
         # Collect entities (entity ids in TURL and entity mentions)
         for entity_cells, rows, headers, entity_columns  in zip(list_entity_cells, list_rows, shuffled_headers, shuffled_entity_columns):
+            
             entity_cells = np.array(entity_cells)
+            # print(entity_cells)
+            # print(headers)
+            # print(entity_columns)
             num_orig_tables += 1
             table_id = table.get("_id","")
             pg_title = table.get("pgTitle", "").lower()
@@ -580,7 +609,9 @@ class TurlWikiTableDataset(Dataset):
             Also check for empty tables with no entity texts
             """
             entity_cells = entity_cells[:, :self.max_columns]
+            
             actual_entity_columns = [i for i, num_entities in enumerate(entity_cells.sum(axis=0)) if num_entities > 0]
+            # print(actual_entity_columns)
             headers = [headers[i] for i in actual_entity_columns] # Headers for entity columns that actually contain entities
             header_idx_map = {old_index: new_idx for new_idx, old_index in enumerate(actual_entity_columns)}
 
@@ -638,7 +669,7 @@ class TurlWikiTableDataset(Dataset):
         # with open(preprocessed_filename, "wb") as f:
         #     pickle.dump(processed_data, f)
 
-        return processed_data, [list(range(len(original_rows[0])))] + perms, shuffled_entity_columns
+        return processed_data, [list(range(len(original_rows[0])))] + perms, keepeded_entity_columns
 
     def __len__(self):
         return len(self.data)

@@ -3,3 +3,4 @@ __pycache__/
 artifacts/*/*.pkl
 data/
 tmp.*
+observatory\observatory\properties\Turl\test_tables.jsonl
