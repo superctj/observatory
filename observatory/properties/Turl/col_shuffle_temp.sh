@@ -13,4 +13,4 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-python3 col_shuffle_turl.py   -s CI_TD   -l 2357
+python3 col_shuffle_turl.py --data_dir "/home/congtj/observatory/data" --config_path "/home/congtj/observatory/observatory/models/TURL/configs/table-base-config_v2.json" --ckpt_path "/ssd/congtj/observatory/turl_models/pytorch_model.bin" --cuda_device 1 -s CI_TD -l 0
