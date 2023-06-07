@@ -102,7 +102,7 @@ if __name__ == "__main__":
                 
                 
                 
-            if len(test_dataset) < 2:
+            if len(test_dataset) < 24:
                 continue
             test_dataloader = CTLoader(test_dataset, batch_size=args.batch_size, is_train=False)
             all_shuffled_embeddings = []
