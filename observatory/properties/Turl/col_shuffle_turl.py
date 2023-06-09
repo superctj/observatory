@@ -2,13 +2,10 @@ import torch
 import torch.nn as nn
 import os
 
-from TURL.model.configuration import TableConfig
-from TURL.model.model import HybridTableMaskedLM
+from observatory.models.TURL.model.configuration import TableConfig
+from observatory.models.TURL.model.model import HybridTableMaskedLM
 from analyze_embeddings import analyze_embeddings
-# from observatory.models.transformers import load_transformers_tokenizer
-import threading
 import time
-
 
 
 def set_timer(flag_list):
@@ -70,28 +67,35 @@ def reorder_embeddings(embeddings1, embeddings2):
 
 
 if __name__ == "__main__":
-    from col_shuffle_turl_wiki_tables import TurlWikiTableDataset
-    from TURL.data_loader.CT_Wiki_data_loaders import CTLoader
-    from TURL.model.transformers import BertTokenizer
-    from TURL.utils.util import load_entity_vocab
     import argparse
 
-    data_dir = ""
-    min_ent_count = 2
+    from observatory.models.TURL.data_loader.CT_Wiki_data_loaders import CTLoader
+    from observatory.models.TURL.model.transformers import BertTokenizer
+    from observatory.models.TURL.utils.util import load_entity_vocab
 
-    entity_vocab = load_entity_vocab(data_dir, ignore_bad_title=True, min_ent_count=min_ent_count)
-    tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
-    config = "table-base-config_v2.json"
-    ckpt_path = "pytorch_model.bin"
-    device = torch.device("cuda:0")
+    from col_shuffle_turl_wiki_tables import TurlWikiTableDataset
+
     parser = argparse.ArgumentParser(description='Process tables and save embeddings.')
+    parser.add_argument('-d', '--data_dir', type=str, required=True, help='Directory that contains TURL specific files such as entity vocabulary')
+    parser.add_argument('--config_path', type=str, required=True, help='Path to TURL model config')
+    parser.add_argument('--ckpt_path', type=str, required=True, help='Path to TURL model checkpoint')
+    parser.add_argument('--cuda_device', type=int, default=None, help='Path to TURL model checkpoint')
     parser.add_argument('-s', '--save_directory', type=str, required=True, help='Directory to save embeddings to')
-    parser.add_argument('-b', '--batch_size', type=int, default=13, help='Batch Size')
+    parser.add_argument('-b', '--batch_size', type=int, default=16, help='Batch Size')
     parser.add_argument('-l', '--start_line', type=int, default=0, help='The index of start table')
 
     args = parser.parse_args()
     
-    model = TURL(config, ckpt_path)
+    min_ent_count = 2
+    entity_vocab = load_entity_vocab(args.data_dir, ignore_bad_title=True, min_ent_count=min_ent_count)
+    tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+
+    if args.cuda_device:
+        device = torch.device(f"cuda:{args.cuda_device}")
+    else:
+        device = torch.device("cpu")
+    
+    model = TURL(args.config_path, args.ckpt_path)
     model.to(device)
      # save_directory_results  = os.path.join('/nfs/turbo/coe-jag/zjsun', 'sample_portion', str(args.sample_portion), args.save_directory, model_name ,'results')
     # save_directory_embeddings  = os.path.join('/nfs/turbo/coe-jag/zjsun','sample_portion', str(args.sample_portion), args.save_directory, model_name ,'embeddings')
@@ -99,13 +103,14 @@ if __name__ == "__main__":
     # save_directory_embeddings  = os.path.join('/nfs/turbo/coe-jag/zjsun', 'col_insig', args.save_directory, 'Turl' ,'embeddings')
     # save_directory_results  = os.path.join( 'col_insig', args.save_directory, 'Turl' ,'results')
     # save_directory_embeddings  = os.path.join( 'col_insig', args.save_directory, 'Turl' ,'embeddings')
-    save_directory_results  = os.path.join( 'col_insig', args.save_directory, 'Turl' ,'results0')
-    save_directory_embeddings  = os.path.join( 'col_insig', args.save_directory, 'Turl' ,'embeddings0')
+    save_directory_results  = os.path.join("/ssd/congtj/observatory/experiments", 'col_insig', args.save_directory, 'Turl' ,'results')
+    save_directory_embeddings  = os.path.join("/ssd/congtj/observatory/experiments", 'col_insig', args.save_directory, 'Turl' ,'embeddings')
     if not os.path.exists(save_directory_embeddings):
         os.makedirs(save_directory_embeddings)
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
-    with open(os.path.join(data_dir, "test_tables.jsonl"), "r") as f:
+    
+    with open(os.path.join(args.data_dir, "test_tables.jsonl"), "r") as f:
         lines = f.readlines()
         for table_index in range(args.start_line, len(lines)):
             line = lines[table_index]
@@ -190,6 +195,8 @@ if __name__ == "__main__":
             print()
             all_shuffled_embeddings =[all_embeddings[0]]
             for j in range(1, len(perms)):
+                ordered_embeddings = reorder_embeddings(all_embeddings[0], all_embeddings[j])
+
                 perm = perms[j]
                 entity_column = keepeded_entity_columns[j]
                 new_perm = [entity_column.index(index) for index in original_entity_column]
@@ -198,11 +205,11 @@ if __name__ == "__main__":
                 # print(entity_column)
                 print(new_perm)
                 # Create a list of the same length as perm, filled with None
-                ordered_embeddings = reorder_embeddings(all_embeddings[0], all_embeddings[j])
+                # ordered_embeddings = reorder_embeddings(all_embeddings[0], all_embeddings[j])
                 
-                # ordered_embeddings = [None] * len(new_perm)
-                # for i, p in enumerate(new_perm):
-                #     ordered_embeddings[i] = all_embeddings[j][p]
+                ordered_embeddings = [None] * len(new_perm)
+                for i, p in enumerate(new_perm):
+                    ordered_embeddings[i] = all_embeddings[j][p]
                 
                 all_shuffled_embeddings.append(ordered_embeddings)         
             torch.save(all_shuffled_embeddings, os.path.join(save_directory_embeddings, f"table_{table_index}_embeddings.pt"))
