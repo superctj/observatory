@@ -33,8 +33,9 @@ def export_sqlite_to_csv(db_file_path: str, output_dir: str):
 
 
 def export_all():
-    root_dir = "./spider/database/"
-    output_dir = "./spider_artifact/db_csv/"
+    root_dir = "C:/Users/Ben/Documents/table_eval/great_lake/property4/data/DB_schema_abbreviation/database_post_perturbation/"
+    output_dir = "C:/Users/Ben/Documents/table_eval/great_lake/property4/abbreviation"
+
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -45,4 +46,9 @@ def export_all():
 
         if not os.path.exists(csv_output_dir):
             os.makedirs(csv_output_dir)
-        export_sqlite_to_csv(db_file_path, csv_output_dir)
+        try:
+            export_sqlite_to_csv(db_file_path, csv_output_dir)
+        except:
+            print(db_name)
+
+export_all()
