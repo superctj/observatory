@@ -99,12 +99,12 @@ if __name__ == "__main__":
     model.to(device)
      # save_directory_results  = os.path.join('/nfs/turbo/coe-jag/zjsun', 'sample_portion', str(args.sample_portion), args.save_directory, model_name ,'results')
     # save_directory_embeddings  = os.path.join('/nfs/turbo/coe-jag/zjsun','sample_portion', str(args.sample_portion), args.save_directory, model_name ,'embeddings')
-    # save_directory_results  = os.path.join('/nfs/turbo/coe-jag/zjsun', 'col_insig', args.save_directory, 'Turl' ,'results')
-    # save_directory_embeddings  = os.path.join('/nfs/turbo/coe-jag/zjsun', 'col_insig', args.save_directory, 'Turl' ,'embeddings')
+    save_directory_results  = os.path.join('/nfs/turbo/coe-jag/zjsun', 'col_insig', args.save_directory, 'Turl' ,'results')
+    save_directory_embeddings  = os.path.join('/nfs/turbo/coe-jag/zjsun', 'col_insig', args.save_directory, 'Turl' ,'embeddings')
     # save_directory_results  = os.path.join( 'col_insig', args.save_directory, 'Turl' ,'results')
     # save_directory_embeddings  = os.path.join( 'col_insig', args.save_directory, 'Turl' ,'embeddings')
-    save_directory_results  = os.path.join("/ssd/congtj/observatory/experiments", 'col_insig', args.save_directory, 'Turl' ,'results')
-    save_directory_embeddings  = os.path.join("/ssd/congtj/observatory/experiments", 'col_insig', args.save_directory, 'Turl' ,'embeddings')
+    # save_directory_results  = os.path.join("/ssd/congtj/observatory/experiments", 'col_insig', args.save_directory, 'Turl' ,'results')
+    # save_directory_embeddings  = os.path.join("/ssd/congtj/observatory/experiments", 'col_insig', args.save_directory, 'Turl' ,'embeddings')
     if not os.path.exists(save_directory_embeddings):
         os.makedirs(save_directory_embeddings)
     if not os.path.exists(save_directory_results):
@@ -195,7 +195,7 @@ if __name__ == "__main__":
             print()
             all_shuffled_embeddings =[all_embeddings[0]]
             for j in range(1, len(perms)):
-                ordered_embeddings = reorder_embeddings(all_embeddings[0], all_embeddings[j])
+                # ordered_embeddings = reorder_embeddings(all_embeddings[0], all_embeddings[j])
 
                 perm = perms[j]
                 entity_column = keepeded_entity_columns[j]
@@ -203,7 +203,7 @@ if __name__ == "__main__":
                 # new_perm = [original_entity_column.index(index) for index in entity_column]
 
                 # print(entity_column)
-                print(new_perm)
+                # print(new_perm)
                 # Create a list of the same length as perm, filled with None
                 # ordered_embeddings = reorder_embeddings(all_embeddings[0], all_embeddings[j])
                 

@@ -71,7 +71,7 @@ def convert_to_table(df, tokenizer):
         header.append(Column(col, col_type, sample_value=sample_value))
         
         # Add the column data to 'data' list
-    for row_index in len(df):
+    for row_index in range(len(df)):
         data.append(list(df.iloc[row_index]))
         # print()
         # print(col_type)
@@ -326,7 +326,7 @@ def process_table_wrapper(table_index, table, args, model_name, model, device):
 
 def process_and_save_embeddings(model_name, args, tables):
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda")
     
     model = TableBertModel.from_pretrained(
         '/home/zjsun/TaBert/TaBERT/tabert_base_k3/model.bin',
