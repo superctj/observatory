@@ -38,14 +38,14 @@ import itertools
 #     return dfs
 
 
-def table2colList(table):
-    cols = []
-    for column in table.columns:
-        # Convert column values to strings and join them with spaces
-        string_values = ' '.join(table[column].astype(str).tolist())
-        col_str = f"{column} {string_values}"
-        cols.append(col_str)
-    return cols
+# def table2colList(table):
+#     cols = []
+#     for column in table.columns:
+#         # Convert column values to strings and join them with spaces
+#         string_values = ' '.join(table[column].astype(str).tolist())
+#         col_str = f"{column} {string_values}"
+#         cols.append(col_str)
+#     return cols
 
 def process_table(tokenizer, cols, max_length, model_name):
     current_tokens = []

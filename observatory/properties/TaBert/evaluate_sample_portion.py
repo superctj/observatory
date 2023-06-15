@@ -203,10 +203,24 @@ def process_table_wrapper(table_index, table, args, model_name, model, device):
     all_shuffled_embeddings = generate_row_sample_embeddings(
 
         model, device,  table, args.num_samples, args.sample_portion)
+    
+    save_file_path = os.path.join(save_directory_embeddings, f"table_{table_index}_embeddings.pt")
+    # If the file exists, load it and substitute the elements.
+    if os.path.exists(save_file_path):
+        existing_embeddings = torch.load(save_file_path)
 
-    torch.save(all_shuffled_embeddings, os.path.join(
+        # Ensure that existing_embeddings is long enough
+        if len(existing_embeddings) < len(all_shuffled_embeddings):
+            existing_embeddings = all_shuffled_embeddings
+        else:
+            # Substitute the elements
+            existing_embeddings[:len(all_shuffled_embeddings)] = all_shuffled_embeddings
 
-        save_directory_embeddings, f"table_{table_index}_embeddings.pt"))
+        # Save the modified embeddings
+        torch.save(existing_embeddings, save_file_path)
+    else:
+        # If the file doesn't exist, just save all_shuffled_embeddings
+        torch.save(all_shuffled_embeddings, save_file_path)
 
     avg_cosine_similarities, mcvs, table_avg_cosine_similarity, table_avg_mcv = analyze_embeddings(
 
