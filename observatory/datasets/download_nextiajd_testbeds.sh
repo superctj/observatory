@@ -1,5 +1,5 @@
 #!/bin/sh
-save_dir="/ssd/congtj/observatory/nextiajd_datasets"
+save_dir="/nfs/turbo/coe-jag/zjsun/data/nextiajd_datasets"
 curl https://mydisk.cs.upc.edu/s/eCmfrNEBSKkcWcn/download -o ${save_dir}/testbedXS.zip
 curl https://mydisk.cs.upc.edu/s/dX3FajwWZn7rrrd/download -o ${save_dir}/testbedS.zip
 curl https://mydisk.cs.upc.edu/s/niPyR4WTtxydprj/download -o ${save_dir}/testbedM.zip

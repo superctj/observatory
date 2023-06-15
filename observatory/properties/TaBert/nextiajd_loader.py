@@ -1,7 +1,9 @@
 import os
 import argparse
-
+import torch
+from get_tabert_embeddings import get_tabert_embeddings
 from typing import Dict, List
+from torch.nn.functional import cosine_similarity
 
 import pandas as pd
 
@@ -108,14 +110,29 @@ class NextiaJDCSVDataLoader():
                 yield [table.iloc[j:j+n] for j in range(i, min(i+n*m, total_rows), n)]
 
 if __name__ == "__main__":
-    testbed = "testbedXS"
-    root_dir = f"/ssd/congtj/observatory/nextiajd_datasets/{testbed}/"
+    # testbed = "testbedXS"
+    # root_dir = f"/ssd/congtj/observatory/nextiajd_datasets/"
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--testbed', type=str, required=True)
+    parser.add_argument('--root_dir', type=str, required=True)
+    parser.add_argument('--n', type=int, required=True)
+    parser.add_argument('--r', type=int, required=True)
+    parser.add_argument('-m', '--model_name', type=str,  required=True, help='Name of the Hugging Face model to use')
+    
+    args = parser.parse_args()
+    model_name = args.model_name
+    n = args.n
+    r = args.r
+    testbed = args.testbed
+    root_dir =  os.path.join(args.root_dir, testbed)
     dataset_dir = os.path.join(root_dir, "datasets")
     metadata_path = os.path.join(root_dir, f"datasetInformation_{testbed}.csv")
     ground_truth_path = os.path.join(root_dir, f"groundTruth_{testbed}.csv")
-
     data_loader = NextiaJDCSVDataLoader(dataset_dir, metadata_path, ground_truth_path)
-
+    save_directory_results  = os.path.join('/nfs/turbo/coe-jag/zjsun', 'p5', testbed, model_name)
+    if not os.path.exists(save_directory_results):
+        os.makedirs(save_directory_results)
+    results = {}
     for i, row in data_loader.ground_truth.iterrows():
         print(f"{i} / {data_loader.ground_truth.shape[0]}")
         if row["trueQuality"] > 0:
@@ -128,9 +145,39 @@ if __name__ == "__main__":
 
             c1_idx = list(t1.columns).index(c1_name)
             c2_idx = list(t2.columns).index(c2_name)
-            t1_splits = data_loader.split_table(t1, n=1000)
-            t2_splits = data_loader.split_table(t2, n=1000)
+            
+            c1_sum_embeddings = None
+            c1_num_embeddings = 0
+            c1_chunks_generator = data_loader.split_table(t1, n=n, m=r)
+            for tables in c1_chunks_generator:
+                embeddings = get_tabert_embeddings(tables, model_name)
+                if c1_sum_embeddings is None:
+                    c1_sum_embeddings = torch.zeros(embeddings[0][c1_idx].size())
+                for embedding in embeddings:
+                    c1_sum_embeddings += embedding[c1_idx]
+                    c1_num_embeddings += 1
+            c1_avg_embedding = c1_sum_embeddings / c1_num_embeddings
+
+            c2_sum_embeddings = None
+            c2_num_embeddings = 0
+            c2_chunks_generator = data_loader.split_table(t2, n=n, m=r)
+            for tables in c2_chunks_generator:
+                embeddings = get_tabert_embeddings(tables, model_name)
+                if c2_sum_embeddings is None:
+                    c2_sum_embeddings = torch.zeros(embeddings[0][c2_idx].size())
+                for embedding in embeddings:
+                    c2_sum_embeddings += embedding[c2_idx]
+                    c2_num_embeddings += 1
+            c2_avg_embedding = c2_sum_embeddings / c2_num_embeddings
+            
+            similarity = cosine_similarity(c1_avg_embedding.unsqueeze(0), c2_avg_embedding.unsqueeze(0))
+            print("containment: ", containment)
+            print("trueQuality: ", row["trueQuality"])
+            print("Cosine Similarity: ", similarity.item())
+            results[containment] = (row["trueQuality"], similarity.item())
+    
             # pseudo code
             # c1_embedding = f(t1)[c1_idx]
             # c2_embedding = f(t2)[c2_idx]
             # results.append((<embedding_cosine_similarity>, containment))
+    torch.save(results, os.path.join(save_directory_results, f"results.pt"))
