@@ -1,6 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=Vis_t5
-#SBATCH --partition=standard
+#SBATCH --job-name=demo_tabert
+#SBATCH --partition=gpu
+#SBATCH --gres=gpu:1
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
@@ -11,5 +12,5 @@
 #SBATCH --array=1
 source ~/miniconda3/bin/activate
 conda init
-conda activate tabeval
-python visualize_embeddings.py --root_dir '/nfs/turbo/coe-jag/zjsun/row_insig/RI_TD/t5-base' --mcv_threshold 0.2 --cosine_similarity_threshold 0.9 --n_components 2
+conda activate tabert
+python3 demo.py -r normal_TD -t 282

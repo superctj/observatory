@@ -70,7 +70,7 @@ def process_table_wrapper(tables, args, model_name, model,device,key, changed_co
         for i, similarity in enumerate(similarities):
             print(f"\tCosine similarity with modified table {i+1}: {similarity}")
     torch.save(cosine_similarities_dict, os.path.join(save_directory_results, f"{key}_results.pt"))
-    
+
 
 def process_and_save_embeddings(model_name, args, result_dict):
     device = torch.device("cuda")
@@ -100,6 +100,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     result_dict = compare_directories(args.original_directory, args.changed_directory)
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.max_rows', None)
+    for key, value in result_dict.items():
+        print(key)
+        for things in value:
+            print(things)
 
 
 

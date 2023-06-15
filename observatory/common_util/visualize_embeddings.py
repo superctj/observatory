@@ -38,10 +38,15 @@ for result_file in os.listdir(results_dir):
             
             # Collect the corresponding column embeddings
             for index in indices:
+                print()
+                print(index)
                 column_embeddings = []
                 for i in range(len(all_shuffled_embeddings[0])):
-                    column_embeddings.append(all_shuffled_embeddings[i][index])
+                    print(all_shuffled_embeddings[i][index].shape)
+                    column_embeddings.append(all_shuffled_embeddings[i][index].numpy())
                 column_embeddings = np.array(column_embeddings)
+                if len(column_embeddings) < 31:
+                    continue
                 
                 # Perform t-SNE
                 tsne = TSNE(n_components=args.n_components)
