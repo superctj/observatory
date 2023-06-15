@@ -19,15 +19,15 @@ if not os.path.exists(args.save_dir):
 results = torch.load(args.results_file)
 
 # Unpack results into two lists
-true_quality = [v[0] for v in results.values()]
-similarity = [v[1] for v in results.values()]
+containment = [v[0] for v in results]
+similarity = [v[1] for v in results]
 
 # Create the plot
 plt.figure(figsize=(10, 6))
-plt.scatter(similarity, true_quality, alpha=0.7)
-plt.title('Relationship between True Quality and Similarity')
+plt.scatter(similarity, containment, alpha=0.7)
+plt.title('Relationship between True containment and Similarity')
 plt.xlabel('Similarity')
-plt.ylabel('True Quality')
+plt.ylabel('containment')
 plt.grid(True)
 
 # Save the plot

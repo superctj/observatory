@@ -12,15 +12,6 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-python plot_p5.py --results_file /nfs/turbo/coe-jag/zjsun/p5/testbedXS/t5-base/results.pt \
---save_dir ./p5_plot \
---pic_name t5_XS.png
-python plot_p5.py --results_file /nfs/turbo/coe-jag/zjsun/p5/testbedXS/roberta-base/results.pt \
---save_dir ./p5_plot \
---pic_name roberta_XS.png
 python plot_p5.py --results_file /nfs/turbo/coe-jag/zjsun/p5/testbedXS/google/tapas-base/results.pt \
 --save_dir ./p5_plot \
 --pic_name tapas_XS.png
-python plot_p5.py --results_file /nfs/turbo/coe-jag/zjsun/p5/testbedXS/bert-base-uncased/results.pt \
---save_dir ./p5_plot \
---pic_name bert_XS.png

@@ -132,7 +132,8 @@ if __name__ == "__main__":
     save_directory_results  = os.path.join('/nfs/turbo/coe-jag/zjsun', 'p5', testbed, model_name)
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
-    results = {}
+    results = []
+    device = torch.device("cpu")
     for i, row in data_loader.ground_truth.iterrows():
         print(f"{i} / {data_loader.ground_truth.shape[0]}")
         if row["trueQuality"] > 0:
@@ -154,7 +155,7 @@ if __name__ == "__main__":
                 if c1_sum_embeddings is None:
                     c1_sum_embeddings = torch.zeros(embeddings[0][c1_idx].size())
                 for embedding in embeddings:
-                    c1_sum_embeddings += embedding[c1_idx]
+                    c1_sum_embeddings += embedding[c1_idx].to(device)
                     c1_num_embeddings += 1
             c1_avg_embedding = c1_sum_embeddings / c1_num_embeddings
 
@@ -166,7 +167,7 @@ if __name__ == "__main__":
                 if c2_sum_embeddings is None:
                     c2_sum_embeddings = torch.zeros(embeddings[0][c2_idx].size())
                 for embedding in embeddings:
-                    c2_sum_embeddings += embedding[c2_idx]
+                    c2_sum_embeddings += embedding[c2_idx].to(device)
                     c2_num_embeddings += 1
             c2_avg_embedding = c2_sum_embeddings / c2_num_embeddings
             
@@ -174,7 +175,7 @@ if __name__ == "__main__":
             print("containment: ", containment)
             print("trueQuality: ", row["trueQuality"])
             print("Cosine Similarity: ", similarity.item())
-            results[containment] = (row["trueQuality"], similarity.item())
+            results.append((containment, similarity.item()))
     
             # pseudo code
             # c1_embedding = f(t1)[c1_idx]

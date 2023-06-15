@@ -46,7 +46,7 @@ class NextiaJDCSVDataLoader():
                 na_values=self.metadata[table_name]["null_val"],
                 skipinitialspace=self.metadata[table_name]["ignore_trailing"],
                 quotechar="\"",
-                on_bad_lines="skip",
+                # on_bad_lines="skip",
                 lineterminator="\n",
                 low_memory=False,
                 **kwargs
@@ -58,7 +58,7 @@ class NextiaJDCSVDataLoader():
                 na_values=self.metadata[table_name]["null_val"],
                 skipinitialspace=self.metadata[table_name]["ignore_trailing"],
                 quotechar="\"",
-                on_bad_lines="skip",
+                # on_bad_lines="skip",
                 lineterminator="\n",
                 encoding="iso-8859-1",
                 low_memory=False,
@@ -71,7 +71,7 @@ class NextiaJDCSVDataLoader():
                 na_values=self.metadata[table_name]["null_val"],
                 skipinitialspace=self.metadata[table_name]["ignore_trailing"],
                 quotechar="\"",
-                on_bad_lines="skip",
+                # on_bad_lines="skip",
                 lineterminator="\n",
                 **kwargs
             )
@@ -130,9 +130,11 @@ if __name__ == "__main__":
     ground_truth_path = os.path.join(root_dir, f"groundTruth_{testbed}.csv")
     data_loader = NextiaJDCSVDataLoader(dataset_dir, metadata_path, ground_truth_path)
     save_directory_results  = os.path.join('/nfs/turbo/coe-jag/zjsun', 'p5', testbed, model_name)
+    device = torch.device("cpu")
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
-    results = {}
+    results = []
+    device = torch.device("cpu")
     for i, row in data_loader.ground_truth.iterrows():
         print(f"{i} / {data_loader.ground_truth.shape[0]}")
         if row["trueQuality"] > 0:
@@ -150,11 +152,11 @@ if __name__ == "__main__":
             c1_num_embeddings = 0
             c1_chunks_generator = data_loader.split_table(t1, n=n, m=r)
             for tables in c1_chunks_generator:
-                embeddings = get_tabert_embeddings(tables, model_name)
+                embeddings = get_tabert_embeddings(tables)
                 if c1_sum_embeddings is None:
                     c1_sum_embeddings = torch.zeros(embeddings[0][c1_idx].size())
                 for embedding in embeddings:
-                    c1_sum_embeddings += embedding[c1_idx]
+                    c1_sum_embeddings += embedding[c1_idx].to(device)
                     c1_num_embeddings += 1
             c1_avg_embedding = c1_sum_embeddings / c1_num_embeddings
 
@@ -162,11 +164,11 @@ if __name__ == "__main__":
             c2_num_embeddings = 0
             c2_chunks_generator = data_loader.split_table(t2, n=n, m=r)
             for tables in c2_chunks_generator:
-                embeddings = get_tabert_embeddings(tables, model_name)
+                embeddings = get_tabert_embeddings(tables)
                 if c2_sum_embeddings is None:
                     c2_sum_embeddings = torch.zeros(embeddings[0][c2_idx].size())
                 for embedding in embeddings:
-                    c2_sum_embeddings += embedding[c2_idx]
+                    c2_sum_embeddings += embedding[c2_idx].to(device)
                     c2_num_embeddings += 1
             c2_avg_embedding = c2_sum_embeddings / c2_num_embeddings
             
@@ -174,7 +176,7 @@ if __name__ == "__main__":
             print("containment: ", containment)
             print("trueQuality: ", row["trueQuality"])
             print("Cosine Similarity: ", similarity.item())
-            results[containment] = (row["trueQuality"], similarity.item())
+            results.append((containment, similarity.item()))
     
             # pseudo code
             # c1_embedding = f(t1)[c1_idx]

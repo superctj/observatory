@@ -132,7 +132,8 @@ if __name__ == "__main__":
     save_directory_results  = os.path.join('/nfs/turbo/coe-jag/zjsun', 'p5', testbed, model_name)
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
-    results = {}
+    results = []
+    device = torch.device("cpu")
     for i, row in data_loader.ground_truth.iterrows():
         print(f"{i} / {data_loader.ground_truth.shape[0]}")
         if row["trueQuality"] > 0:
@@ -150,31 +151,34 @@ if __name__ == "__main__":
             c1_num_embeddings = 0
             c1_chunks_generator = data_loader.split_table(t1, n=n, m=r)
             for tables in c1_chunks_generator:
-                embeddings = get_doduo_embeddings(tables, model_name)
-                if c1_sum_embeddings is None:
+                embeddings = get_doduo_embeddings(tables)
+                if c1_sum_embeddings is None and len(embeddings)>0:
                     c1_sum_embeddings = torch.zeros(embeddings[0][c1_idx].size())
                 for embedding in embeddings:
                     c1_sum_embeddings += embedding[c1_idx]
                     c1_num_embeddings += 1
-            c1_avg_embedding = c1_sum_embeddings / c1_num_embeddings
+            
 
             c2_sum_embeddings = None
             c2_num_embeddings = 0
             c2_chunks_generator = data_loader.split_table(t2, n=n, m=r)
             for tables in c2_chunks_generator:
-                embeddings = get_doduo_embeddings(tables, model_name)
-                if c2_sum_embeddings is None:
+                embeddings = get_doduo_embeddings(tables)
+                if c2_sum_embeddings is None and len(embeddings)>0:
                     c2_sum_embeddings = torch.zeros(embeddings[0][c2_idx].size())
                 for embedding in embeddings:
                     c2_sum_embeddings += embedding[c2_idx]
                     c2_num_embeddings += 1
-            c2_avg_embedding = c2_sum_embeddings / c2_num_embeddings
-            
+            try:
+                c2_avg_embedding = c2_sum_embeddings / c2_num_embeddings
+                c1_avg_embedding = c1_sum_embeddings / c1_num_embeddings
+            except:
+                continue
             similarity = cosine_similarity(c1_avg_embedding.unsqueeze(0), c2_avg_embedding.unsqueeze(0))
             print("containment: ", containment)
             print("trueQuality: ", row["trueQuality"])
             print("Cosine Similarity: ", similarity.item())
-            results[containment] = (row["trueQuality"], similarity.item())
+            results.append((containment, similarity.item()))
     
             # pseudo code
             # c1_embedding = f(t1)[c1_idx]
