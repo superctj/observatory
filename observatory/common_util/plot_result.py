@@ -25,6 +25,8 @@ def process_directory(dir_path):
 
 
 import json
+
+
 def plot_result(directories, labels, avg_cosine_similarities_file, mcvs_file, plot_file, result_pairs_file):
 
     result_pairs = {}

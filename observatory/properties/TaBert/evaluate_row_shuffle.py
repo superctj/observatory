@@ -39,7 +39,7 @@ def convert_to_table(df, tokenizer):
         header.append(Column(col, col_type, sample_value=sample_value))
         
         # Add the column data to 'data' list
-    for row_index in len(df):
+    for row_index in range(len(df)):
         data.append(list(df.iloc[row_index]))
         # print()
         # print(col_type)
@@ -270,7 +270,7 @@ def process_table_wrapper(table_index, table, args, model_name, model, device):
 
 def process_and_save_embeddings(model_name, args, tables):
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda")
     print()
     print(device)
     print()
@@ -288,15 +288,15 @@ def process_and_save_embeddings(model_name, args, tables):
 
         if table_index < args.table_num:
             continue
-        try:
-            process_table_wrapper(table_index, table, args,
-                              model_name, model, device)
-        except Exception as e:
-            print("Error message:", e)
-            pd.set_option('display.max_columns', None)
-            pd.set_option('display.max_rows', None)
-            print(table.columns)
-            print(table)
+        # try:
+        process_table_wrapper(table_index, table, args,
+                        model_name, model, device)
+        # except Exception as e:
+        #     print("Error message:", e)
+        #     pd.set_option('display.max_columns', None)
+        #     pd.set_option('display.max_rows', None)
+        #     print(table.columns)
+        #     print(table)
 
 
 if __name__ == "__main__":

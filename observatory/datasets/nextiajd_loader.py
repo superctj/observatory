@@ -1,4 +1,5 @@
 import os
+import argparse
 
 from typing import Dict, List
 
@@ -100,7 +101,11 @@ class NextiaJDCSVDataLoader():
                         }
             
         return queries
-
+    
+    def split_table(self, table: pd.DataFrame, n: int, m: int):
+            total_rows = table.shape[0]
+            for i in range(0, total_rows, n*m):
+                yield [table.iloc[j:j+n] for j in range(i, min(i+n*m, total_rows), n)]
 
 if __name__ == "__main__":
     testbed = "testbedXS"
@@ -123,7 +128,8 @@ if __name__ == "__main__":
 
             c1_idx = list(t1.columns).index(c1_name)
             c2_idx = list(t2.columns).index(c2_name)
-            
+            t1_splits = data_loader.split_table(t1, n=1000)
+            t2_splits = data_loader.split_table(t2, n=1000)
             # pseudo code
             # c1_embedding = f(t1)[c1_idx]
             # c2_embedding = f(t2)[c2_idx]

@@ -46,7 +46,7 @@ def convert_to_table(df, tokenizer):
         header.append(Column(col, col_type, sample_value=sample_value))
         
         # Add the column data to 'data' list
-    for row_index in len(df):
+    for row_index in range(len(df)):
         data.append(list(df.iloc[row_index]))
         # print()
         # print(col_type)
@@ -203,10 +203,24 @@ def process_table_wrapper(table_index, table, args, model_name, model, device):
     all_shuffled_embeddings = generate_row_sample_embeddings(
 
         model, device,  table, args.num_samples, args.sample_portion)
+    
+    save_file_path = os.path.join(save_directory_embeddings, f"table_{table_index}_embeddings.pt")
+    # If the file exists, load it and substitute the elements.
+    if os.path.exists(save_file_path):
+        existing_embeddings = torch.load(save_file_path)
 
-    torch.save(all_shuffled_embeddings, os.path.join(
+        # Ensure that existing_embeddings is long enough
+        if len(existing_embeddings) < len(all_shuffled_embeddings):
+            existing_embeddings = all_shuffled_embeddings
+        else:
+            # Substitute the elements
+            existing_embeddings[:len(all_shuffled_embeddings)] = all_shuffled_embeddings
 
-        save_directory_embeddings, f"table_{table_index}_embeddings.pt"))
+        # Save the modified embeddings
+        torch.save(existing_embeddings, save_file_path)
+    else:
+        # If the file doesn't exist, just save all_shuffled_embeddings
+        torch.save(all_shuffled_embeddings, save_file_path)
 
     avg_cosine_similarities, mcvs, table_avg_cosine_similarity, table_avg_mcv = analyze_embeddings(
 
@@ -243,7 +257,7 @@ def process_table_wrapper(table_index, table, args, model_name, model, device):
 
 def process_and_save_embeddings(model_name, args, tables):
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda")
     print()
     print(device)
     print()
