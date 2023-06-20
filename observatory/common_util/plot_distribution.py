@@ -6,7 +6,9 @@ import os
 
 def plot_cosine_similarity_distribution(read_folders, labels, save_folder, picture_name):
     data = []
+    saved_data ={}
     for read_folder, label in zip(read_folders, labels):
+        
         # Collect all the cosine similarities
         all_cosine_similarities = []
         for file in os.listdir(read_folder):
@@ -14,23 +16,21 @@ def plot_cosine_similarity_distribution(read_folders, labels, save_folder, pictu
                 cosine_similarities_dict = torch.load(os.path.join(read_folder, file))
                 for column_index, similarities in cosine_similarities_dict.items():
                     all_cosine_similarities.extend(similarities)
-        
+        saved_data[label] = all_cosine_similarities
         data.append((all_cosine_similarities, label))
-        
+    
+    
     # Plot boxplots for each dataset
     fig, ax = plt.subplots()
     ax.boxplot([item[0] for item in data], labels=[item[1] for item in data])
-    plt.title('Boxplot of Cosine Similarities')
-    plt.xlabel('Labels')
+    # plt.title('Boxplot of Cosine Similarities')
+    # plt.xlabel('Labels')
     plt.ylabel('Cosine Similarity')
-
-    # Create the directories if they don't exist
     if not os.path.exists(save_folder):
-        try:
-            os.makedirs(save_folder)
-        except OSError as e:
-            print(f"Error creating directory: {e}")
-
+        os.makedirs(save_folder)
+    
+    # Save the data
+    torch.save(saved_data, os.path.join(save_folder, 'data.pt'))
     # Save the figure
     try:
         plt.savefig(os.path.join(save_folder, picture_name))

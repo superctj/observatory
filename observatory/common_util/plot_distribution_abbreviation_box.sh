@@ -12,9 +12,11 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-python plot_distribution.py  --read_folders /nfs/turbo/coe-jag/zjsun/p4/p4_SD_abbreviation/bert-base-uncased/results \
-/nfs/turbo/coe-jag/zjsun/p4/p4_SD_abbreviation/google/tapas-base/results \
+python plot_distribution.py  --read_folders \
+/nfs/turbo/coe-jag/zjsun/p4/p4_SD_abbreviation/bert-base-uncased/results \
 /nfs/turbo/coe-jag/zjsun/p4/p4_SD_abbreviation/roberta-base/results \
 /nfs/turbo/coe-jag/zjsun/p4/p4_SD_abbreviation/t5-base/results \
+/nfs/turbo/coe-jag/zjsun/p4/p4_SD_abbreviation/google/tapas-base/results \
 /nfs/turbo/coe-jag/zjsun/p4/p4_SD_abbreviation/tabert/results \
---labels bert tapas roberta t5 tabert --save_folder ./p4_plot2 --picture_name abbreviation.png
+/nfs/turbo/coe-jag/zjsun/p4/p4_SD_abbreviation/doduo/results \
+--labels BERT RoBERTa T5 TAPAS TaBERT  DODUO --save_folder ./p4_plot2/abbreviation --picture_name abbreviation.png

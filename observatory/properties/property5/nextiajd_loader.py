@@ -134,6 +134,10 @@ if __name__ == "__main__":
         os.makedirs(save_directory_results)
     results = []
     device = torch.device("cpu")
+    with open(f'error_{model_name}.txt', 'w') as f:
+        f.write("\n\n")
+        f.write(str(model_name))
+        f.write("\n")
     for i, row in data_loader.ground_truth.iterrows():
         print(f"{i} / {data_loader.ground_truth.shape[0]}")
         if row["trueQuality"] > 0:
@@ -146,31 +150,35 @@ if __name__ == "__main__":
 
             c1_idx = list(t1.columns).index(c1_name)
             c2_idx = list(t2.columns).index(c2_name)
-            
-            c1_sum_embeddings = None
-            c1_num_embeddings = 0
-            c1_chunks_generator = data_loader.split_table(t1, n=n, m=r)
-            for tables in c1_chunks_generator:
-                embeddings = get_hugging_face_embeddings(tables, model_name)
-                if c1_sum_embeddings is None:
-                    c1_sum_embeddings = torch.zeros(embeddings[0][c1_idx].size())
-                for embedding in embeddings:
-                    c1_sum_embeddings += embedding[c1_idx].to(device)
-                    c1_num_embeddings += 1
-            c1_avg_embedding = c1_sum_embeddings / c1_num_embeddings
+            try:
+                c1_sum_embeddings = None
+                c1_num_embeddings = 0
+                c1_chunks_generator = data_loader.split_table(t1, n=n, m=r)
+                for tables in c1_chunks_generator:
+                    embeddings = get_hugging_face_embeddings(tables, model_name)
+                    if c1_sum_embeddings is None:
+                        c1_sum_embeddings = torch.zeros(embeddings[0][c1_idx].size())
+                    for embedding in embeddings:
+                        c1_sum_embeddings += embedding[c1_idx].to(device)
+                        c1_num_embeddings += 1
+                c1_avg_embedding = c1_sum_embeddings / c1_num_embeddings
 
-            c2_sum_embeddings = None
-            c2_num_embeddings = 0
-            c2_chunks_generator = data_loader.split_table(t2, n=n, m=r)
-            for tables in c2_chunks_generator:
-                embeddings = get_hugging_face_embeddings(tables, model_name)
-                if c2_sum_embeddings is None:
-                    c2_sum_embeddings = torch.zeros(embeddings[0][c2_idx].size())
-                for embedding in embeddings:
-                    c2_sum_embeddings += embedding[c2_idx].to(device)
-                    c2_num_embeddings += 1
-            c2_avg_embedding = c2_sum_embeddings / c2_num_embeddings
-            
+                c2_sum_embeddings = None
+                c2_num_embeddings = 0
+                c2_chunks_generator = data_loader.split_table(t2, n=n, m=r)
+                for tables in c2_chunks_generator:
+                    embeddings = get_hugging_face_embeddings(tables, model_name)
+                    if c2_sum_embeddings is None:
+                        c2_sum_embeddings = torch.zeros(embeddings[0][c2_idx].size())
+                    for embedding in embeddings:
+                        c2_sum_embeddings += embedding[c2_idx].to(device)
+                        c2_num_embeddings += 1
+                c2_avg_embedding = c2_sum_embeddings / c2_num_embeddings
+            except Exception as e:
+                with open(f'error_{model_name}.txt', 'a') as f:
+                    f.write(str(e))
+                    f.write("\n")
+                continue
             similarity = cosine_similarity(c1_avg_embedding.unsqueeze(0), c2_avg_embedding.unsqueeze(0))
             print("containment: ", containment)
             print("trueQuality: ", row["trueQuality"])
