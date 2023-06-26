@@ -1,7 +1,6 @@
 #!/bin/bash
-#SBATCH --job-name=p5_roberta
-#SBATCH --partition=gpu
-#SBATCH --gres=gpu:1
+#SBATCH --job-name=fix_result
+#SBATCH --partition=standard
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
@@ -13,10 +12,7 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-python3 nextiajd_loader.py --testbed \
-"testbedS" --root_dir "/nfs/turbo/coe-jag/zjsun/data/nextiajd_datasets" \
---model_name roberta-base \
---n 1000 --start \
-0 \
---num_tables 100000 \
---value 1000
+python3 fix_result.py  --parent_directories \
+/nfs/turbo/coe-jag/zjsun/col_insig/CI_TD_beta/doduo 
+
+

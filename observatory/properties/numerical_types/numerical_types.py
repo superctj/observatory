@@ -15,10 +15,7 @@ def split_table(table: pd.DataFrame, m: int, n: int):
             for i in range(0, total_rows, m*n):
                 yield [table.iloc[j:j+m] for j in range(i, min(i+m*n, total_rows), m)]
                 
-                
-                
-                
-                
+                               
 def get_average_embedding(table, index, n,  get_embedding):
         m = min(100//len(table.columns.tolist()), 3)
         sum_embeddings = None
@@ -63,7 +60,8 @@ if __name__ == "__main__":
     for _, row in data_loader.metadata.iterrows():
         table_name = row["table_name"]
         table = data_loader.read_table(table_name)
-
+        table.columns = [''] * len(table.columns)
+        
         # input_tables = []
         # Only consider numerical column alone for representation inference
         numerical_col_idx = row["column_index"]
@@ -89,31 +87,81 @@ if __name__ == "__main__":
         # Consider the entire table as context of numerical column for representation inference
         # input_tables.append(table)
 
-
-        
         try:
-            col_itself.append((get_average_embedding(numerical_col, 0, n,  get_embedding), row["label"]))
-            subj_col_as_context.append((get_average_embedding(two_col_table, 1, n,  get_embedding), row["label"]))
-            neighbor_col_as_context.append((get_average_embedding(three_col_table, 1, n,  get_embedding), row["label"]))
-            entire_table_as_context.append((get_average_embedding(table, numerical_col_idx, n,  get_embedding), row["label"]))
+            col_itself_embedding = get_average_embedding(numerical_col, 0, n,  get_embedding)
         except Exception as e:
+            print(f"In table: {table_name}\n")
+            print("In col_itself_embedding = get_average_embedding(numerical_col, 0, n,  get_embedding): ")
             print("Error message:", e)
             pd.set_option('display.max_columns', None)
             pd.set_option('display.max_rows', None)
             # print(numerical_col.columns)
             print(numerical_col)
             with open(f'output_{model_name}.txt', 'a') as f:
+                    f.write(f"In table: {table_name}\n")
+                    f.write("In col_itself_embedding = get_average_embedding(numerical_col, 0, n,  get_embedding): ")
                     f.write(f"Error message: {e}\n\n")
-                    f.write(f"\n\norginal table: \n\n")
-                    f.write(table.to_string(index=False))
                     f.write(f"\n\n")
-            # col_itself.append((get_average_embedding(numerical_col, 0, n,  get_embedding), row["label"]))
-            subj_col_as_context.append((get_average_embedding(two_col_table, 1, n,  get_embedding), row["label"]))
-            neighbor_col_as_context.append((get_average_embedding(three_col_table, 1, n,  get_embedding), row["label"]))
-            entire_table_as_context.append((get_average_embedding(table, numerical_col_idx, n,  get_embedding), row["label"]))
-            break
-       
+            continue
         
+        try:
+            subj_col_as_context_embedding = get_average_embedding(two_col_table, 1, n,  get_embedding)
+        except Exception as e:
+            print(f"In table: {table_name}\n")
+            print("In subj_col_as_context_embedding = get_average_embedding(two_col_table, 1, n,  get_embedding) ")
+            print("Error message:", e)
+            pd.set_option('display.max_columns', None)
+            pd.set_option('display.max_rows', None)
+            # print(numerical_col.columns)
+            print(numerical_col)
+            with open(f'output_{model_name}.txt', 'a') as f:
+                    f.write(f"In table: {table_name}\n")
+                    f.write("In subj_col_as_context_embedding = get_average_embedding(two_col_table, 1, n,  get_embedding) ")
+                    f.write(f"Error message: {e}\n\n")
+                    f.write(f"\n\n")
+            continue
+        
+        
+        try:
+            neighbor_col_as_context_embedding = get_average_embedding(three_col_table, 1, n,  get_embedding)
+        except Exception as e:
+            print(f"In table: {table_name}\n")
+            print("In neighbor_col_as_context_embedding = get_average_embedding(three_col_table, 1, n,  get_embedding) ")
+            print("Error message:", e)
+            pd.set_option('display.max_columns', None)
+            pd.set_option('display.max_rows', None)
+            # print(numerical_col.columns)
+            print(numerical_col)
+            with open(f'output_{model_name}.txt', 'a') as f:
+                    f.write(f"In table: {table_name}\n")
+                    f.write("In neighbor_col_as_context_embedding = get_average_embedding(three_col_table, 1, n,  get_embedding) ")
+                    f.write(f"Error message: {e}\n\n")
+                    f.write(f"\n\n")
+            continue
+        
+        
+        try:
+            entire_table_as_context_embedding = get_average_embedding(table, numerical_col_idx, n,  get_embedding)
+        except Exception as e:
+            print(f"In table: {table_name}\n")
+            print("In entire_table_as_context_embedding = get_average_embedding(table, numerical_col_idx, n,  get_embedding) ")
+            print("Error message:", e)
+            pd.set_option('display.max_columns', None)
+            pd.set_option('display.max_rows', None)
+            # print(numerical_col.columns)
+            print(numerical_col)
+            with open(f'output_{model_name}.txt', 'a') as f:
+                    f.write(f"In table: {table_name}\n")
+                    f.write("In entire_table_as_context_embedding = get_average_embedding(table, numerical_col_idx, n,  get_embedding) ")
+                    f.write(f"Error message: {e}\n\n")
+                    f.write(f"\n\n")
+            continue
+        
+        col_itself.append((col_itself_embedding, row["label"]))
+        subj_col_as_context.append((subj_col_as_context_embedding, row["label"]))
+        neighbor_col_as_context.append((neighbor_col_as_context_embedding, row["label"]))
+        entire_table_as_context.append((entire_table_as_context_embedding, row["label"]))
+       
     data ={}
     data["col_itself"] = col_itself
     data["subj_col_as_context"] = subj_col_as_context

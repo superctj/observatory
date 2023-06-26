@@ -13,5 +13,10 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-python3 nextiajd_loader.py --testbed "testbedXS" --root_dir "/nfs/turbo/coe-jag/zjsun/data/nextiajd_datasets" \
---model_name google/tapas-base --n 1000 --r 3
+python3 nextiajd_loader.py --testbed \
+"testbedS" --root_dir "/nfs/turbo/coe-jag/zjsun/data/nextiajd_datasets" \
+--model_name google/tapas-base \
+--n 1000 --start \
+0 \
+--num_tables 100000 \
+--value 1000

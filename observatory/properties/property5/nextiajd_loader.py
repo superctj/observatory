@@ -4,6 +4,8 @@ import torch
 from get_hugging_face_embeddings import get_hugging_face_embeddings
 from typing import Dict, List
 from torch.nn.functional import cosine_similarity
+import functools
+
 import pandas as pd
 from collections import Counter
 
@@ -24,8 +26,6 @@ def multiset_jaccard_similarity(df1, df2, col1, col2):
     maxima = sum((multiset1 | multiset2).values())
     multiset_jaccard_sim = minima / maxima if maxima != 0 else 0
     return multiset_jaccard_sim
-
-
 
 class NextiaJDCSVDataLoader():
     def __init__(self, dataset_dir: str, metadata_path: str, ground_truth_path: str):
@@ -123,11 +123,26 @@ class NextiaJDCSVDataLoader():
             
         return queries
     
-    def split_table(self, table: pd.DataFrame, m: int, n: int):
-            total_rows = table.shape[0]
-            for i in range(0, total_rows, m*n):
-                yield [table.iloc[j:j+m] for j in range(i, min(i+m*n, total_rows), m)]
-
+def split_table( table: pd.DataFrame,  n: int, m: int):
+    # m = min(100//len(table.iloc[0]), 3)
+    total_rows = table.shape[0]
+    for i in range(0, total_rows, m*n):
+        yield [table.iloc[j:j+m] for j in range(i, min(i+m*n, total_rows), m)]
+        
+def get_average_embedding(table, index, n,  get_embedding):
+        m = min(100//len(table.columns.tolist()), 3)
+        sum_embeddings = None
+        num_embeddings = 0
+        chunks_generator = split_table(table, n=n, m=m)
+        for tables in chunks_generator:
+            embeddings = get_embedding(tables)
+            if sum_embeddings is None:
+                sum_embeddings = torch.zeros(embeddings[0][index].size())
+            for embedding in embeddings:
+                sum_embeddings += embedding[index].to(device)
+                num_embeddings += 1
+        avg_embedding = sum_embeddings / num_embeddings
+        return avg_embedding
 if __name__ == "__main__":
     # testbed = "testbedXS"
     # root_dir = f"/ssd/congtj/observatory/nextiajd_datasets/"
@@ -135,13 +150,15 @@ if __name__ == "__main__":
     parser.add_argument('--testbed', type=str, required=True)
     parser.add_argument('--root_dir', type=str, required=True)
     parser.add_argument('--n', type=int, required=True)
-    parser.add_argument('--r', type=int, required=True)
     parser.add_argument('-m', '--model_name', type=str,  required=True, help='Name of the Hugging Face model to use')
-    
+    parser.add_argument('--start', type=int, required=True)
+    parser.add_argument('--num_tables', type=int, required=True)
+    parser.add_argument('--value', default=None, type=int, help='An optional max number of rows to read')
+
     args = parser.parse_args()
     model_name = args.model_name
+    get_embedding =  functools.partial(get_hugging_face_embeddings, model_name=model_name)
     n = args.n
-    r = args.r
     testbed = args.testbed
     root_dir =  os.path.join(args.root_dir, testbed)
     dataset_dir = os.path.join(root_dir, "datasets")
@@ -158,6 +175,8 @@ if __name__ == "__main__":
         f.write(str(model_name))
         f.write("\n")
     for i, row in data_loader.ground_truth.iterrows():
+        if i>= args.start + args.num_tables or i < args.start:
+            continue
         print(f"{i} / {data_loader.ground_truth.shape[0]}")
         if row["trueQuality"] > 0:
             t1_name, t2_name = row["ds_name"], row["ds_name_2"]
@@ -166,37 +185,44 @@ if __name__ == "__main__":
 
             t1 = data_loader.read_table(t1_name)
             t2 = data_loader.read_table(t2_name)
-
+            if args.value is not None:
+                t1 = t1.head(args.value)
+                t2 = t2.head(args.value)
             c1_idx = list(t1.columns).index(c1_name)
             c2_idx = list(t2.columns).index(c2_name)
             try:
-                c1_sum_embeddings = None
-                c1_num_embeddings = 0
-                c1_chunks_generator = data_loader.split_table(t1, m=r, n=n)
-                for tables in c1_chunks_generator:
-                    embeddings = get_hugging_face_embeddings(tables, model_name)
-                    if c1_sum_embeddings is None:
-                        c1_sum_embeddings = torch.zeros(embeddings[0][c1_idx].size())
-                    for embedding in embeddings:
-                        c1_sum_embeddings += embedding[c1_idx].to(device)
-                        c1_num_embeddings += 1
-                c1_avg_embedding = c1_sum_embeddings / c1_num_embeddings
-
-                c2_sum_embeddings = None
-                c2_num_embeddings = 0
-                c2_chunks_generator = data_loader.split_table(t2, m=r, n=n)
-                for tables in c2_chunks_generator:
-                    embeddings = get_hugging_face_embeddings(tables, model_name)
-                    if c2_sum_embeddings is None:
-                        c2_sum_embeddings = torch.zeros(embeddings[0][c2_idx].size())
-                    for embedding in embeddings:
-                        c2_sum_embeddings += embedding[c2_idx].to(device)
-                        c2_num_embeddings += 1
-                c2_avg_embedding = c2_sum_embeddings / c2_num_embeddings
+                c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding)
             except Exception as e:
                 with open(f'error_{model_name.replace("/", "")}.txt', 'a') as f:
+                    f.write(f"i: {i}")
+                    f.write("In c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding): ")
                     f.write(str(e))
                     f.write("\n")
+                print(f"i: {i}")
+                print("In c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding): ")
+                print("Error message:", e)
+                pd.set_option('display.max_columns', None)
+                pd.set_option('display.max_rows', None)
+                print("c1_idx: ", c1_idx)
+                print(t1.columns)
+                print(t1)
+                continue
+            try:
+                c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding)
+            except Exception as e:
+                with open(f'error_{model_name.replace("/", "")}.txt', 'a') as f:
+                    f.write(f"i: {i}")
+                    f.write("In c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding) ")
+                    f.write(str(e))
+                    f.write("\n")
+                print(f"i: {i}")
+                print("In c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding): ")
+                print("Error message:", e)
+                pd.set_option('display.max_columns', None)
+                pd.set_option('display.max_rows', None)
+                print("c2_idx: ", c2_idx)
+                print(t2.columns)
+                print(t2)
                 continue
             data_cosine_similarity = cosine_similarity(c1_avg_embedding.unsqueeze(0), c2_avg_embedding.unsqueeze(0))
             data_jaccard_similarity = jaccard_similarity(t1, t2, c1_name, c2_name)
