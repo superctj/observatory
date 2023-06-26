@@ -53,6 +53,7 @@ def get_tabert_embeddings(tables, model_path = '/home/zjsun/TaBert/TaBERT/tabert
     for table in tables:
         table = table.reset_index(drop=True)
         table = table.astype(str)
+        table.columns = table.columns.astype(str)
         table = convert_to_table(table, model.tokenizer)
         context = ''
         with torch.no_grad():

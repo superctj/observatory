@@ -1,19 +1,17 @@
 import os
-os.environ['CUDA_LAUNCH_BLOCKING'] = "1"
-
 import argparse
 import torch
 import functools
 
 from sotab_loader import SOTABDataLoader
-from get_hugging_face_embeddings import get_hugging_face_embeddings
+from get_doduo_embeddings import get_doduo_embeddings
 import pandas as pd
 device = torch.device("cpu")
 
-def split_table(table: pd.DataFrame, m: int, n: int):
+def split_table(table: pd.DataFrame, n: int, m: int):
             total_rows = table.shape[0]
-            for i in range(0, total_rows, m*n):
-                yield [table.iloc[j:j+m] for j in range(i, min(i+m*n, total_rows), m)]
+            for i in range(0, total_rows, n*m):
+                yield [table.iloc[j:j+n] for j in range(i, min(i+n*m, total_rows), n)]
                 
                 
                 
@@ -23,7 +21,7 @@ def get_average_embedding(table, index, n,  get_embedding):
         m = min(100//len(table.columns.tolist()), 3)
         sum_embeddings = None
         num_embeddings = 0
-        chunks_generator = split_table(table, m=m, n=n)
+        chunks_generator = split_table(table, n=n, m=m)
         for tables in chunks_generator:
             embeddings = get_embedding(tables)
             if sum_embeddings is None:
@@ -52,14 +50,13 @@ if __name__ == "__main__":
     metadata_path = os.path.join(root_dir, "metadata.csv")
 
     data_loader = SOTABDataLoader(dataset_dir, metadata_path)    
-    get_embedding =  functools.partial(get_hugging_face_embeddings, model_name=model_name)
+    get_embedding =  get_doduo_embeddings
 
     col_itself = []
     subj_col_as_context = []
     neighbor_col_as_context = []
     entire_table_as_context = []
-    with open(f'output_{model_name}.txt', 'w') as f:
-            f.write(f"Error message for {model_name}\n\n")
+
     for _, row in data_loader.metadata.iterrows():
         table_name = row["table_name"]
         table = data_loader.read_table(table_name)
@@ -89,31 +86,15 @@ if __name__ == "__main__":
         # Consider the entire table as context of numerical column for representation inference
         # input_tables.append(table)
 
-
-        
+        # embeddings = get_hugging_face_embedding(input_tables)
         try:
             col_itself.append((get_average_embedding(numerical_col, 0, n,  get_embedding), row["label"]))
             subj_col_as_context.append((get_average_embedding(two_col_table, 1, n,  get_embedding), row["label"]))
             neighbor_col_as_context.append((get_average_embedding(three_col_table, 1, n,  get_embedding), row["label"]))
             entire_table_as_context.append((get_average_embedding(table, numerical_col_idx, n,  get_embedding), row["label"]))
-        except Exception as e:
-            print("Error message:", e)
-            pd.set_option('display.max_columns', None)
-            pd.set_option('display.max_rows', None)
-            # print(numerical_col.columns)
-            print(numerical_col)
-            with open(f'output_{model_name}.txt', 'a') as f:
-                    f.write(f"Error message: {e}\n\n")
-                    f.write(f"\n\norginal table: \n\n")
-                    f.write(table.to_string(index=False))
-                    f.write(f"\n\n")
-            # col_itself.append((get_average_embedding(numerical_col, 0, n,  get_embedding), row["label"]))
-            subj_col_as_context.append((get_average_embedding(two_col_table, 1, n,  get_embedding), row["label"]))
-            neighbor_col_as_context.append((get_average_embedding(three_col_table, 1, n,  get_embedding), row["label"]))
-            entire_table_as_context.append((get_average_embedding(table, numerical_col_idx, n,  get_embedding), row["label"]))
-            break
-       
-        
+        except:
+            continue
+        # Save embeddings
     data ={}
     data["col_itself"] = col_itself
     data["subj_col_as_context"] = subj_col_as_context

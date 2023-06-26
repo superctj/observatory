@@ -6,6 +6,25 @@ from typing import Dict, List
 from torch.nn.functional import cosine_similarity
 
 import pandas as pd
+from collections import Counter
+
+def jaccard_similarity(df1, df2, col1, col2):
+    set1 = set(df1[col1])
+    set2 = set(df2[col2])
+    
+    intersection = len(set1.intersection(set2))
+    union = len(set1) + len(set2) - intersection
+    jaccard_sim = intersection / union if union != 0 else 0
+    return jaccard_sim
+
+def multiset_jaccard_similarity(df1, df2, col1, col2):
+    multiset1 = Counter(df1[col1])
+    multiset2 = Counter(df2[col2])
+    
+    minima = sum((multiset1 & multiset2).values())
+    maxima = sum((multiset1 | multiset2).values())
+    multiset_jaccard_sim = minima / maxima if maxima != 0 else 0
+    return multiset_jaccard_sim
 
 
 class NextiaJDCSVDataLoader():
@@ -174,11 +193,20 @@ if __name__ == "__main__":
                 c1_avg_embedding = c1_sum_embeddings / c1_num_embeddings
             except:
                 continue
-            similarity = cosine_similarity(c1_avg_embedding.unsqueeze(0), c2_avg_embedding.unsqueeze(0))
+            data_cosine_similarity = cosine_similarity(c1_avg_embedding.unsqueeze(0), c2_avg_embedding.unsqueeze(0))
+            data_jaccard_similarity = jaccard_similarity(t1, t2, c1_name, c2_name)
+            data_multiset_jaccard_similarity = multiset_jaccard_similarity(t1, t2, c1_name, c2_name)
             print("containment: ", containment)
             print("trueQuality: ", row["trueQuality"])
-            print("Cosine Similarity: ", similarity.item())
-            results.append((containment, similarity.item()))
+            print("jaccard_similarity: ", data_jaccard_similarity)
+            print("multiset_jaccard_similarity: ", data_multiset_jaccard_similarity)
+            print("Cosine Similarity: ", data_cosine_similarity.item())
+            result = {}
+            result["containment"] = containment
+            result["cosine_similarity"] = data_cosine_similarity.item()
+            result["jaccard_similarity"] = data_jaccard_similarity
+            result["multiset_jaccard_similarity"] = data_multiset_jaccard_similarity
+            results.append(result)
     
             # pseudo code
             # c1_embedding = f(t1)[c1_idx]

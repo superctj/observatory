@@ -4,8 +4,27 @@ import torch
 from get_hugging_face_embeddings import get_hugging_face_embeddings
 from typing import Dict, List
 from torch.nn.functional import cosine_similarity
-
 import pandas as pd
+from collections import Counter
+
+def jaccard_similarity(df1, df2, col1, col2):
+    set1 = set(df1[col1])
+    set2 = set(df2[col2])
+    
+    intersection = len(set1.intersection(set2))
+    union = len(set1) + len(set2) - intersection
+    jaccard_sim = intersection / union if union != 0 else 0
+    return jaccard_sim
+
+def multiset_jaccard_similarity(df1, df2, col1, col2):
+    multiset1 = Counter(df1[col1])
+    multiset2 = Counter(df2[col2])
+    
+    minima = sum((multiset1 & multiset2).values())
+    maxima = sum((multiset1 | multiset2).values())
+    multiset_jaccard_sim = minima / maxima if maxima != 0 else 0
+    return multiset_jaccard_sim
+
 
 
 class NextiaJDCSVDataLoader():
@@ -104,10 +123,10 @@ class NextiaJDCSVDataLoader():
             
         return queries
     
-    def split_table(self, table: pd.DataFrame, n: int, m: int):
+    def split_table(self, table: pd.DataFrame, m: int, n: int):
             total_rows = table.shape[0]
-            for i in range(0, total_rows, n*m):
-                yield [table.iloc[j:j+n] for j in range(i, min(i+n*m, total_rows), n)]
+            for i in range(0, total_rows, m*n):
+                yield [table.iloc[j:j+m] for j in range(i, min(i+m*n, total_rows), m)]
 
 if __name__ == "__main__":
     # testbed = "testbedXS"
@@ -134,7 +153,7 @@ if __name__ == "__main__":
         os.makedirs(save_directory_results)
     results = []
     device = torch.device("cpu")
-    with open(f'error_{model_name}.txt', 'w') as f:
+    with open(f'error_{model_name.replace("/", "")}.txt', 'w') as f:
         f.write("\n\n")
         f.write(str(model_name))
         f.write("\n")
@@ -153,7 +172,7 @@ if __name__ == "__main__":
             try:
                 c1_sum_embeddings = None
                 c1_num_embeddings = 0
-                c1_chunks_generator = data_loader.split_table(t1, n=n, m=r)
+                c1_chunks_generator = data_loader.split_table(t1, m=r, n=n)
                 for tables in c1_chunks_generator:
                     embeddings = get_hugging_face_embeddings(tables, model_name)
                     if c1_sum_embeddings is None:
@@ -165,7 +184,7 @@ if __name__ == "__main__":
 
                 c2_sum_embeddings = None
                 c2_num_embeddings = 0
-                c2_chunks_generator = data_loader.split_table(t2, n=n, m=r)
+                c2_chunks_generator = data_loader.split_table(t2, m=r, n=n)
                 for tables in c2_chunks_generator:
                     embeddings = get_hugging_face_embeddings(tables, model_name)
                     if c2_sum_embeddings is None:
@@ -175,15 +194,24 @@ if __name__ == "__main__":
                         c2_num_embeddings += 1
                 c2_avg_embedding = c2_sum_embeddings / c2_num_embeddings
             except Exception as e:
-                with open(f'error_{model_name}.txt', 'a') as f:
+                with open(f'error_{model_name.replace("/", "")}.txt', 'a') as f:
                     f.write(str(e))
                     f.write("\n")
                 continue
-            similarity = cosine_similarity(c1_avg_embedding.unsqueeze(0), c2_avg_embedding.unsqueeze(0))
+            data_cosine_similarity = cosine_similarity(c1_avg_embedding.unsqueeze(0), c2_avg_embedding.unsqueeze(0))
+            data_jaccard_similarity = jaccard_similarity(t1, t2, c1_name, c2_name)
+            data_multiset_jaccard_similarity = multiset_jaccard_similarity(t1, t2, c1_name, c2_name)
             print("containment: ", containment)
             print("trueQuality: ", row["trueQuality"])
-            print("Cosine Similarity: ", similarity.item())
-            results.append((containment, similarity.item()))
+            print("jaccard_similarity: ", data_jaccard_similarity)
+            print("multiset_jaccard_similarity: ", data_multiset_jaccard_similarity)
+            print("Cosine Similarity: ", data_cosine_similarity.item())
+            result = {}
+            result["containment"] = containment
+            result["cosine_similarity"] = data_cosine_similarity.item()
+            result["jaccard_similarity"] = data_jaccard_similarity
+            result["multiset_jaccard_similarity"] = data_multiset_jaccard_similarity
+            results.append(result)
     
             # pseudo code
             # c1_embedding = f(t1)[c1_idx]
