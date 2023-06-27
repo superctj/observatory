@@ -17,7 +17,7 @@ def split_table(table: pd.DataFrame, m: int, n: int):
                 
                                
 def get_average_embedding(table, index, n,  get_embedding):
-        m = min(100//len(table.columns.tolist()), 3)
+        m = min(100//len(list(table.columns)), 3)
         sum_embeddings = None
         num_embeddings = 0
         chunks_generator = split_table(table, m=m, n=n)
@@ -102,7 +102,7 @@ if __name__ == "__main__":
                     f.write("In col_itself_embedding = get_average_embedding(numerical_col, 0, n,  get_embedding): ")
                     f.write(f"Error message: {e}\n\n")
                     f.write(f"\n\n")
-            continue
+            # continue
         
         try:
             subj_col_as_context_embedding = get_average_embedding(two_col_table, 1, n,  get_embedding)
@@ -119,8 +119,8 @@ if __name__ == "__main__":
                     f.write("In subj_col_as_context_embedding = get_average_embedding(two_col_table, 1, n,  get_embedding) ")
                     f.write(f"Error message: {e}\n\n")
                     f.write(f"\n\n")
-            continue
-        
+            # continue
+        # subj_col_as_context_embedding = get_average_embedding(two_col_table, 1, n,  get_embedding)
         
         try:
             neighbor_col_as_context_embedding = get_average_embedding(three_col_table, 1, n,  get_embedding)
@@ -137,7 +137,7 @@ if __name__ == "__main__":
                     f.write("In neighbor_col_as_context_embedding = get_average_embedding(three_col_table, 1, n,  get_embedding) ")
                     f.write(f"Error message: {e}\n\n")
                     f.write(f"\n\n")
-            continue
+            # continue
         
         
         try:

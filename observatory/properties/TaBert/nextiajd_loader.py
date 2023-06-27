@@ -65,7 +65,7 @@ class NextiaJDCSVDataLoader():
                 na_values=self.metadata[table_name]["null_val"],
                 skipinitialspace=self.metadata[table_name]["ignore_trailing"],
                 quotechar="\"",
-                on_bad_lines="skip",
+                # on_bad_lines="skip",
                 lineterminator="\n",
                 low_memory=False,
                 **kwargs
@@ -243,4 +243,4 @@ if __name__ == "__main__":
             # c1_embedding = f(t1)[c1_idx]
             # c2_embedding = f(t2)[c2_idx]
             # results.append((<embedding_cosine_similarity>, containment))
-    torch.save(results, os.path.join(save_directory_results, f"results.pt"))
+    torch.save(results, os.path.join(save_directory_results, f"{args.start}to{min(args.start + args.num_tables, data_loader.ground_truth.shape[0])}_results.pt"))

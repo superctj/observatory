@@ -18,6 +18,6 @@ python plot_coefficient.py  --save_dir="./p5/XS" \
 /nfs/turbo/coe-jag/zjsun/p5/testbedXS/roberta-base/results.pt \
 /nfs/turbo/coe-jag/zjsun/p5/testbedXS/t5-base/results.pt \
 /nfs/turbo/coe-jag/zjsun/p5/testbedXS/google/tapas-base/results.pt \
-/nfs/turbo/coe-jag/zjsun/p5/testbedXS/tabert/results.pt \
+/nfs/turbo/coe-jag/zjsun/p5/testbedXS/tabert/0to23940_results.pt \
 /nfs/turbo/coe-jag/zjsun/p5/testbedXS/doduo/results.pt \
 --labels BERT RoBERTa T5 TAPAS TaBERT  DODUO

@@ -119,7 +119,8 @@ if __name__ == "__main__":
                     f.write("In subj_col_as_context_embedding = get_average_embedding(two_col_table, 1, n,  get_embedding) ")
                     f.write(f"Error message: {e}\n\n")
                     f.write(f"\n\n")
-            continue
+            # continue
+            subj_col_as_context_embedding = get_average_embedding(two_col_table, 1, n,  get_embedding)
         
         
         try:

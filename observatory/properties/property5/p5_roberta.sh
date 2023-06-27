@@ -6,7 +6,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem-per-cpu=16gb
-#SBATCH --time=2-00:00
+#SBATCH --time=5-00:00
 #SBATCH --account=jag0
 #SBATCH --output=/home/%u/logs/%x-%j.log
 #SBATCH --array=1

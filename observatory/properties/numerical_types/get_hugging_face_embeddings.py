@@ -8,10 +8,9 @@ from truncate import truncate_index
 
 def table2colList(table):
     cols = []
-    for column in table.columns:
-        # Convert column values to strings and join them with spaces
-        string_values = ' '.join(table[column].astype(str).tolist())
-        col_str = f"{string_values}"
+    for i in range(len(table.columns)):
+        string_values = " ".join(table.iloc[:, i].astype(str).tolist())
+        col_str = f"{table.columns[i]} {string_values}"
         cols.append(col_str)
     return cols
 
