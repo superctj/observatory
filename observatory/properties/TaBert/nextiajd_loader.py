@@ -90,7 +90,7 @@ class NextiaJDCSVDataLoader():
                 na_values=self.metadata[table_name]["null_val"],
                 skipinitialspace=self.metadata[table_name]["ignore_trailing"],
                 quotechar="\"",
-                on_bad_lines="skip",
+                # on_bad_lines="skip",
                 lineterminator="\n",
                 **kwargs
             )
@@ -130,7 +130,7 @@ def split_table( table: pd.DataFrame,  n: int, m: int):
         yield [table.iloc[j:j+m] for j in range(i, min(i+m*n, total_rows), m)]
         
 def get_average_embedding(table, index, n,  get_embedding):
-        m = min(100//len(table.columns.tolist()), 3)
+        m = max(min(100//len(table.columns.tolist()), 3), 1)
         sum_embeddings = None
         num_embeddings = 0
         chunks_generator = split_table(table, n=n, m=m)
@@ -169,6 +169,7 @@ if __name__ == "__main__":
         os.makedirs(save_directory_results)
     results = []
     device = torch.device("cpu")
+    miss_count = 0
     with open(f'error_{model_name.replace("/", "")}.txt', 'w') as f:
         f.write("\n\n")
         f.write(str(model_name))
@@ -192,6 +193,10 @@ if __name__ == "__main__":
             c2_idx = list(t2.columns).index(c2_name)
             try:
                 c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding)
+            except IndexError:
+                miss_count +=1
+                print(f"mis rate: {miss_count/data_loader.ground_truth.shape[0]}")
+                continue
             except Exception as e:
                 with open(f'error_{model_name.replace("/", "")}.txt', 'a') as f:
                     f.write(f"i: {i}")
@@ -206,9 +211,14 @@ if __name__ == "__main__":
                 print("c1_idx: ", c1_idx)
                 print(t1.columns)
                 print(t1)
+                c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding)
                 continue
             try:
                 c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding)
+            except IndexError:
+                miss_count +=1
+                print(f"mis rate: {miss_count/data_loader.ground_truth.shape[0]}")
+                continue
             except Exception as e:
                 with open(f'error_{model_name.replace("/", "")}.txt', 'a') as f:
                     f.write(f"i: {i}")
@@ -223,6 +233,7 @@ if __name__ == "__main__":
                 print("c2_idx: ", c2_idx)
                 print(t2.columns)
                 print(t2)
+                c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding)
                 continue
             data_cosine_similarity = cosine_similarity(c1_avg_embedding.unsqueeze(0), c2_avg_embedding.unsqueeze(0))
             data_jaccard_similarity = jaccard_similarity(t1, t2, c1_name, c2_name)

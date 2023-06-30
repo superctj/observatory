@@ -102,6 +102,7 @@ if __name__ == "__main__":
                     f.write("In col_itself_embedding = get_average_embedding(numerical_col, 0, n,  get_embedding): ")
                     f.write(f"Error message: {e}\n\n")
                     f.write(f"\n\n")
+            col_itself_embedding = get_average_embedding(numerical_col, 0, n,  get_embedding)
             continue
         
         try:
@@ -121,7 +122,7 @@ if __name__ == "__main__":
                     f.write(f"\n\n")
             # continue
             subj_col_as_context_embedding = get_average_embedding(two_col_table, 1, n,  get_embedding)
-        
+            continue
         
         try:
             neighbor_col_as_context_embedding = get_average_embedding(three_col_table, 1, n,  get_embedding)
@@ -138,6 +139,7 @@ if __name__ == "__main__":
                     f.write("In neighbor_col_as_context_embedding = get_average_embedding(three_col_table, 1, n,  get_embedding) ")
                     f.write(f"Error message: {e}\n\n")
                     f.write(f"\n\n")
+            neighbor_col_as_context_embedding = get_average_embedding(three_col_table, 1, n,  get_embedding)
             continue
         
         
@@ -156,6 +158,7 @@ if __name__ == "__main__":
                     f.write("In entire_table_as_context_embedding = get_average_embedding(table, numerical_col_idx, n,  get_embedding) ")
                     f.write(f"Error message: {e}\n\n")
                     f.write(f"\n\n")
+            entire_table_as_context_embedding = get_average_embedding(table, numerical_col_idx, n,  get_embedding)
             continue
         
         col_itself.append((col_itself_embedding, row["label"]))

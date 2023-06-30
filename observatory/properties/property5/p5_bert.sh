@@ -17,6 +17,20 @@ python3 nextiajd_loader.py --testbed \
 "testbedS" --root_dir "/nfs/turbo/coe-jag/zjsun/data/nextiajd_datasets" \
 --model_name bert-base-uncased \
 --n 1000 --start \
-0 \
---num_tables 100000 \
+10000 \
+--num_tables 20000 \
+--value 1000
+python3 nextiajd_loader.py --testbed \
+"testbedS" --root_dir "/nfs/turbo/coe-jag/zjsun/data/nextiajd_datasets" \
+--model_name bert-base-uncased \
+--n 1000 --start \
+30000 \
+--num_tables 20000 \
+--value 1000
+python3 nextiajd_loader.py --testbed \
+"testbedS" --root_dir "/nfs/turbo/coe-jag/zjsun/data/nextiajd_datasets" \
+--model_name bert-base-uncased \
+--n 1000 --start \
+50000 \
+--num_tables 20000 \
 --value 1000

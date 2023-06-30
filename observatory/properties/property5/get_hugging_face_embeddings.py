@@ -1,4 +1,5 @@
 import os
+os.environ['CUDA_LAUNCH_BLOCKING'] = "1"
 import argparse
 import pandas as pd
 import torch
@@ -7,10 +8,9 @@ from truncate import truncate_index
 
 def table2colList(table):
     cols = []
-    for column in table.columns:
-        # Convert column values to strings and join them with spaces
-        string_values = ' '.join(table[column].astype(str).tolist())
-        col_str = f"{column} {string_values}"
+    for i in range(len(table.columns)):
+        string_values = " ".join(table.iloc[:, i].astype(str).tolist())
+        col_str = f"{table.columns[i]} {string_values}"
         cols.append(col_str)
     return cols
 
@@ -52,6 +52,7 @@ def get_tapas_column_embeddings(inputs, last_hidden_states):
     column_embeddings = []
 
     # loop over all column ids
+    # try:
     for column_id in range(1, max_column_id + 1):
         # find all indices where the token_type_ids is equal to the column id
         indices = torch.where(inputs['token_type_ids'][0][:, 1] == column_id)[0]
@@ -64,12 +65,17 @@ def get_tapas_column_embeddings(inputs, last_hidden_states):
         column_embedding = embeddings.mean(dim=0)
 
         column_embeddings.append(column_embedding)
+    # except Exception as e:
+    #         print("Error message:", e)
+    #         print(max_column_id)
+    #         assert False, "Stop as expected"
 
     return column_embeddings
 
 def get_hugging_face_embeddings(tables, model_name):
     tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
     print(device)
     model = load_transformers_model(model_name, device)
     model.eval()
@@ -88,13 +94,27 @@ def get_hugging_face_embeddings(tables, model_name):
     if model_name.startswith("google/tapas"): 
         
         for processed_table in truncated_tables:
+            processed_table.columns = processed_table.columns.astype(str)
             processed_table = processed_table.reset_index(drop=True)
             processed_table = processed_table.astype(str)
             inputs = tokenizer(table=processed_table,
-                            padding="max_length", return_tensors="pt")
+                            padding="max_length", return_tensors="pt", truncation=True)
             inputs = inputs.to(device)
-            with torch.no_grad():  # Turn off gradients to save memory
-                outputs = model(**inputs)
+            try:
+                with torch.no_grad():  # Turn off gradients to save memory
+                    outputs = model(**inputs)
+            except Exception as e:
+                print("Error message:", e)
+                print(inputs)
+                print()
+                for row in inputs['token_type_ids']:
+                    for cell in row:
+                        print(cell)
+                pd.set_option('display.max_columns', None)
+                pd.set_option('display.max_rows', None)
+                print()
+                print(processed_table)
+                assert False, "error in outputs = model(**inputs)"
             last_hidden_states = outputs.last_hidden_state
             embeddings = get_tapas_column_embeddings(inputs, last_hidden_states)
             all_embeddings.append(embeddings)

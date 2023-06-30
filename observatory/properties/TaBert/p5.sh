@@ -18,5 +18,5 @@ python3 nextiajd_loader.py --testbed \
 --model_name tabert \
 --n 1000 --start \
 0 \
---num_tables 100000 \
+--num_tables 50000 \
 --value 1000

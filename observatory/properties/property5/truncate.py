@@ -12,9 +12,9 @@ from     huggingface_models import (
 def truncate_index(table, tokenizer, max_length, model_name):
     def table2colList(table):
         cols = []
-        for column in table.columns:
-            string_values = " ".join(table[column].astype(str).tolist())
-            col_str = f"{column} {string_values}"
+        for i in range(len(table.columns)):
+            string_values = " ".join(table.iloc[:, i].astype(str).tolist())
+            col_str = f"{table.columns[i]} {string_values}"
             cols.append(col_str)
         return cols
 

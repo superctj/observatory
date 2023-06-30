@@ -130,7 +130,7 @@ def split_table( table: pd.DataFrame,  n: int, m: int):
         yield [table.iloc[j:j+m] for j in range(i, min(i+m*n, total_rows), m)]
         
 def get_average_embedding(table, index, n,  get_embedding):
-        m = min(100//len(table.columns.tolist()), 3)
+        m = max(min(100//len(table.columns.tolist()), 3), 1)
         sum_embeddings = None
         num_embeddings = 0
         chunks_generator = split_table(table, n=n, m=m)
@@ -206,6 +206,7 @@ if __name__ == "__main__":
                 print("c1_idx: ", c1_idx)
                 print(t1.columns)
                 print(t1)
+                c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding)
                 continue
             try:
                 c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding)
@@ -223,6 +224,7 @@ if __name__ == "__main__":
                 print("c2_idx: ", c2_idx)
                 print(t2.columns)
                 print(t2)
+                c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding)
                 continue
             data_cosine_similarity = cosine_similarity(c1_avg_embedding.unsqueeze(0), c2_avg_embedding.unsqueeze(0))
             data_jaccard_similarity = jaccard_similarity(t1, t2, c1_name, c2_name)

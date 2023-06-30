@@ -5,32 +5,64 @@ import torch
 from table_bert import Table, Column
 from table_bert import TableBertModel
 
+# def convert_to_table(df, tokenizer):
+
+#     header = []
+#     data = []
+
+#     for col in df.columns:
+#         try:
+#             # Remove commas and attempt to convert to float
+#             val = float(str(df[col].iloc[0]).replace(',', ''))
+#             # If conversion is successful, it's a real column
+#             col_type = 'real'
+#             sample_value = df[col][0]
+#         except (ValueError, AttributeError):
+#             # If conversion fails, it's a text column
+#             col_type = 'text'
+#             sample_value = df[col][0]
+
+#         # Create a Column object
+#         header.append(Column(col, col_type, sample_value=sample_value))
+        
+#         # Add the column data to 'data' list
+#     for row_index in range(len(df)):
+#         data.append(list(df.iloc[row_index]))
+#         # print()
+#         # print(col_type)
+#         # print(sample_value)
+#     # Create the Table
+#     table = Table(id='', header=header, data=data)
+
+#     # Tokenize
+#     table.tokenize(tokenizer)
+
+#     return table
 def convert_to_table(df, tokenizer):
 
     header = []
     data = []
 
-    for col in df.columns:
+    for col_index in range(df.shape[1]):
         try:
             # Remove commas and attempt to convert to float
-            val = float(str(df[col].iloc[0]).replace(',', ''))
+            val = float(str(df.iloc[0, col_index]).replace(',', ''))
             # If conversion is successful, it's a real column
             col_type = 'real'
-            sample_value = df[col][0]
+            sample_value = df.iloc[0, col_index]
         except (ValueError, AttributeError):
             # If conversion fails, it's a text column
             col_type = 'text'
-            sample_value = df[col][0]
+            sample_value = df.iloc[0, col_index]
 
         # Create a Column object
-        header.append(Column(col, col_type, sample_value=sample_value))
+        col_name = df.columns[col_index]
+        header.append(Column(col_name, col_type, sample_value=sample_value))
         
-        # Add the column data to 'data' list
+    # Add the column data to 'data' list
     for row_index in range(len(df)):
         data.append(list(df.iloc[row_index]))
-        # print()
-        # print(col_type)
-        # print(sample_value)
+
     # Create the Table
     table = Table(id='', header=header, data=data)
 
