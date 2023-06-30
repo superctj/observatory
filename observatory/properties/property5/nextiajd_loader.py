@@ -183,11 +183,22 @@ if __name__ == "__main__":
             c1_name, c2_name = row["att_name"], row["att_name_2"]
             containment = row["trueContainment"]
 
-            t1 = data_loader.read_table(t1_name)
-            t2 = data_loader.read_table(t2_name)
+            t1 = data_loader.read_table(t1_name,drop_nan= False)
+            t2 = data_loader.read_table(t2_name,drop_nan= False)
             if args.value is not None:
                 t1 = t1.head(args.value)
                 t2 = t2.head(args.value)
+            print("t1_name: ", t1_name)
+            print("c1_name: ", c1_name)
+            print("t2_name: ", t2_name)
+            print("c2_name: ", c2_name)
+
+            print("t1.columns: ")
+            for column in t1.columns:
+                print(column)
+            print("t2.columns: ")
+            for column in t2.columns:
+                print(column)
             c1_idx = list(t1.columns).index(c1_name)
             c2_idx = list(t2.columns).index(c2_name)
             try:

@@ -168,7 +168,7 @@ def get_hugging_face_embeddings(tables, model_name):
                     cell_embeddings[current_cell[0], current_cell[1]] = avg_embedding.detach().cpu()
 
                     # Reset counters for the next cell
-                    current_cell = (row, col)
+                    current_cell = (row, col)  
                     sum_embeddings.zero_()
                     token_count = 0
 
