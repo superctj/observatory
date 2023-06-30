@@ -19,7 +19,9 @@ def compute_purity_score(y_true, y_pred):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="")
     parser.add_argument('--embedding_file')
+    parser.add_argument('--label')
     args = parser.parse_args()
+    
 
     embeddings = torch.load(args.embedding_file)
     X = [item[0] for item in embeddings] # column embedding
@@ -27,6 +29,7 @@ if __name__ == "__main__":
 
     kmeans = KMeans(n_clusters=len(LABEL_ID_MAP), random_state=12345, n_init="auto").fit(X)
     y_pred = kmeans.labels_
-
+    print("Scores for: ", args.label )
     purity_score = compute_purity_score(y, y_pred)
+    print(purity_score)
     
