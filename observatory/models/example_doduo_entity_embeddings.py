@@ -5,7 +5,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from doduo.doduo import Doduo
+from doduo_entity_embeddings import Doduo
 
 
 def read_jsonl(file_path):

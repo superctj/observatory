@@ -11,25 +11,9 @@ import torch
 from torch.utils.data import DataLoader, Dataset
 
 import transformers
-from transformers import BertTokenizer, BertForSequenceClassification, BertConfig
+from transformers import BertTokenizer, BertConfig
 
-from doduo.dataset import collate_fn
 from doduo.model import BertForMultiOutputClassification, BertMultiPairPooler
-
-sato_coltypes = [
-    "address", "affiliate", "affiliation", "age", "album", "area", "artist",
-    "birthDate", "birthPlace", "brand", "capacity", "category", "city",
-    "class", "classification", "club", "code", "collection", "command",
-    "company", "component", "continent", "country", "county", "creator",
-    "credit", "currency", "day", "depth", "description", "director",
-    "duration", "education", "elevation", "family", "fileSize", "format",
-    "gender", "genre", "grades", "isbn", "industry", "jockey", "language",
-    "location", "manufacturer", "name", "nationality", "notes", "operator",
-    "order", "organisation", "origin", "owner", "person", "plays", "position",
-    "product", "publisher", "range", "rank", "ranking", "region", "religion",
-    "requirement", "result", "sales", "service", "sex", "species", "state",
-    "status", "symbol", "team", "teamName", "type", "weight", "year"
-]
 
 
 class AnnotatedDataFrame:
@@ -112,8 +96,8 @@ class SingleTableCellEmbeddingDataset(Dataset):
         if num_tokens > 512:
             raise ValueError("Table has more than 512 tokens!")
     
-        print("=" * 50)
-        print(cls_token_positions)
+        # print("=" * 50)
+        # print(cls_token_positions)
 
         data_list = []
         for i in range(len(df.columns)):
