@@ -27,12 +27,13 @@ class SOTABDataLoader():
 if __name__ == "__main__":
     root_dir = "/ssd/congtj/observatory/sotab_numerical_data_type_datasets"
     dataset_dir = os.path.join(root_dir, "tables")
-    metadata_path = os.path.join(root_dir, "metadata.csv")
+    metadata_path = os.path.join(root_dir, "metadata.csv") # "nontext_types_10-classes_metadata.csv", "text_types_10-classes_metadata.csv" 
 
     data_loader = SOTABDataLoader(dataset_dir, metadata_path)
     for _, row in data_loader.metadata.iterrows():
         table_name = row["table_name"]
         table = data_loader.read_table(table_name)
+        print(table.columns)
         
         """
         # Only consider numerical column alone for representation inference
