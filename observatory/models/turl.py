@@ -22,7 +22,7 @@ class TURL(nn.Module):
         self.model = load_turl_model(config, ckpt_path)
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
 
-    def get_column_embeddings(self, input_tok, input_tok_type, input_tok_pos, input_tok_mask, input_ent_text, input_ent_text_length, input_ent, input_ent_type, input_ent_mask):
+    def get_column_embeddings(self, input_tok, input_tok_type, input_tok_pos, input_tok_mask, input_ent_text, input_ent_text_length, input_ent, input_ent_type, input_ent_mask, column_entity_mask, column_header_mask):
         tok_outputs, ent_outputs, _ = self.model.table(input_tok, input_tok_type, input_tok_pos, input_tok_mask, input_ent_text, input_ent_text_length, None, input_ent, input_ent_type, input_ent_mask, None)
             
         tok_sequence_output = self.dropout(tok_outputs[0])
@@ -35,9 +35,20 @@ class TURL(nn.Module):
 
         col_embeddings = torch.cat([tok_col_output, ent_col_output], dim=-1)
         return col_embeddings
+    
+    def get_entity_embeddings(self, input_tok, input_tok_type, input_tok_pos, input_tok_mask, input_ent_text, input_ent_text_length, input_ent, input_ent_type, input_ent_mask):
+        tok_outputs, ent_outputs, _ = self.model.table(input_tok, input_tok_type, input_tok_pos, input_tok_mask, input_ent_text, input_ent_text_length, None, input_ent, input_ent_type, input_ent_mask, None)
+        # # print(type(tok_outputs))
+        # print(len(tok_outputs))
+        # print(tok_outputs[0].shape)
+        
+        # print(type(ent_outputs))
+        # print(len(ent_outputs))
+        # print(ent_outputs[0].shape)
+        return ent_outputs[0]
 
 
-if __name__ == "__main__":
+def get_column_embeddings_example():
     from observatory.datasets.turl_wiki_tables import TurlWikiTableDataset
     from observatory.models.TURL.data_loader.CT_Wiki_data_loaders import CTLoader
     from observatory.models.TURL.model.transformers import BertTokenizer
@@ -53,8 +64,8 @@ if __name__ == "__main__":
     test_dataloader = CTLoader(test_dataset, batch_size=1, is_train=False)
 
     config = "/home/congtj/observatory/observatory/models/TURL/configs/table-base-config_v2.json"
-    ckpt_path = "/ssd/congtj/observatory/pytorch_model.bin"
-    device = torch.device("cuda:0")
+    ckpt_path = "/ssd/congtj/observatory/turl_models/pytorch_model.bin"
+    device = torch.device("cuda:1")
 
     model = TURL(config, ckpt_path)
     model.to(device)
@@ -77,11 +88,72 @@ if __name__ == "__main__":
         labels = labels.to(device)
         
         with torch.no_grad():
-            col_embeddings = model.get_column_embeddings(input_tok, input_tok_type, input_tok_pos, input_tok_mask, input_ent_text, input_ent_text_length, input_ent, input_ent_type, input_ent_mask)
+            col_embeddings = model.get_column_embeddings(input_tok, input_tok_type, input_tok_pos, input_tok_mask, input_ent_text, input_ent_text_length, input_ent, input_ent_type, input_ent_mask, column_entity_mask, column_header_mask)
 
             print("=" * 50)
             print("Number of columns: ", labels.shape)
             print("Column embeddings shape: ", col_embeddings.shape)
 
             break
-        
+
+
+def get_entity_embeddings_example():
+    from observatory.datasets.turl_wiki_tables import TurlWikiTableCellDataset, EntityEmbeddingLoader
+    from observatory.models.TURL.model.transformers import BertTokenizer
+    from observatory.models.TURL.utils.util import load_entity_vocab
+
+    data_dir = "/home/congtj/observatory/data"
+    min_ent_count = 2
+
+    entity_vocab = load_entity_vocab(data_dir, ignore_bad_title=True, min_ent_count=min_ent_count)
+    tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+
+    test_dataset = TurlWikiTableCellDataset(data_dir, entity_vocab, tokenizer, split="test", force_new=False)
+    test_dataloader = EntityEmbeddingLoader(test_dataset, batch_size=1, is_train=False)
+
+    config = "/home/congtj/observatory/observatory/models/TURL/configs/table-base-config_v2.json"
+    ckpt_path = "/ssd/congtj/observatory/turl_models/pytorch_model.bin"
+    device = torch.device("cuda:1")
+
+    model = TURL(config, ckpt_path)
+    model.to(device)
+
+    for batch in test_dataloader:
+        table_ids, entity_info, input_tok, input_tok_type, input_tok_pos, input_tok_mask, \
+            input_ent_text, input_ent_text_length, input_ent, input_ent_type, input_ent_mask, column_entity_mask, column_header_mask, labels_mask, labels = batch
+        print(table_ids)
+        print(input_tok.shape)
+        print(input_ent.shape)
+        print("-" * 50)
+        input_tok = input_tok.to(device)
+        input_tok_type = input_tok_type.to(device)
+        input_tok_pos = input_tok_pos.to(device)
+        input_tok_mask = input_tok_mask.to(device)
+        input_ent_text = input_ent_text.to(device)
+        input_ent_text_length = input_ent_text_length.to(device)
+        input_ent = input_ent.to(device)
+        input_ent_type = input_ent_type.to(device)
+        input_ent_mask = input_ent_mask.to(device)
+        column_entity_mask = column_entity_mask.to(device)
+        column_header_mask = column_header_mask.to(device)
+        labels_mask = labels_mask.to(device)
+        labels = labels.to(device)
+    
+        with torch.no_grad():
+            entity_embeddings = model.get_entity_embeddings(input_tok, input_tok_type, input_tok_pos, input_tok_mask, input_ent_text, input_ent_text_length, input_ent, input_ent_type, input_ent_mask)
+            # print(type(entity_info))
+            # print(len(entity_info[0]))
+            # print(entity_info)
+            # print(entity_embeddings.shape)
+            # print(entity_embeddings[0])
+
+            embedding_dict = {}
+            for i, ((r_idx, c_idx), entity_id, entity_text) in enumerate(entity_info):
+                embedding_dict[(r_idx, c_idx)] = (entity_embeddings[0][i+1], entity_id) # i+1 because the first embedding is for page entity
+
+            break
+
+
+if __name__ == "__main__":
+    # get_column_embeddings_example()
+    get_entity_embeddings_example()

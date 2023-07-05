@@ -7,7 +7,9 @@ from sklearn.cluster import KMeans
 from sklearn import metrics
 
 
-LABEL_ID_MAP = {"date": 0, "isbn": 1, "postalCode": 2, "price": 3, "weight": 4}
+NON_TEXT_TYPE_ID_MAP = {"numberOfPages": 0, "isbn": 1, "url": 2, "ratingValue": 3, "price": 4, "date": 5, "telephone": 6, "postalCode": 7, "faxNumber": 8, "weight": 9}
+
+TEXT_TYPE_ID_MAP = {"language": 0, "currency": 1, "organization": 2, "review": 3, "personName": 4, "musicAlbum": 5, "jobTitle": 6, "country": 7, "streetAddress": 8, "addressRegion": 9}
 
 
 def compute_purity_score(y_true, y_pred):
