@@ -1,7 +1,6 @@
 #!/bin/bash
-#SBATCH --job-name=p5_t5
-#SBATCH --partition=gpu
-#SBATCH --gres=gpu:1
+#SBATCH --job-name=p5_debug
+#SBATCH --partition=standard
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
@@ -23,14 +22,6 @@ do
   # calculate the current start number
   current_start=$((start + (i * 10000)))
 
-  python3 nextiajd_loader.py --testbed "testbedS" --root_dir "/nfs/turbo/coe-jag/zjsun/data/nextiajd_datasets" \
-  --model_name t5-base \
-  --n 1000 --start \
-  $current_start \
-  --num_tables 10000 \
-  --value 1000
-
   echo "Completed iteration $((i+1)) out of $n"
 done
-
 echo "All iterations completed"

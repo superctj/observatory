@@ -4,3 +4,5 @@ artifacts/*/*.pkl
 data/
 tmp
 observatory/properties/Turl/test_tables.jsonl
+observatory/properties/TaBert/TaBERT
+observatory/observatory/properties/Turl

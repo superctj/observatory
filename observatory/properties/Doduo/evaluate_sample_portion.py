@@ -10,7 +10,8 @@ import torch
 import numpy as np
 import multiprocessing
 from multiprocessing import Pool
-
+from huggingface_models import  load_transformers_model, load_transformers_tokenizer_and_max_length
+from truncate import truncate_index
 from torch.linalg import inv, norm
 
 from mcv import compute_mcv
@@ -108,6 +109,9 @@ def analyze_embeddings(all_shuffled_embeddings):
     avg_cosine_similarities = []
 
     mcvs = []
+    
+    if len(all_shuffled_embeddings)<24:
+        return [], [], None, None
 
     for i in range(len(all_shuffled_embeddings[0])):
 
@@ -291,14 +295,20 @@ if __name__ == "__main__":
 
             f"{args.read_directory}/{file}", keep_default_na=False)
         normal_tables.append(table)
-
+    model_name = 'bert-base-uncased'
+    tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
+    truncated_tables =[]
+    for table_index, table in enumerate(normal_tables):
+        max_rows_fit = truncate_index(table, tokenizer, max_length, model_name)
+        truncated_table = table.iloc[:max_rows_fit, :]
+        truncated_tables.append(truncated_table)
     model_name = args.model_name
     print()
 
     print("Evaluate  for: ", model_name)
     print()
 
-    process_and_save_embeddings(model_name, args, normal_tables)
+    process_and_save_embeddings(model_name, args, truncated_tables)
 
 
 # def process_and_save_embeddings(model_name, args, tables):

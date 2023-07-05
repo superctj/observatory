@@ -120,7 +120,7 @@ def generate_col_shuffle_embeddings(model, table, num_shuffles):
 
         for i, p in enumerate(perm):
 
-            ordered_embeddings[p] = embeddings[i]
+            ordered_embeddings[p] = embeddings[i]         
         all_shuffled_embeddings.append(ordered_embeddings)
 
         # Clear memory
@@ -128,7 +128,7 @@ def generate_col_shuffle_embeddings(model, table, num_shuffles):
 
         torch.cuda.empty_cache()
 
-    return all_shuffled_embeddings
+    return all_shuffled_embeddings, tables
 
 
 # from multiprocessing import Pool, cpu_count
@@ -152,7 +152,7 @@ def generate_col_shuffle_embeddings(model, table, num_shuffles):
 #     return all_shuffled_embeddings
 
 
-def analyze_embeddings(all_shuffled_embeddings):
+def analyze_embeddings(all_shuffled_embeddings,tables):
 
     avg_cosine_similarities = []
 
@@ -177,7 +177,22 @@ def analyze_embeddings(all_shuffled_embeddings):
             cosine_similarity = torch.dot(truncated_embedding, shuffled_embedding) / (
 
                 norm(truncated_embedding) * norm(shuffled_embedding))
+            if cosine_similarity.item() < 0.7:
+                with open('output.txt', 'a') as f:
+                    f.write(f"In cloumn {i}: \n")
+                    f.write(f"cosine_similarity: {cosine_similarity.item()}\n")
+                    f.write(f"\n\norginal table: \n\n")
 
+                    f.write(tables[0].to_string(index=False))
+                    f.write("\n\n The other table:\n\n\n")
+                    f.write(tables[j].to_string(index=False))
+                print(f"\n\nIn cloumn {i}: \n")
+                print(f"cosine_similarity: {cosine_similarity.item()}\n")
+                print(f"\n\norginal table: \n\n")
+                print(tables[0])
+                print("\n\n The other table:\n\n\n")
+                print(tables[j])
+                # assert False, f"cosine_similarity: {cosine_similarity.item()}\n"
             column_cosine_similarities.append(cosine_similarity.item())
 
         avg_cosine_similarity = torch.mean(
@@ -222,7 +237,7 @@ def process_table_wrapper(table_index, table, args, model_name, model, device):
 
         os.makedirs(save_directory_results)
 
-    all_shuffled_embeddings = generate_col_shuffle_embeddings(
+    all_shuffled_embeddings, tables = generate_col_shuffle_embeddings(
         model, table, args.num_shuffles)
 
     torch.save(all_shuffled_embeddings, os.path.join(
@@ -230,7 +245,7 @@ def process_table_wrapper(table_index, table, args, model_name, model, device):
         save_directory_embeddings, f"table_{table_index}_embeddings.pt"))
 
     avg_cosine_similarities, mcvs, table_avg_cosine_similarity, table_avg_mcv = analyze_embeddings(
-        all_shuffled_embeddings)
+        all_shuffled_embeddings,tables)
 
     results = {
 
@@ -312,7 +327,8 @@ if __name__ == "__main__":
 
                         default=0, help='num of start table')
     args = parser.parse_args()
-
+    pd.set_option('display.max_columns', None)  
+    pd.set_option('display.max_rows', None)
     table_files = [f for f in os.listdir(
 
         args.read_directory) if f.endswith('.csv')]
@@ -331,6 +347,8 @@ if __name__ == "__main__":
     model_name = args.model_name
     model_name = args.model_name
     print()
+    with open('output.txt', 'w') as f:
+            f.write(f"Evaluate  for: {model_name}\n")
 
     print("Evaluate  for: ", model_name)
     print()

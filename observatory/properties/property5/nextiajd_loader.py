@@ -4,9 +4,28 @@ import torch
 from get_hugging_face_embeddings import get_hugging_face_embeddings
 from typing import Dict, List
 from torch.nn.functional import cosine_similarity
+import functools
 
 import pandas as pd
+from collections import Counter
 
+def jaccard_similarity(df1, df2, col1, col2):
+    set1 = set(df1[col1])
+    set2 = set(df2[col2])
+    
+    intersection = len(set1.intersection(set2))
+    union = len(set1) + len(set2) - intersection
+    jaccard_sim = intersection / union if union != 0 else 0
+    return jaccard_sim
+
+def multiset_jaccard_similarity(df1, df2, col1, col2):
+    multiset1 = Counter(df1[col1])
+    multiset2 = Counter(df2[col2])
+    
+    minima = sum((multiset1 & multiset2).values())
+    maxima = sum((multiset1 | multiset2).values())
+    multiset_jaccard_sim = minima / maxima if maxima != 0 else 0
+    return multiset_jaccard_sim
 
 class NextiaJDCSVDataLoader():
     def __init__(self, dataset_dir: str, metadata_path: str, ground_truth_path: str):
@@ -37,7 +56,7 @@ class NextiaJDCSVDataLoader():
     def _read_ground_truth(self, ground_truth_path: str) -> pd.DataFrame:
         return pd.read_csv(ground_truth_path)
 
-    def read_table(self, table_name: str, drop_nan: bool = True, **kwargs) -> pd.DataFrame:
+    def read_table(self, table_name: str, drop_nan: bool = True, nrows=None, **kwargs) -> pd.DataFrame:
         file_path = os.path.join(self.dataset_dir, table_name)
         try:
             table = pd.read_csv(
@@ -49,6 +68,7 @@ class NextiaJDCSVDataLoader():
                 on_bad_lines="skip",
                 lineterminator="\n",
                 low_memory=False,
+                nrows=nrows,
                 **kwargs
             )
         except UnicodeDecodeError: # To open CSV files with UnicodeDecodeError
@@ -104,11 +124,26 @@ class NextiaJDCSVDataLoader():
             
         return queries
     
-    def split_table(self, table: pd.DataFrame, n: int, m: int):
-            total_rows = table.shape[0]
-            for i in range(0, total_rows, n*m):
-                yield [table.iloc[j:j+n] for j in range(i, min(i+n*m, total_rows), n)]
-
+def split_table( table: pd.DataFrame,  n: int, m: int):
+    # m = min(100//len(table.iloc[0]), 3)
+    total_rows = table.shape[0]
+    for i in range(0, total_rows, m*n):
+        yield [table.iloc[j:j+m] for j in range(i, min(i+m*n, total_rows), m)]
+        
+def get_average_embedding(table, index, n,  get_embedding):
+        m = max(min(100//len(table.columns.tolist()), 3), 1)
+        sum_embeddings = None
+        num_embeddings = 0
+        chunks_generator = split_table(table, n=n, m=m)
+        for tables in chunks_generator:
+            embeddings = get_embedding(tables)
+            if sum_embeddings is None:
+                sum_embeddings = torch.zeros(embeddings[0][index].size())
+            for embedding in embeddings:
+                sum_embeddings += embedding[index].to(device)
+                num_embeddings += 1
+        avg_embedding = sum_embeddings / num_embeddings
+        return avg_embedding
 if __name__ == "__main__":
     # testbed = "testbedXS"
     # root_dir = f"/ssd/congtj/observatory/nextiajd_datasets/"
@@ -116,13 +151,15 @@ if __name__ == "__main__":
     parser.add_argument('--testbed', type=str, required=True)
     parser.add_argument('--root_dir', type=str, required=True)
     parser.add_argument('--n', type=int, required=True)
-    parser.add_argument('--r', type=int, required=True)
     parser.add_argument('-m', '--model_name', type=str,  required=True, help='Name of the Hugging Face model to use')
-    
+    parser.add_argument('--start', type=int, required=True)
+    parser.add_argument('--num_tables', type=int, required=True)
+    parser.add_argument('--value', default=None, type=int, help='An optional max number of rows to read')
+
     args = parser.parse_args()
     model_name = args.model_name
+    get_embedding =  functools.partial(get_hugging_face_embeddings, model_name=model_name)
     n = args.n
-    r = args.r
     testbed = args.testbed
     root_dir =  os.path.join(args.root_dir, testbed)
     dataset_dir = os.path.join(root_dir, "datasets")
@@ -134,51 +171,90 @@ if __name__ == "__main__":
         os.makedirs(save_directory_results)
     results = []
     device = torch.device("cpu")
+    with open(f'error_{model_name.replace("/", "")}.txt', 'w') as f:
+        f.write("\n\n")
+        f.write(str(model_name))
+        f.write("\n")
     for i, row in data_loader.ground_truth.iterrows():
+        if i>= args.start + args.num_tables or i < args.start:
+            continue
         print(f"{i} / {data_loader.ground_truth.shape[0]}")
         if row["trueQuality"] > 0:
             t1_name, t2_name = row["ds_name"], row["ds_name_2"]
             c1_name, c2_name = row["att_name"], row["att_name_2"]
             containment = row["trueContainment"]
+            t1 = data_loader.read_table(t1_name,drop_nan = False , nrows = args.value)
+            t2 = data_loader.read_table(t2_name,drop_nan = False, nrows = args.value)
+            # print("t1_name: ", t1_name)
+            # print("c1_name: ", c1_name)
+            # print("t2_name: ", t2_name)
+            # print("c2_name: ", c2_name)
 
-            t1 = data_loader.read_table(t1_name)
-            t2 = data_loader.read_table(t2_name)
-
+            # print("t1.columns: ")
+            # for column in t1.columns:
+            #     print(column)
+            # print("t2.columns: ")
+            # for column in t2.columns:
+            #     print(column)
             c1_idx = list(t1.columns).index(c1_name)
             c2_idx = list(t2.columns).index(c2_name)
-            
-            c1_sum_embeddings = None
-            c1_num_embeddings = 0
-            c1_chunks_generator = data_loader.split_table(t1, n=n, m=r)
-            for tables in c1_chunks_generator:
-                embeddings = get_hugging_face_embeddings(tables, model_name)
-                if c1_sum_embeddings is None:
-                    c1_sum_embeddings = torch.zeros(embeddings[0][c1_idx].size())
-                for embedding in embeddings:
-                    c1_sum_embeddings += embedding[c1_idx].to(device)
-                    c1_num_embeddings += 1
-            c1_avg_embedding = c1_sum_embeddings / c1_num_embeddings
-
-            c2_sum_embeddings = None
-            c2_num_embeddings = 0
-            c2_chunks_generator = data_loader.split_table(t2, n=n, m=r)
-            for tables in c2_chunks_generator:
-                embeddings = get_hugging_face_embeddings(tables, model_name)
-                if c2_sum_embeddings is None:
-                    c2_sum_embeddings = torch.zeros(embeddings[0][c2_idx].size())
-                for embedding in embeddings:
-                    c2_sum_embeddings += embedding[c2_idx].to(device)
-                    c2_num_embeddings += 1
-            c2_avg_embedding = c2_sum_embeddings / c2_num_embeddings
-            
-            similarity = cosine_similarity(c1_avg_embedding.unsqueeze(0), c2_avg_embedding.unsqueeze(0))
+            try:
+                c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding)
+            except AssertionError:
+                continue
+            except Exception as e:
+                with open(f'error_{model_name.replace("/", "")}.txt', 'a') as f:
+                    f.write(f"i: {i}")
+                    f.write("In c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding): ")
+                    f.write(str(e))
+                    f.write("\n")
+                print(f"i: {i}")
+                print("In c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding): ")
+                print("Error message:", e)
+                pd.set_option('display.max_columns', None)
+                pd.set_option('display.max_rows', None)
+                print("c1_idx: ", c1_idx)
+                print(t1.columns)
+                print(t1)
+                # c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding)
+                continue
+            try:
+                c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding)
+            except AssertionError:
+                continue
+            except Exception as e:
+                with open(f'error_{model_name.replace("/", "")}.txt', 'a') as f:
+                    f.write(f"i: {i}")
+                    f.write("In c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding) ")
+                    f.write(str(e))
+                    f.write("\n")
+                print(f"i: {i}")
+                print("In c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding): ")
+                print("Error message:", e)
+                pd.set_option('display.max_columns', None)
+                pd.set_option('display.max_rows', None)
+                print("c2_idx: ", c2_idx)
+                print(t2.columns)
+                print(t2)
+                # c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding)
+                continue
+            data_cosine_similarity = cosine_similarity(c1_avg_embedding.unsqueeze(0), c2_avg_embedding.unsqueeze(0))
+            data_jaccard_similarity = jaccard_similarity(t1, t2, c1_name, c2_name)
+            data_multiset_jaccard_similarity = multiset_jaccard_similarity(t1, t2, c1_name, c2_name)
             print("containment: ", containment)
             print("trueQuality: ", row["trueQuality"])
-            print("Cosine Similarity: ", similarity.item())
-            results.append((containment, similarity.item()))
+            print("jaccard_similarity: ", data_jaccard_similarity)
+            print("multiset_jaccard_similarity: ", data_multiset_jaccard_similarity)
+            print("Cosine Similarity: ", data_cosine_similarity.item())
+            result = {}
+            result["containment"] = containment
+            result["cosine_similarity"] = data_cosine_similarity.item()
+            result["jaccard_similarity"] = data_jaccard_similarity
+            result["multiset_jaccard_similarity"] = data_multiset_jaccard_similarity
+            results.append(result)
     
             # pseudo code
             # c1_embedding = f(t1)[c1_idx]
             # c2_embedding = f(t2)[c2_idx]
             # results.append((<embedding_cosine_similarity>, containment))
-    torch.save(results, os.path.join(save_directory_results, f"results.pt"))
+    torch.save(results, os.path.join(save_directory_results, f"{args.start}to{min(args.start + args.num_tables, data_loader.ground_truth.shape[0])}_results.pt"))

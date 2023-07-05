@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=p5_tabert
+#SBATCH --job-name=p7_t5
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:1
 #SBATCH --nodes=1
@@ -12,11 +12,5 @@
 #SBATCH --array=1
 source ~/miniconda3/bin/activate
 conda init
-conda activate tabert
-python3 nextiajd_loader.py --testbed \
-"testbedS" --root_dir "/nfs/turbo/coe-jag/zjsun/data/nextiajd_datasets" \
---model_name tabert \
---n 1000 --start \
-0 \
---num_tables 50000 \
---value 1000
+conda activate tabeval
+python entity_stability.py -m t5-base --start 0
