@@ -13,24 +13,24 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-python3 nextiajd_loader.py --testbed \
-"testbedS" --root_dir "/nfs/turbo/coe-jag/zjsun/data/nextiajd_datasets" \
---model_name t5-base \
---n 1000 --start \
-10000 \
---num_tables 20000 \
---value 1000
-python3 nextiajd_loader.py --testbed \
-"testbedS" --root_dir "/nfs/turbo/coe-jag/zjsun/data/nextiajd_datasets" \
---model_name t5-base \
---n 1000 --start \
-30000 \
---num_tables 20000 \
---value 1000
-python3 nextiajd_loader.py --testbed \
-"testbedS" --root_dir "/nfs/turbo/coe-jag/zjsun/data/nextiajd_datasets" \
---model_name t5-base \
---n 1000 --start \
-50000 \
---num_tables 20000 \
---value 1000
+# specify number of iterations
+n=10
+# specify starting number
+start=30000
+# loop n times
+for (( i=0; i<$n; i++ ))
+do
+  # calculate the current start number
+  current_start=$((start + (i * 10000)))
+
+  python3 nextiajd_loader.py --testbed "testbedS" --root_dir "/nfs/turbo/coe-jag/zjsun/data/nextiajd_datasets" \
+  --model_name t5-base \
+  --n 1000 --start \
+  $current_start \
+  --num_tables 10000 \
+  --value 1000
+
+  echo "Completed iteration $((i+1)) out of $n"
+done
+
+echo "All iterations completed"

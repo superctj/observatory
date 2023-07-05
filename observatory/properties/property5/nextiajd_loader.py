@@ -56,7 +56,7 @@ class NextiaJDCSVDataLoader():
     def _read_ground_truth(self, ground_truth_path: str) -> pd.DataFrame:
         return pd.read_csv(ground_truth_path)
 
-    def read_table(self, table_name: str, drop_nan: bool = True, **kwargs) -> pd.DataFrame:
+    def read_table(self, table_name: str, drop_nan: bool = True, nrows=None, **kwargs) -> pd.DataFrame:
         file_path = os.path.join(self.dataset_dir, table_name)
         try:
             table = pd.read_csv(
@@ -68,6 +68,7 @@ class NextiaJDCSVDataLoader():
                 on_bad_lines="skip",
                 lineterminator="\n",
                 low_memory=False,
+                nrows=nrows,
                 **kwargs
             )
         except UnicodeDecodeError: # To open CSV files with UnicodeDecodeError
@@ -182,23 +183,19 @@ if __name__ == "__main__":
             t1_name, t2_name = row["ds_name"], row["ds_name_2"]
             c1_name, c2_name = row["att_name"], row["att_name_2"]
             containment = row["trueContainment"]
+            t1 = data_loader.read_table(t1_name,drop_nan = False , nrows = args.value)
+            t2 = data_loader.read_table(t2_name,drop_nan = False, nrows = args.value)
+            # print("t1_name: ", t1_name)
+            # print("c1_name: ", c1_name)
+            # print("t2_name: ", t2_name)
+            # print("c2_name: ", c2_name)
 
-            t1 = data_loader.read_table(t1_name,drop_nan= False)
-            t2 = data_loader.read_table(t2_name,drop_nan= False)
-            if args.value is not None:
-                t1 = t1.head(args.value)
-                t2 = t2.head(args.value)
-            print("t1_name: ", t1_name)
-            print("c1_name: ", c1_name)
-            print("t2_name: ", t2_name)
-            print("c2_name: ", c2_name)
-
-            print("t1.columns: ")
-            for column in t1.columns:
-                print(column)
-            print("t2.columns: ")
-            for column in t2.columns:
-                print(column)
+            # print("t1.columns: ")
+            # for column in t1.columns:
+            #     print(column)
+            # print("t2.columns: ")
+            # for column in t2.columns:
+            #     print(column)
             c1_idx = list(t1.columns).index(c1_name)
             c2_idx = list(t2.columns).index(c2_name)
             try:
@@ -219,7 +216,7 @@ if __name__ == "__main__":
                 print("c1_idx: ", c1_idx)
                 print(t1.columns)
                 print(t1)
-                c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding)
+                # c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding)
                 continue
             try:
                 c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding)
@@ -239,7 +236,7 @@ if __name__ == "__main__":
                 print("c2_idx: ", c2_idx)
                 print(t2.columns)
                 print(t2)
-                c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding)
+                # c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding)
                 continue
             data_cosine_similarity = cosine_similarity(c1_avg_embedding.unsqueeze(0), c2_avg_embedding.unsqueeze(0))
             data_jaccard_similarity = jaccard_similarity(t1, t2, c1_name, c2_name)

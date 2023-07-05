@@ -30,10 +30,10 @@ def truncate_index(table, tokenizer, max_length, model_name):
             
             for cell in col:
                 cell_tokens = tokenizer.tokenize(cell)
-                if len(current_tokens) + len(cell_tokens) > max_length:
+                for token in cell_tokens:
+                    current_tokens += [token]
+                if len(current_tokens) > max_length:
                     return False
-                else:
-                    current_tokens += cell_tokens
 
         if model_name.startswith("t5"):
             current_tokens += ["</s>"]
@@ -51,7 +51,7 @@ def truncate_index(table, tokenizer, max_length, model_name):
 
         while low < high:
             mid = (low + high + 1) // 2
-            sample_table = table[:mid]
+            sample_table = table.iloc[:mid, :]
             cols = table2colList(sample_table)
             if is_fit(cols, tokenizer, max_length, model_name):
                 low = mid

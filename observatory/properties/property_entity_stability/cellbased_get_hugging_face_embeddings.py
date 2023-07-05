@@ -83,7 +83,7 @@ def get_tapas_cell_embeddings(inputs, last_hidden_states):
     return cell_embeddings
 
 
-def get_hugging_face_embeddings(tables, model_name):
+def get_hugging_face_cell_embeddings(table, model_name):
     tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -91,17 +91,17 @@ def get_hugging_face_embeddings(tables, model_name):
     model = load_transformers_model(model_name, device)
     model.eval()
     padding_token = '<pad>' if model_name.startswith("t5") else '[PAD]'
-    truncated_tables =[]
-    for table_index, table in enumerate(tables):
-        max_rows_fit = truncate_index(table, tokenizer, max_length, model_name)
-        if max_rows_fit < 1:
-            assert False, "Headers too long!"
-        truncated_table = table.iloc[:max_rows_fit, :]
-        truncated_tables.append(truncated_table)
-    all_embeddings = []
+    # truncated_tables =[]
+    # for table_index, table in enumerate(tables):
+    max_rows_fit = truncate_index(table, tokenizer, max_length, model_name)
+    if max_rows_fit < 1:
+        assert False, "Headers too long!"
+    truncated_table = table.iloc[:max_rows_fit, :]
+    # all_embeddings = []
+    processed_table = truncated_table
     if model_name.startswith("google/tapas"): 
         
-        for processed_table in truncated_tables:
+        # for processed_table in truncated_tables:
             processed_table.columns = processed_table.columns.astype(str)
             processed_table = processed_table.reset_index(drop=True)
             processed_table = processed_table.astype(str)
@@ -125,17 +125,16 @@ def get_hugging_face_embeddings(tables, model_name):
                 assert False, "error in outputs = model(**inputs)"
             last_hidden_states = outputs.last_hidden_state
             cell_embeddings = get_tapas_cell_embeddings(inputs, last_hidden_states)
-            all_embeddings.append(cell_embeddings)
+            # all_embeddings.append(cell_embeddings)
 
             # Clear memory
             del inputs
             del outputs
             del last_hidden_states
-            del cell_embeddings
             torch.cuda.empty_cache()
     else:
         
-        for processed_table in truncated_tables:
+        # for processed_table in truncated_tables:
 
             col_list = table2colList(processed_table)
             processed_tokens = process_table(tokenizer, col_list, max_length, model.name_or_path)
@@ -155,7 +154,7 @@ def get_hugging_face_embeddings(tables, model_name):
             # Convert the 2D array of token positions to a 3D tensor
             max_rows = len(table)
             max_cols = len(table.columns)
-            cell_embeddings = torch.zeros(max_rows, max_cols, last_hidden_state.shape[2], device=device)
+            cell_embeddings = torch.zeros(max_rows + 1, max_cols, last_hidden_state.shape[2], device=device)
             sum_embeddings = torch.zeros(last_hidden_state.shape[2], device=last_hidden_state.device)
             token_count = 0
             current_cell = token_positions[0][:2]
@@ -178,8 +177,8 @@ def get_hugging_face_embeddings(tables, model_name):
                     token_count += 1
 
 
-            all_embeddings.append(cell_embeddings)
-    return all_embeddings
+            # all_embeddings.append(cell_embeddings)
+    return cell_embeddings
 
 
     
