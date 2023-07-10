@@ -36,17 +36,20 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--root_dir', type=str, required=True)
     parser.add_argument('--n', type=int, required=True)
+    parser.add_argument('--save_folder', type=str, default='p6')
+    parser.add_argument('--metadata_path', type=str, default='metadata.csv')
+
     # parser.add_argument('--r', type=int, required=True)
     parser.add_argument('-m', '--model_name', type=str,  required=True, help='Name of the Hugging Face model to use')
     args = parser.parse_args()
     model_name = args.model_name
-    save_directory_results  = os.path.join('/nfs/turbo/coe-jag/zjsun', 'p6', model_name)
+    save_directory_results  = os.path.join('/nfs/turbo/coe-jag/zjsun', args.save_folder , model_name)
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
     n = args.n
     root_dir = args.root_dir
     dataset_dir = os.path.join(root_dir, "tables")
-    metadata_path = os.path.join(root_dir, "metadata.csv")
+    metadata_path = os.path.join(root_dir, args.metadata_path)
 
     data_loader = SOTABDataLoader(dataset_dir, metadata_path)    
     get_embedding =  functools.partial(get_hugging_face_embeddings, model_name=model_name)

@@ -13,5 +13,7 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-python3 numerical_types.py  --root_dir "/home/zjsun/data/sotab_numerical_data_type_datasets/sotab_numerical_data_type_datasets" \
---model_name roberta-base --n 1000 
+python3 numerical_types.py  --root_dir /nfs/turbo/coe-jag/zjsun/data/sotab_data_type_datasets/sotab_data_type_datasets \
+--model_name roberta-base --n 1000 --save_folder p6_non_text --metadata_path nontext_types_10-classes_metadata.csv
+python3 numerical_types.py  --root_dir /nfs/turbo/coe-jag/zjsun/data/sotab_data_type_datasets/sotab_data_type_datasets \
+--model_name roberta-base --n 1000 --save_folder p6_text --metadata_path text_types_10-classes_metadata.csv
