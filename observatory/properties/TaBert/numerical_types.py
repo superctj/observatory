@@ -104,6 +104,7 @@ if __name__ == "__main__":
                     f.write("In col_itself_embedding = get_average_embedding(numerical_col, 0, n,  get_embedding): ")
                     f.write(f"Error message: {e}\n\n")
                     f.write(f"\n\n")
+            col_itself_embedding = get_average_embedding(numerical_col, 0, n,  get_embedding)
             # continue
         
         try:

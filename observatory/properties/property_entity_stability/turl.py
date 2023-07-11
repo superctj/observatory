@@ -109,7 +109,8 @@ def get_entity_embeddings_example():
     tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
 
     test_dataset = TurlWikiTableCellDataset(data_dir, entity_vocab, tokenizer, split="test", force_new=False)
-    test_dataloader = EntityEmbeddingLoader(test_dataset, batch_size=1, is_train=False)
+    line_exist = test_dataset.line_exist
+    test_dataloader = EntityEmbeddingLoader(test_dataset, batch_size=1, is_train=False, shuffle=False)
 
     config = "/home/zjsun/Turl/table-base-config_v2.json"
     ckpt_path = "/home/zjsun/Turl/pytorch_model.bin"
@@ -121,6 +122,8 @@ def get_entity_embeddings_example():
     count = 0
     for batch in test_dataloader:
         count += 1
+        while not line_exist[count]:
+            count +=1
         table_ids, entity_info, input_tok, input_tok_type, input_tok_pos, input_tok_mask, \
             input_ent_text, input_ent_text_length, input_ent, input_ent_type, input_ent_mask, column_entity_mask, column_header_mask, labels_mask, labels = batch
         print(table_ids)
@@ -144,16 +147,17 @@ def get_entity_embeddings_example():
         with torch.no_grad():
             try:
                 entity_embeddings = model.get_entity_embeddings(input_tok, input_tok_type, input_tok_pos, input_tok_mask, input_ent_text, input_ent_text_length, input_ent, input_ent_type, input_ent_mask)
-            # print(type(entity_info))
-            # print(len(entity_info[0]))
-            # print(entity_info)
-            # print(entity_embeddings.shape)
-            # print(entity_embeddings[0])
+                # print(type(entity_info))
+                # print(len(entity_info[0]))
+                # print(entity_info)
+                # print(entity_embeddings.shape)
+                # print(entity_embeddings[0])
+                # break
 
                 embedding_dict = {}
                 for i, ([r_idx, c_idx], (entity_id, entity_text)) in enumerate(entity_info[0]):
                     embedding_dict[(r_idx, c_idx)] = (entity_embeddings[0][i+1], entity_id) # i+1 because the first embedding is for page entity
-                all_entity_embeddings.append((count, entity_embeddings))
+                all_entity_embeddings.append((count, embedding_dict))
 
             except Exception as e:
                 print(e)
