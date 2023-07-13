@@ -8,6 +8,8 @@ import functools
 import torch
 from typing import Dict, List
 from cellbased_get_hugging_face_embeddings import get_hugging_face_cell_embeddings
+from huggingface_models import  load_transformers_model, load_transformers_tokenizer_and_max_length
+
 from doduo_entity_embeddings import Doduo
 
 import pandas as pd
@@ -60,6 +62,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-m', '--model_name', type=str,  required=True, help='Name of the Hugging Face model to use')
     parser.add_argument('-r', '--root_dir', type=str,  required=True, help='Root directory')
+    parser.add_argument( '--mode', type=str,  default="Both", help='Root directory')
 
     args = parser.parse_args()
     root_dir = args.root_dir 
@@ -80,124 +83,230 @@ if __name__ == "__main__":
     # if not os.path.exists(save_directory_pairs):
     #     os.makedirs(save_directory_pairs)
     if model_name.startswith("bert") or model_name.startswith("roberta") or model_name.startswith("google/tapas") or model_name.startswith("t5"):
-            get_embedding =  functools.partial(get_hugging_face_cell_embeddings, model_name=model_name)
+        tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        print(device)
+        model = load_transformers_model(model_name, device)
+        model.eval()
+        get_embedding =  functools.partial(get_hugging_face_cell_embeddings, model_name=model_name, model = model, tokenizer = tokenizer, max_length = max_length, device = device)
     elif model_name.startswith("doduo"):
         model_args = argparse.Namespace
         model_args.model = "wikitable"
         doduo = Doduo(model_args, basedir="/home/zjsun/DuDuo/doduo")
         get_embedding =  doduo.get_entity_embeddings
     
-    fd_metadata = data_loader.get_fd_metadata()
-    list_pairs_norms_dict = []
-    for _, row in fd_metadata.iterrows():
-        table_name = row["table_name"]
-        determinant = row["determinant"]
-        dependent = row["dependent"]
+    
+    if args.mode == "Both" or args.mode == "FD":
+    
+        fd_metadata = data_loader.get_fd_metadata()
+        list_pairs_norms_dict = []
+        for _, row in fd_metadata.iterrows():
+            table_name = row["table_name"]
+            determinant = row["determinant"]
+            dependent = row["dependent"]
 
-        table = data_loader.read_table(table_name)
-        determinant_index = list(table.columns).index(determinant)
-        dependent_index = list(table.columns).index(dependent)
-        pairs_dict = find_groups(table, determinant, dependent)
-        norms_dict = {}
-        if model_name.startswith("doduo"):
-            tmp_pairs = []
-            for pair, list_row_index in pairs_dict.items():
-                for row_index in list_row_index:
-                    tmp_pairs.append([[row_index, determinant_index], ((pair, "determinant"), "")])
-                    tmp_pairs.append([[row_index, dependent_index], ((pair,"dependent"), "")])          
-            try:
-                entity_embeddings = get_embedding(table, tmp_pairs)
-            except ValueError as e:
-                print(e)
-                continue
-            
-            for pair, list_row_index in pairs_dict.items():
-                l2_norms = []
-                for row_index in list_row_index:
-                    try:
-                        determinant_embedding, _ = entity_embeddings[(row_index, determinant_index)]
-                        dependent_embedding, _ = entity_embeddings[(row_index, dependent_index)]
-                        l2_norm = torch.norm(determinant_embedding - dependent_embedding, p=2)
-                        l2_norms.append(l2_norm.item())  # Convert the torch tensor to a Python float
-                    except (KeyError, AssertionError) as e:
-                        print(e)
-                        continue
-                norms_dict[pair] = l2_norms            
-        else:
-            cell_embeddings = get_embedding(table)
-            for pair, list_row_index in pairs_dict.items():
-                l2_norms = []
-                for row_index in list_row_index:
-                    try:
-                        determinant_embedding = cell_embeddings[row_index+1][determinant_index]
-                        dependent_embedding = cell_embeddings[row_index+1][dependent_index]
-                        l2_norm = torch.norm(determinant_embedding - dependent_embedding, p=2)
-                        l2_norms.append(l2_norm.item())  # Convert the torch tensor to a Python float
-                    except IndexError:
-                        continue
-                norms_dict[pair] = l2_norms
-                
-        list_pairs_norms_dict.append(norms_dict)
-        # print(table.head())
-        # # infer cell embeddings in determinant column and dependent column
-        # break
-    torch.save(list_pairs_norms_dict, os.path.join(save_directory,  f"list_pairs_norms_dict.pt"))
+            table = data_loader.read_table(table_name)
+            determinant_index = list(table.columns).index(determinant)
+            dependent_index = list(table.columns).index(dependent)
+            pairs_dict = find_groups(table, determinant, dependent)
+            norms_dict = {}
+            if model_name.startswith("doduo"):
+                for pair, list_row_index in pairs_dict.items():
+                    l2_norms = []
+                    for row_index in list_row_index:
+                        # Start with a range of two rows above and below
+                        for delta in [2, 1, 0]:
+                            try:
+                                # Create a smaller table based on the current row index and delta
+                                min_index = max(0, row_index - delta)
+                                max_index = min(len(table), row_index + delta + 1)
+                                part_table = table.iloc[min_index:max_index]
 
+                                # Adjust the index for the cell_embeddings, considering the boundaries
+                                adjusted_index = min(delta, row_index - min_index)
 
-    non_fd_metadata = data_loader.get_non_fd_metadata()
-    list_non_pairs_norms_dict = []
-    for _, row in non_fd_metadata.iterrows():
-        table_name = row["table_name"]
-        col1 = row["column_1"]
-        col2 = row["column_2"]
+                                tmp_pairs = []
+                                tmp_pairs.append([[adjusted_index, determinant_index], ((pair, "determinant"), "")])
+                                tmp_pairs.append([[adjusted_index, dependent_index], ((pair, "dependent"), "")])
 
-        table = data_loader.read_table(table_name)
-        col1_index = list(table.columns).index(col1)
-        col2_index = list(table.columns).index(col2)
-        elements_dict = table.reset_index().groupby(col1)['index'].apply(list).to_dict()
+                                # Get the entity_embeddings of the part table
+                                try:
+                                    entity_embeddings = get_embedding(part_table, tmp_pairs)
+                                except ValueError as e:
+                                    print(e)
+                                    continue
 
-        norms_dict = {}
+                                # Get the determinant_embedding and dependent_embedding
+                                determinant_embedding, _ = entity_embeddings[(adjusted_index, determinant_index)]
+                                dependent_embedding, _ = entity_embeddings[(adjusted_index, dependent_index)]
+                                
+                                # If either the determinant_embedding or dependent_embedding is 0, continue to next delta
+                                if (torch.norm(determinant_embedding, p=2) == 0 or torch.norm(dependent_embedding, p=2) == 0):
+                                    continue
 
-        if model_name.startswith("doduo"):
-            tmp_pairs = []
-            for element, list_row_index in elements_dict.items():
-                for row_index in list_row_index:
-                    tmp_pairs.append([[row_index, col1_index], ((element, "col1"), "")])
-                    tmp_pairs.append([[row_index, col2_index], ((element, "col2"), "")])          
-            try:
-                entity_embeddings = get_embedding(table, tmp_pairs)
-            except ValueError as e:
-                print(e)
-                continue
+                                # Calculate the L2 norm and add it to the list
+                                l2_norm = torch.norm(determinant_embedding - dependent_embedding, p=2)
+                                l2_norms.append(l2_norm.item())  # Convert the torch tensor to a Python float
 
-            for element, list_row_index in elements_dict.items():
-                l2_norms = []
-                for row_index in list_row_index:
+                                # Break the loop once we get a valid pair of embeddings
+                                break
+                            except (KeyError, IndexError, AssertionError) as e:
+                                print(e)
+                                continue
 
-                    try:
-                        col1_embedding, _ = entity_embeddings[(row_index, col1_index)]
-                        col2_embedding, _ = entity_embeddings[(row_index, col2_index)]
-                        l2_norm = torch.norm(col1_embedding - col2_embedding, p=2)
-                        l2_norms.append(l2_norm.item())  # Convert the torch tensor to a Python float
-                    except (KeyError, AssertionError) as e:
-                        print(e)
-                        continue
-                norms_dict[element] = l2_norms  
-        else:
-            cell_embeddings = get_embedding(table)
-            for element, list_row_index in elements_dict.items():
-                l2_norms = []
-                for row_index in list_row_index:
-                    try:
-                        col1_embedding = cell_embeddings[row_index+1][col1_index]
-                        col2_embedding = cell_embeddings[row_index+1][col2_index]
-                        l2_norm = torch.norm(col1_embedding - col2_embedding, p=2)
-                        l2_norms.append(l2_norm.item())  # Convert the torch tensor to a Python float
-                    except IndexError:
-                        continue
-                norms_dict[element] = l2_norms
-        list_non_pairs_norms_dict.append(norms_dict)
+                        if not l2_norms:  # If l2_norms is still empty after the loop, continue to the next row
+                            continue
+                                
+                    norms_dict[pair] = l2_norms 
+                        
+            else:
+                for pair, list_row_index in pairs_dict.items():
+                    l2_norms = []
+                    for row_index in list_row_index:
+                        # Start with a range of two rows above and below
+                        for delta in [2, 1, 0]:
+                            try:
+                                # Create a smaller table based on the current row index and delta
+                                min_index = max(0, row_index - delta)
+                                max_index = min(len(table), row_index + delta + 1)
+                                part_table = table.iloc[min_index:max_index]
+                                
+                                # Get the cell embeddings of the part table
+                                cell_embeddings = get_embedding(part_table)
+                                # Adjust the index for the cell_embeddings, considering the boundaries
+                                adjusted_index = min(delta, row_index - min_index) + 1   
+                                # Get the determinant_embedding and dependent_embedding
+                                determinant_embedding = cell_embeddings[adjusted_index][determinant_index]
+                                dependent_embedding = cell_embeddings[adjusted_index][dependent_index]
+                                
+                                # If either the determinant_embedding or dependent_embedding is 0, continue to next delta
+                                if (torch.norm(determinant_embedding, p=2) == 0 or torch.norm(dependent_embedding, p=2) == 0):
+                                    continue
+                                
+                                # Calculate the L2 norm and add it to the list
+                                l2_norm = torch.norm(determinant_embedding - dependent_embedding, p=2)
+                                l2_norms.append(l2_norm.item())  # Convert the torch tensor to a Python float
+                                
+                                # Break the loop once we get a valid pair of embeddings
+                                break
+                            except (IndexError, AssertionError):
+                                continue
+                                
+                        if not l2_norms:  # If l2_norms is still empty after the loop, continue to the next row
+                            continue
+                                
+                    norms_dict[pair] = l2_norms
 
-    torch.save(list_non_pairs_norms_dict, os.path.join(save_directory,  f"list_non_pairs_norms_dict.pt"))
+                    
+            list_pairs_norms_dict.append(norms_dict)
+            # print(table.head())
+            # # infer cell embeddings in determinant column and dependent column
+            # break
+        torch.save(list_pairs_norms_dict, os.path.join(save_directory,  f"list_pairs_norms_dict.pt"))
+
+    if args.mode == "Both" or args.mode == "Non_FD":
+        non_fd_metadata = data_loader.get_non_fd_metadata()
+        list_non_pairs_norms_dict = []
+        for _, row in non_fd_metadata.iterrows():
+            table_name = row["table_name"]
+            col1 = row["column_1"]
+            col2 = row["column_2"]
+
+            table = data_loader.read_table(table_name)
+            col1_index = list(table.columns).index(col1)
+            col2_index = list(table.columns).index(col2)
+            elements_dict = table.reset_index().groupby(col1)['index'].apply(list).to_dict()
+
+            norms_dict = {}
+
+            if model_name.startswith("doduo"):
+                for element, list_row_index in elements_dict.items():
+                    l2_norms = []
+                    for row_index in list_row_index:
+                        # Start with a range of two rows above and below
+                        for delta in [2, 1, 0]:
+                            try:
+                                # Create a smaller table based on the current row index and delta
+                                min_index = max(0, row_index - delta)
+                                max_index = min(len(table), row_index + delta + 1)
+                                part_table = table.iloc[min_index:max_index]
+
+                                # Adjust the index for the cell_embeddings, considering the boundaries
+                                adjusted_index = min(delta, row_index - min_index)
+
+                                tmp_pairs = []
+                                tmp_pairs.append([[adjusted_index, col1_index], ((element, "col1"), "")])
+                                tmp_pairs.append([[adjusted_index, col2_index], ((element, "col2"), "")])
+
+                                # Get the entity_embeddings of the part table
+                                try:
+                                    entity_embeddings = get_embedding(part_table, tmp_pairs)
+                                except ValueError as e:
+                                    print(e)
+                                    continue
+
+                                # Get the col1_embedding and col2_embedding
+                                col1_embedding, _ = entity_embeddings[(adjusted_index, col1_index)]
+                                col2_embedding, _ = entity_embeddings[(adjusted_index, col2_index)]
+
+                                # If either the col1_embedding or col2_embedding is 0, continue to next delta
+                                if (torch.norm(col1_embedding, p=2) == 0 or torch.norm(col2_embedding, p=2) == 0):
+                                    continue
+
+                                # Calculate the L2 norm and add it to the list
+                                l2_norm = torch.norm(col1_embedding - col2_embedding, p=2)
+                                l2_norms.append(l2_norm.item())  # Convert the torch tensor to a Python float
+
+                                # Break the loop once we get a valid pair of embeddings
+                                break
+                            except (KeyError, IndexError, AssertionError) as e:
+                                print(e)
+                                continue
+
+                        if not l2_norms:  # If l2_norms is still empty after the loop, continue to the next row
+                            continue
+                                
+                    norms_dict[element] = l2_norms 
+  
+            else:
+                for element, list_row_index in elements_dict.items():
+                    l2_norms = []
+                    for row_index in list_row_index:
+                        # Start with a range of two rows above and below
+                        for delta in [2, 1, 0]:
+                            try:
+                                # Create a smaller table based on the current row index and delta
+                                min_index = max(0, row_index - delta)
+                                max_index = min(len(table), row_index + delta + 1)
+                                part_table = table.iloc[min_index:max_index]
+                                cell_embeddings = get_embedding(part_table)
+                                
+                                # Adjust the index for the cell_embeddings, considering the boundaries
+                                adjusted_index = min(delta, row_index - min_index) + 1
+
+                                # Get the col1_embedding and col2_embedding
+                                col1_embedding = cell_embeddings[adjusted_index][col1_index]
+                                col2_embedding = cell_embeddings[adjusted_index][col2_index]
+
+                                # If either the col1_embedding or col2_embedding is 0, continue to next delta
+                                if (torch.norm(col1_embedding, p=2) == 0 or torch.norm(col2_embedding, p=2) == 0):
+                                    continue
+
+                                # Calculate the L2 norm and add it to the list
+                                l2_norm = torch.norm(col1_embedding - col2_embedding, p=2)
+                                l2_norms.append(l2_norm.item())  # Convert the torch tensor to a Python float
+
+                                # Break the loop once we get a valid pair of embeddings
+                                break
+                            except (IndexError, AssertionError):
+                                continue
+
+                        if not l2_norms:  # If l2_norms is still empty after the loop, continue to the next row
+                            continue
+
+                    norms_dict[element] = l2_norms
+                list_non_pairs_norms_dict.append(norms_dict)
+
+        torch.save(list_non_pairs_norms_dict, os.path.join(save_directory,  f"list_non_pairs_norms_dict.pt"))
 
     

@@ -44,8 +44,9 @@ def multiset_jaccard_similarity(list1, list2):
     counter2 = Counter(list2)
     overlap = list((counter1 & counter2).elements())
     union = list((counter1 | counter2).elements())
-    return len(overlap) / (len(union) + len(overlap))
+    return 2 * len(overlap) / (len(union) + len(overlap))
 
+import sys
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -53,6 +54,8 @@ if __name__ == "__main__":
     parser.add_argument("--labels", type=str, nargs='+', help="Corresponding labels")
     parser.add_argument("--save_dir", type=str, help="Directory to save the figures")
     parser.add_argument("--K_values", nargs='+', type=int, help="List of K values for top-K similar cells")
+    parser.add_argument("--if_only_plot", type=str, default= "False",  help="Whether only do the plots")
+    parser.add_argument("--if_double_entity", type=str, default= "False",  help="Whether fix the entity similarity")
 
     args = parser.parse_args()
     directories = args.directories  # List of directories
@@ -62,7 +65,32 @@ if __name__ == "__main__":
         os.makedirs(save_directory)
     labels = args.labels  # Corresponding labels
     K_values = args.K_values  # List of K values
+    if args.if_only_plot == "True":
+        for K in K_values:
+            with open(os.path.join(save_directory, f"overlaps_dict_K{K}.pkl"), "rb") as f:
+                overlaps_dict = pickle.load(f)
+            with open(os.path.join(save_directory, f"entity_similarity_dict_K{K}.pkl"), "rb") as f:
+                entity_similarity_dict = pickle.load(f)
+            if args.if_double_entity == "True":
+                new_entity_similarity_dict = {k: v * 2.0 for k, v in entity_similarity_dict.items()}
+                entity_similarity_dict = new_entity_similarity_dict
+                with open(os.path.join(save_directory, f"entity_similarity_dict_K{K}.pkl"), "wb") as f:
+                    pickle.dump(entity_similarity_dict, f)
 
+
+            position_overlaps = np.mean(list(overlaps_dict.values()), axis=0) 
+            entity_similarity = np.mean(list(entity_similarity_dict.values()), axis=0) 
+            # 4. Plot heatmaps
+            plt.figure(figsize=(10, 10))
+            sns.heatmap(position_overlaps, annot=True, fmt=".2f", cmap='YlGnBu', xticklabels=labels, yticklabels=labels)
+            plt.title(f'Overlap for K={K}')
+            plt.savefig(os.path.join(save_directory, f'position_heatmap_K{K}.png'))
+
+            plt.figure(figsize=(10, 10))
+            sns.heatmap(entity_similarity, annot=True, fmt=".2f", cmap='YlGnBu', xticklabels=labels, yticklabels=labels)
+            plt.title(f'Entity Overlap for K={K}')
+            plt.savefig(os.path.join(save_directory, f'entity_heatmap_K{K}.png'))
+        sys.exit()
     # 1. Load all embeddings and entity ids
     all_data = [load_embeddings_and_ids_from_directories(dir) for dir in directories]
     all_embeddings = [data[0] for data in all_data]

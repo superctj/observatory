@@ -13,4 +13,6 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-python spider_fd_loader.py -m roberta-base --root_dir /nfs/turbo/coe-jag/zjsun/data/spider_fd_artifact/fd_artifact
+python spider_fd_loader.py -m roberta-base \
+--root_dir /nfs/turbo/coe-jag/zjsun/data/spider_fd_artifact/fd_artifact \
+--mode Non_FD

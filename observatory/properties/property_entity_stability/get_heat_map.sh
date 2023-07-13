@@ -21,4 +21,6 @@ python3 get_heat_map.py  --directories \
 /nfs/turbo/coe-jag/zjsun/cell_embeddings/doduo/entity_embeddings \
 --labels BERT RoBERTa T5 TAPAS  TURL DODUO \
 --save_dir /home/zjsun/Plot/p7 \
---K_values 10 20 30 40 50
+--K_values 10 20 30 40 50 \
+--if_only_plot True \
+--if_double_entity True 
