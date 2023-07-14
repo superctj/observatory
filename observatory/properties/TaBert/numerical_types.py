@@ -17,7 +17,7 @@ def split_table(table: pd.DataFrame, m: int, n: int):
                 
                                
 def get_average_embedding(table, index, n,  get_embedding):
-        m = min(100//len(table.columns.tolist()), 3)
+        m = min(100//len(list(table.columns)), 3)
         sum_embeddings = None
         num_embeddings = 0
         chunks_generator = split_table(table, m=m, n=n)
@@ -36,21 +36,23 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--root_dir', type=str, required=True)
     parser.add_argument('--n', type=int, required=True)
+    parser.add_argument('--save_folder', type=str, default='p6')
+    parser.add_argument('--metadata_path', type=str, default='metadata.csv')
+
     # parser.add_argument('--r', type=int, required=True)
     parser.add_argument('-m', '--model_name', type=str,  required=True, help='Name of the Hugging Face model to use')
     args = parser.parse_args()
     model_name = args.model_name
-    save_directory_results  = os.path.join('/nfs/turbo/coe-jag/zjsun', 'p6', model_name)
+    save_directory_results  = os.path.join('/nfs/turbo/coe-jag/zjsun', args.save_folder , model_name)
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
     n = args.n
     root_dir = args.root_dir
     dataset_dir = os.path.join(root_dir, "tables")
-    metadata_path = os.path.join(root_dir, "metadata.csv")
+    metadata_path = os.path.join(root_dir, args.metadata_path)
 
     data_loader = SOTABDataLoader(dataset_dir, metadata_path)    
     get_embedding =  get_tabert_embeddings
-
     col_itself = []
     subj_col_as_context = []
     neighbor_col_as_context = []
@@ -103,7 +105,7 @@ if __name__ == "__main__":
                     f.write(f"Error message: {e}\n\n")
                     f.write(f"\n\n")
             col_itself_embedding = get_average_embedding(numerical_col, 0, n,  get_embedding)
-            continue
+            # continue
         
         try:
             subj_col_as_context_embedding = get_average_embedding(two_col_table, 1, n,  get_embedding)
@@ -121,8 +123,7 @@ if __name__ == "__main__":
                     f.write(f"Error message: {e}\n\n")
                     f.write(f"\n\n")
             # continue
-            subj_col_as_context_embedding = get_average_embedding(two_col_table, 1, n,  get_embedding)
-            continue
+        # subj_col_as_context_embedding = get_average_embedding(two_col_table, 1, n,  get_embedding)
         
         try:
             neighbor_col_as_context_embedding = get_average_embedding(three_col_table, 1, n,  get_embedding)
@@ -139,8 +140,7 @@ if __name__ == "__main__":
                     f.write("In neighbor_col_as_context_embedding = get_average_embedding(three_col_table, 1, n,  get_embedding) ")
                     f.write(f"Error message: {e}\n\n")
                     f.write(f"\n\n")
-            neighbor_col_as_context_embedding = get_average_embedding(three_col_table, 1, n,  get_embedding)
-            continue
+            # continue
         
         
         try:
@@ -158,7 +158,6 @@ if __name__ == "__main__":
                     f.write("In entire_table_as_context_embedding = get_average_embedding(table, numerical_col_idx, n,  get_embedding) ")
                     f.write(f"Error message: {e}\n\n")
                     f.write(f"\n\n")
-            entire_table_as_context_embedding = get_average_embedding(table, numerical_col_idx, n,  get_embedding)
             continue
         
         col_itself.append((col_itself_embedding, row["label"]))

@@ -503,9 +503,12 @@ class TurlWikiTableDataset(Dataset):
         self.max_header_length = max_header_length
         self.max_cell_length = max_cell_length
         self.force_new = force_new
+        
         self.data = self._preprocess_data()
     
     def _preprocess_data(self):
+        count = 0
+        line_exist ={}
         preprocessed_filename = os.path.join(self.data_dir, f"preprocessed_hybrid", f"{self.split}.pickle")
 
         if not self.force_new and os.path.exists(preprocessed_filename):
@@ -523,6 +526,7 @@ class TurlWikiTableDataset(Dataset):
 
         with open(os.path.join(self.data_dir, f"{self.split}_tables.jsonl"), "r") as f:
             for line in tqdm(f):
+                count += 1
                 num_orig_tables += 1
                 table = json.loads(line.strip())
                 
@@ -619,6 +623,7 @@ class TurlWikiTableDataset(Dataset):
                 #         entities[split[i]:split[i+1]]])
 
                 if not empty_table:
+                    line_exist[count] = True
                     actual_tables.append([
                         table_id,
                         pg_title,
@@ -628,6 +633,8 @@ class TurlWikiTableDataset(Dataset):
                         headers,
                         entities
                     ])
+                else:
+                    line_exist[count] = False
         
         num_actual_tables = len(actual_tables)
         print("=" * 50)
@@ -647,7 +654,6 @@ class TurlWikiTableDataset(Dataset):
 
         with open(preprocessed_filename, "wb") as f:
             pickle.dump(processed_data, f)
-
         return processed_data
 
     def __len__(self):
@@ -672,9 +678,12 @@ class TurlWikiTableCellDataset(Dataset):
         self.max_header_length = max_header_length
         self.max_cell_length = max_cell_length
         self.force_new = force_new
+        self.line_exist = {}
         self.data = self._preprocess_data()
     
     def _preprocess_data(self):
+        count = 0
+        line_exist ={}
         preprocessed_filename = os.path.join(self.data_dir, f"preprocessed_hybrid", f"{self.split}_cells.pickle")
 
         if not self.force_new and os.path.exists(preprocessed_filename):
@@ -692,6 +701,7 @@ class TurlWikiTableCellDataset(Dataset):
 
         with open(os.path.join(self.data_dir, f"{self.split}_tables.jsonl"), "r") as f:
             for line in tqdm(f):
+                count += 1
                 num_orig_tables += 1
                 table = json.loads(line.strip())
                 
@@ -788,6 +798,7 @@ class TurlWikiTableCellDataset(Dataset):
                 #         entities[split[i]:split[i+1]]])
 
                 if not empty_table:
+                    line_exist[count] = True
                     actual_tables.append([
                         table_id,
                         pg_title,
@@ -797,7 +808,10 @@ class TurlWikiTableCellDataset(Dataset):
                         headers,
                         entities
                     ])
-        
+                else:
+                    line_exist[count] = False
+        self.line_exist = line_exist
+        print("self.line_exist = line_exist")
         num_actual_tables = len(actual_tables)
         print("=" * 50)
         print("Number of original tables: ", num_orig_tables)

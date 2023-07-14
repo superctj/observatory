@@ -13,16 +13,14 @@ source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
 python3 k_means_clustering.py  --embedding_file \
-/nfs/turbo/coe-jag/zjsun/p6/bert-base-uncased/embeddings.pt --label bert
+/nfs/turbo/coe-jag/zjsun/p6_non_text/bert-base-uncased/embeddings.pt --label bert --text False
 python3 k_means_clustering.py  --embedding_file \
-/nfs/turbo/coe-jag/zjsun/p6/doduo/embeddings.pt --label doduo
+/nfs/turbo/coe-jag/zjsun/p6_non_text/doduo/embeddings.pt --label doduo  --text False
 python3 k_means_clustering.py  --embedding_file \
-/nfs/turbo/coe-jag/zjsun/p6/google/tapas-base/embeddings.pt --label tapas
+/nfs/turbo/coe-jag/zjsun/p6_non_text/google/tapas-base/embeddings.pt --label tapas  --text False
 python3 k_means_clustering.py  --embedding_file \
-/nfs/turbo/coe-jag/zjsun/p6/roberta-base/embeddings.pt --label roberta
+/nfs/turbo/coe-jag/zjsun/p6_non_text/roberta-base/embeddings.pt --label roberta  --text False
 python3 k_means_clustering.py  --embedding_file \
-/nfs/turbo/coe-jag/zjsun/p6/t5-base/embeddings.pt --label t5
+/nfs/turbo/coe-jag/zjsun/p6_non_text/t5-base/embeddings.pt --label t5  --text False
 python3 k_means_clustering.py  --embedding_file \
-/nfs/turbo/coe-jag/zjsun/p6/tabert/embeddings.pt --label tabert
-
-
+/nfs/turbo/coe-jag/zjsun/p6_non_text/tabert/embeddings.pt --label tabert  --text False

@@ -113,8 +113,8 @@ if __name__ == "__main__":
         save_directory_entity = os.path.join(save_directory, "entity_embeddings")
         if not os.path.exists(save_directory_entity):
                 os.makedirs(save_directory_entity)
-        for count, entity_embeddings in all_entity_embeddings:
-             torch.save(entity_embeddings, os.path.join(save_directory_entity,  f"line{count}_entity_embeddings.pt"))
+        for count, embedding_dict in all_entity_embeddings:
+             torch.save(embedding_dict, os.path.join(save_directory_entity,  f"line{count}_entity_embeddings.pt"))
     elif model_name.startswith("doduo"):
         model_args = argparse.Namespace
 
