@@ -5,6 +5,7 @@ from get_hugging_face_embeddings import get_hugging_face_embeddings
 from typing import Dict, List
 from torch.nn.functional import cosine_similarity
 import functools
+from huggingface_models import  load_transformers_model, load_transformers_tokenizer_and_max_length
 
 import pandas as pd
 from collections import Counter
@@ -138,6 +139,8 @@ def get_average_embedding(table, index, n,  get_embedding):
         for tables in chunks_generator:
             embeddings = get_embedding(tables)
             if sum_embeddings is None:
+                if embeddings == []:
+                    print("embeddings == []")
                 sum_embeddings = torch.zeros(embeddings[0][index].size())
             for embedding in embeddings:
                 sum_embeddings += embedding[index].to(device)
@@ -158,7 +161,17 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     model_name = args.model_name
-    get_embedding =  functools.partial(get_hugging_face_embeddings, model_name=model_name)
+    
+    tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
+    device = torch.device("cuda")
+    print(device)
+    model = load_transformers_model(model_name, device)
+    model = model.eval()
+    get_embedding =  functools.partial(get_hugging_face_embeddings, model_name=model_name,  tokenizer = tokenizer, max_length = max_length, device = device, model = model)
+    
+    
+    
+    
     n = args.n
     testbed = args.testbed
     root_dir =  os.path.join(args.root_dir, testbed)
@@ -176,8 +189,10 @@ if __name__ == "__main__":
         f.write(str(model_name))
         f.write("\n")
     for i, row in data_loader.ground_truth.iterrows():
-        if i>= args.start + args.num_tables or i < args.start:
+        if i < args.start:
             continue
+        if i>= args.start + args.num_tables :
+            break
         print(f"{i} / {data_loader.ground_truth.shape[0]}")
         if row["trueQuality"] > 0:
             t1_name, t2_name = row["ds_name"], row["ds_name_2"]
@@ -196,8 +211,12 @@ if __name__ == "__main__":
             # print("t2.columns: ")
             # for column in t2.columns:
             #     print(column)
-            c1_idx = list(t1.columns).index(c1_name)
-            c2_idx = list(t2.columns).index(c2_name)
+            try:
+                c1_idx = list(t1.columns).index(c1_name)
+                c2_idx = list(t2.columns).index(c2_name)
+            except Exception as e:
+                print("Error message:", e) 
+                continue 
             try:
                 c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding)
             except AssertionError:
@@ -211,11 +230,11 @@ if __name__ == "__main__":
                 print(f"i: {i}")
                 print("In c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding): ")
                 print("Error message:", e)
-                pd.set_option('display.max_columns', None)
-                pd.set_option('display.max_rows', None)
-                print("c1_idx: ", c1_idx)
-                print(t1.columns)
-                print(t1)
+                # pd.set_option('display.max_columns', None)
+                # pd.set_option('display.max_rows', None)
+                # print("c1_idx: ", c1_idx)
+                # print(t1.columns)
+                # print(t1)
                 # c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding)
                 continue
             try:
@@ -231,11 +250,11 @@ if __name__ == "__main__":
                 print(f"i: {i}")
                 print("In c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding): ")
                 print("Error message:", e)
-                pd.set_option('display.max_columns', None)
-                pd.set_option('display.max_rows', None)
-                print("c2_idx: ", c2_idx)
-                print(t2.columns)
-                print(t2)
+                # pd.set_option('display.max_columns', None)
+                # pd.set_option('display.max_rows', None)
+                # print("c2_idx: ", c2_idx)
+                # print(t2.columns)
+                # print(t2)
                 # c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding)
                 continue
             data_cosine_similarity = cosine_similarity(c1_avg_embedding.unsqueeze(0), c2_avg_embedding.unsqueeze(0))

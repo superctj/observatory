@@ -1,10 +1,10 @@
 import os
 import argparse
 import torch
-from get_tabert_embeddings import get_tabert_embeddings
 from typing import Dict, List
 from torch.nn.functional import cosine_similarity
 import functools
+from get_tabert_embeddings import get_tabert_embeddings
 
 import pandas as pd
 from collections import Counter
@@ -56,7 +56,7 @@ class NextiaJDCSVDataLoader():
     def _read_ground_truth(self, ground_truth_path: str) -> pd.DataFrame:
         return pd.read_csv(ground_truth_path)
 
-    def read_table(self, table_name: str, drop_nan: bool = True, **kwargs) -> pd.DataFrame:
+    def read_table(self, table_name: str, drop_nan: bool = True, nrows=None, **kwargs) -> pd.DataFrame:
         file_path = os.path.join(self.dataset_dir, table_name)
         try:
             table = pd.read_csv(
@@ -68,6 +68,7 @@ class NextiaJDCSVDataLoader():
                 # on_bad_lines="skip",
                 lineterminator="\n",
                 low_memory=False,
+                nrows=nrows,
                 **kwargs
             )
         except UnicodeDecodeError: # To open CSV files with UnicodeDecodeError
@@ -77,7 +78,7 @@ class NextiaJDCSVDataLoader():
                 na_values=self.metadata[table_name]["null_val"],
                 skipinitialspace=self.metadata[table_name]["ignore_trailing"],
                 quotechar="\"",
-                on_bad_lines="skip",
+                # on_bad_lines="skip",
                 lineterminator="\n",
                 encoding="iso-8859-1",
                 low_memory=False,
@@ -154,9 +155,21 @@ if __name__ == "__main__":
     parser.add_argument('--start', type=int, required=True)
     parser.add_argument('--num_tables', type=int, required=True)
     parser.add_argument('--value', default=None, type=int, help='An optional max number of rows to read')
+
     args = parser.parse_args()
     model_name = args.model_name
-    get_embedding =  get_tabert_embeddings
+
+    from table_bert import Table, Column
+    from table_bert import TableBertModel
+    model_path = '/home/zjsun/TaBert/TaBERT/tabert_base_k3/model.bin'
+    model = TableBertModel.from_pretrained(
+        model_path,
+    )
+    model = model.to( torch.device("cuda"))
+
+    get_embedding =  functools.partial(get_tabert_embeddings, model=model)
+
+    
     n = args.n
     testbed = args.testbed
     root_dir =  os.path.join(args.root_dir, testbed)
@@ -169,33 +182,42 @@ if __name__ == "__main__":
         os.makedirs(save_directory_results)
     results = []
     device = torch.device("cpu")
-    miss_count = 0
     with open(f'error_{model_name.replace("/", "")}.txt', 'w') as f:
         f.write("\n\n")
         f.write(str(model_name))
         f.write("\n")
     for i, row in data_loader.ground_truth.iterrows():
-        if i>= args.start + args.num_tables or i < args.start:
+        if i < args.start:
             continue
+        if i>= args.start + args.num_tables :
+            break
         print(f"{i} / {data_loader.ground_truth.shape[0]}")
         if row["trueQuality"] > 0:
             t1_name, t2_name = row["ds_name"], row["ds_name_2"]
             c1_name, c2_name = row["att_name"], row["att_name_2"]
             containment = row["trueContainment"]
+            t1 = data_loader.read_table(t1_name,drop_nan = False , nrows = args.value)
+            t2 = data_loader.read_table(t2_name,drop_nan = False, nrows = args.value)
+            # print("t1_name: ", t1_name)
+            # print("c1_name: ", c1_name)
+            # print("t2_name: ", t2_name)
+            # print("c2_name: ", c2_name)
 
-            t1 = data_loader.read_table(t1_name)
-            t2 = data_loader.read_table(t2_name)
-            if args.value is not None:
-                t1 = t1.head(args.value)
-                t2 = t2.head(args.value)
-
-            c1_idx = list(t1.columns).index(c1_name)
-            c2_idx = list(t2.columns).index(c2_name)
+            # print("t1.columns: ")
+            # for column in t1.columns:
+            #     print(column)
+            # print("t2.columns: ")
+            # for column in t2.columns:
+            #     print(column)
+            try:
+                c1_idx = list(t1.columns).index(c1_name)
+                c2_idx = list(t2.columns).index(c2_name)
+            except Exception as e:
+                print("Error message:", e) 
+                continue  
             try:
                 c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding)
-            except IndexError:
-                miss_count +=1
-                print(f"mis rate: {miss_count/data_loader.ground_truth.shape[0]}")
+            except AssertionError:
                 continue
             except Exception as e:
                 with open(f'error_{model_name.replace("/", "")}.txt', 'a') as f:
@@ -206,18 +228,16 @@ if __name__ == "__main__":
                 print(f"i: {i}")
                 print("In c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding): ")
                 print("Error message:", e)
-                pd.set_option('display.max_columns', None)
-                pd.set_option('display.max_rows', None)
-                print("c1_idx: ", c1_idx)
-                print(t1.columns)
-                print(t1)
-                c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding)
+                # pd.set_option('display.max_columns', None)
+                # pd.set_option('display.max_rows', None)
+                # print("c1_idx: ", c1_idx)
+                # print(t1.columns)
+                # print(t1)
+                # c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding)
                 continue
             try:
                 c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding)
-            except IndexError:
-                miss_count +=1
-                print(f"mis rate: {miss_count/data_loader.ground_truth.shape[0]}")
+            except AssertionError:
                 continue
             except Exception as e:
                 with open(f'error_{model_name.replace("/", "")}.txt', 'a') as f:
@@ -228,12 +248,12 @@ if __name__ == "__main__":
                 print(f"i: {i}")
                 print("In c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding): ")
                 print("Error message:", e)
-                pd.set_option('display.max_columns', None)
-                pd.set_option('display.max_rows', None)
-                print("c2_idx: ", c2_idx)
-                print(t2.columns)
-                print(t2)
-                c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding)
+                # pd.set_option('display.max_columns', None)
+                # pd.set_option('display.max_rows', None)
+                # print("c2_idx: ", c2_idx)
+                # print(t2.columns)
+                # print(t2)
+                # c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding)
                 continue
             data_cosine_similarity = cosine_similarity(c1_avg_embedding.unsqueeze(0), c2_avg_embedding.unsqueeze(0))
             data_jaccard_similarity = jaccard_similarity(t1, t2, c1_name, c2_name)

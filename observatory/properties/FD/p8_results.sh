@@ -14,8 +14,11 @@ conda init
 conda activate tabeval
 python3 p8_results.py  --folders \
 /nfs/turbo/coe-jag/zjsun/FD/bert-base-uncased \
+/nfs/turbo/coe-jag/zjsun/FD/bert-large-uncased \
 /nfs/turbo/coe-jag/zjsun/FD/roberta-base \
+/nfs/turbo/coe-jag/zjsun/FD/roberta-large \
 /nfs/turbo/coe-jag/zjsun/FD/t5-base \
 /nfs/turbo/coe-jag/zjsun/FD/google/tapas-base \
+/nfs/turbo/coe-jag/zjsun/FD/google/tapas-large \
 /nfs/turbo/coe-jag/zjsun/FD/doduo \
---labels BERT RoBERTa T5 TAPAS   DODUO 
+--labels BERT-base BERT-large RoBERTa-base RoBERTa-large T5 TAPAS-base TAPAS-large  DODUO --min_length 2 

@@ -5,19 +5,19 @@ import torch
 from doduo import Doduo
 from huggingface_models import  load_transformers_model, load_transformers_tokenizer_and_max_length
 from truncate import truncate_index
-def get_doduo_embeddings(tables, model_path = "."):
+def get_doduo_embeddings(tables, model,tokenizer, max_length):
     device = torch.device("cuda")
     print()
     print(device)
     print()
 
-    model_args = argparse.Namespace
+    # model_args = argparse.Namespace
 
-    model_args.model = "wikitable"  # two models available "wikitable" and "viznet"
+    # model_args.model = "wikitable"  # two models available "wikitable" and "viznet"
 
-    model = Doduo(model_args, basedir=model_path)
+    # model = Doduo(model_args, basedir=model_path)
     model_name = 'bert-base-uncased'
-    tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
+    # tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
     truncated_tables =[]
     for table_index, table in enumerate(tables):
         max_rows_fit = truncate_index(table, tokenizer, max_length, model_name)

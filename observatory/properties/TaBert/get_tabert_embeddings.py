@@ -71,15 +71,15 @@ def convert_to_table(df, tokenizer):
 
     return table
 
-def get_tabert_embeddings(tables, model_path = '/home/zjsun/TaBert/TaBERT/tabert_base_k3/model.bin'):
-    device = torch.device("cuda")
-    print()
-    print(device)
-    print()
-    model = TableBertModel.from_pretrained(
-        model_path,
-    )
-    model = model.to(device)
+def get_tabert_embeddings(tables, model):
+    # device = torch.device("cuda")
+    # print()
+    # print(device)
+    # print()
+    # model = TableBertModel.from_pretrained(
+    #     model_path,
+    # )
+    # model = model.to(device)
     all_embeddings = []
     
     for table in tables:

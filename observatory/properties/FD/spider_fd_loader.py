@@ -97,7 +97,10 @@ if __name__ == "__main__":
     
     
     if args.mode == "Both" or args.mode == "FD":
-    
+        with open('FD.txt', 'w') as file:
+            file.write('Record for list_row_index\n')
+        with open(f'FD embedding_length_{model_name.replace("/", "")}.txt', 'w') as file:
+            file.write('Record for embedding_length\n')
         fd_metadata = data_loader.get_fd_metadata()
         list_pairs_norms_dict = []
         for _, row in fd_metadata.iterrows():
@@ -110,8 +113,14 @@ if __name__ == "__main__":
             dependent_index = list(table.columns).index(dependent)
             pairs_dict = find_groups(table, determinant, dependent)
             norms_dict = {}
+
             if model_name.startswith("doduo"):
                 for pair, list_row_index in pairs_dict.items():
+                    with open('FD.txt', 'a') as file:
+                        file.write(str(pair))
+                        file.write('\n')
+                        file.write(str(list_row_index))
+                        file.write('\n')
                     l2_norms = []
                     for row_index in list_row_index:
                         # Start with a range of two rows above and below
@@ -121,13 +130,13 @@ if __name__ == "__main__":
                                 min_index = max(0, row_index - delta)
                                 max_index = min(len(table), row_index + delta + 1)
                                 part_table = table.iloc[min_index:max_index]
-
+                                part_table = part_table.astype(str)
                                 # Adjust the index for the cell_embeddings, considering the boundaries
                                 adjusted_index = min(delta, row_index - min_index)
 
                                 tmp_pairs = []
-                                tmp_pairs.append([[adjusted_index, determinant_index], ((pair, "determinant"), "")])
-                                tmp_pairs.append([[adjusted_index, dependent_index], ((pair, "dependent"), "")])
+                                tmp_pairs.append([[adjusted_index, determinant_index], (-1, "")])
+                                tmp_pairs.append([[adjusted_index, dependent_index], (-1, "")])
 
                                 # Get the entity_embeddings of the part table
                                 try:
@@ -143,7 +152,11 @@ if __name__ == "__main__":
                                 # If either the determinant_embedding or dependent_embedding is 0, continue to next delta
                                 if (torch.norm(determinant_embedding, p=2) == 0 or torch.norm(dependent_embedding, p=2) == 0):
                                     continue
+                                with open(f'FD embedding_length_{model_name.replace("/", "")}.txt', 'a') as file:
+                                    file.write(f'determinant_embedding length {torch.norm(determinant_embedding, p=2)}\n')
+                                    file.write(f'dependent_embedding length {torch.norm(dependent_embedding, p=2)}\n')
 
+                                
                                 # Calculate the L2 norm and add it to the list
                                 l2_norm = torch.norm(determinant_embedding - dependent_embedding, p=2)
                                 l2_norms.append(l2_norm.item())  # Convert the torch tensor to a Python float
@@ -161,6 +174,11 @@ if __name__ == "__main__":
                         
             else:
                 for pair, list_row_index in pairs_dict.items():
+                    with open('FD.txt', 'a') as file:
+                        file.write(str(pair))
+                        file.write('\n')
+                        file.write(str(list_row_index))
+                        file.write('\n')
                     l2_norms = []
                     for row_index in list_row_index:
                         # Start with a range of two rows above and below
@@ -170,7 +188,7 @@ if __name__ == "__main__":
                                 min_index = max(0, row_index - delta)
                                 max_index = min(len(table), row_index + delta + 1)
                                 part_table = table.iloc[min_index:max_index]
-                                
+                                part_table = part_table.astype(str)    
                                 # Get the cell embeddings of the part table
                                 cell_embeddings = get_embedding(part_table)
                                 # Adjust the index for the cell_embeddings, considering the boundaries
@@ -182,7 +200,9 @@ if __name__ == "__main__":
                                 # If either the determinant_embedding or dependent_embedding is 0, continue to next delta
                                 if (torch.norm(determinant_embedding, p=2) == 0 or torch.norm(dependent_embedding, p=2) == 0):
                                     continue
-                                
+                                with open(f'FD embedding_length_{model_name.replace("/", "")}.txt', 'a') as file:
+                                    file.write(f'determinant_embedding length {torch.norm(determinant_embedding, p=2)}\n')
+                                    file.write(f'dependent_embedding length {torch.norm(dependent_embedding, p=2)}\n')
                                 # Calculate the L2 norm and add it to the list
                                 l2_norm = torch.norm(determinant_embedding - dependent_embedding, p=2)
                                 l2_norms.append(l2_norm.item())  # Convert the torch tensor to a Python float
@@ -207,6 +227,10 @@ if __name__ == "__main__":
     if args.mode == "Both" or args.mode == "Non_FD":
         non_fd_metadata = data_loader.get_non_fd_metadata()
         list_non_pairs_norms_dict = []
+        with open('Non_FD.txt', 'w') as file:
+                file.write('Record for list_row_index\n')
+        with open(f'Non_FD embedding_length_{model_name.replace("/", "")}.txt', 'w') as file:
+            file.write('Record for embedding_length\n')
         for _, row in non_fd_metadata.iterrows():
             table_name = row["table_name"]
             col1 = row["column_1"]
@@ -219,8 +243,14 @@ if __name__ == "__main__":
 
             norms_dict = {}
 
+
             if model_name.startswith("doduo"):
                 for element, list_row_index in elements_dict.items():
+                    with open('Non_FD.txt', 'a') as file:
+                        file.write(str(element))
+                        file.write('\n')
+                        file.write(str(list_row_index))
+                        file.write('\n')
                     l2_norms = []
                     for row_index in list_row_index:
                         # Start with a range of two rows above and below
@@ -230,13 +260,14 @@ if __name__ == "__main__":
                                 min_index = max(0, row_index - delta)
                                 max_index = min(len(table), row_index + delta + 1)
                                 part_table = table.iloc[min_index:max_index]
+                                part_table = part_table.astype(str)
 
                                 # Adjust the index for the cell_embeddings, considering the boundaries
                                 adjusted_index = min(delta, row_index - min_index)
 
                                 tmp_pairs = []
-                                tmp_pairs.append([[adjusted_index, col1_index], ((element, "col1"), "")])
-                                tmp_pairs.append([[adjusted_index, col2_index], ((element, "col2"), "")])
+                                tmp_pairs.append([[adjusted_index, col1_index], (-1, "")])
+                                tmp_pairs.append([[adjusted_index, col2_index], (-1, "")])
 
                                 # Get the entity_embeddings of the part table
                                 try:
@@ -252,24 +283,32 @@ if __name__ == "__main__":
                                 # If either the col1_embedding or col2_embedding is 0, continue to next delta
                                 if (torch.norm(col1_embedding, p=2) == 0 or torch.norm(col2_embedding, p=2) == 0):
                                     continue
-
+                                with open(f'Non_FD embedding_length_{model_name.replace("/", "")}.txt', 'a') as file:
+                                    file.write(f'col1_embedding length {torch.norm(col1_embedding, p=2)}\n')
+                                    file.write(f'col2_embedding length {torch.norm(col2_embedding, p=2)}\n')
                                 # Calculate the L2 norm and add it to the list
                                 l2_norm = torch.norm(col1_embedding - col2_embedding, p=2)
                                 l2_norms.append(l2_norm.item())  # Convert the torch tensor to a Python float
 
                                 # Break the loop once we get a valid pair of embeddings
                                 break
-                            except (KeyError, IndexError, AssertionError) as e:
+                            # except (KeyError, IndexError, AssertionError) as e:
+                            except (KeyError, IndexError) as e:
                                 print(e)
                                 continue
 
                         if not l2_norms:  # If l2_norms is still empty after the loop, continue to the next row
                             continue
                                 
-                    norms_dict[element] = l2_norms 
-  
+                    norms_dict[str(element)] = l2_norms 
+                    
             else:
                 for element, list_row_index in elements_dict.items():
+                    with open('Non_FD.txt', 'a') as file:
+                        file.write(str(element))
+                        file.write('\n')
+                        file.write(str(list_row_index))
+                        file.write('\n')
                     l2_norms = []
                     for row_index in list_row_index:
                         # Start with a range of two rows above and below
@@ -291,7 +330,9 @@ if __name__ == "__main__":
                                 # If either the col1_embedding or col2_embedding is 0, continue to next delta
                                 if (torch.norm(col1_embedding, p=2) == 0 or torch.norm(col2_embedding, p=2) == 0):
                                     continue
-
+                                with open(f'Non_FD embedding_length_{model_name.replace("/", "")}.txt', 'a') as file:
+                                    file.write(f'col1_embedding length {torch.norm(col1_embedding, p=2)}\n')
+                                    file.write(f'col2_embedding length {torch.norm(col2_embedding, p=2)}\n')
                                 # Calculate the L2 norm and add it to the list
                                 l2_norm = torch.norm(col1_embedding - col2_embedding, p=2)
                                 l2_norms.append(l2_norm.item())  # Convert the torch tensor to a Python float
@@ -305,7 +346,7 @@ if __name__ == "__main__":
                             continue
 
                     norms_dict[element] = l2_norms
-                list_non_pairs_norms_dict.append(norms_dict)
+            list_non_pairs_norms_dict.append(norms_dict)
 
         torch.save(list_non_pairs_norms_dict, os.path.join(save_directory,  f"list_non_pairs_norms_dict.pt"))
 

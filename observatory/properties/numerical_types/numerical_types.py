@@ -58,7 +58,7 @@ if __name__ == "__main__":
     subj_col_as_context = []
     neighbor_col_as_context = []
     entire_table_as_context = []
-    with open(f'output_{model_name}.txt', 'w') as f:
+    with open(f'output_{model_name.replace("/", "")}.txt', 'w') as f:
             f.write(f"Error message for {model_name}\n\n")
     for _, row in data_loader.metadata.iterrows():
         table_name = row["table_name"]
@@ -105,7 +105,7 @@ if __name__ == "__main__":
                     f.write("In col_itself_embedding = get_average_embedding(numerical_col, 0, n,  get_embedding): ")
                     f.write(f"Error message: {e}\n\n")
                     f.write(f"\n\n")
-            # continue
+            continue
         
         try:
             subj_col_as_context_embedding = get_average_embedding(two_col_table, 1, n,  get_embedding)
@@ -122,7 +122,7 @@ if __name__ == "__main__":
                     f.write("In subj_col_as_context_embedding = get_average_embedding(two_col_table, 1, n,  get_embedding) ")
                     f.write(f"Error message: {e}\n\n")
                     f.write(f"\n\n")
-            # continue
+            continue
         # subj_col_as_context_embedding = get_average_embedding(two_col_table, 1, n,  get_embedding)
         
         try:
@@ -140,7 +140,7 @@ if __name__ == "__main__":
                     f.write("In neighbor_col_as_context_embedding = get_average_embedding(three_col_table, 1, n,  get_embedding) ")
                     f.write(f"Error message: {e}\n\n")
                     f.write(f"\n\n")
-            # continue
+            continue
         
         
         try:
