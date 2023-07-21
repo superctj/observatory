@@ -13,14 +13,12 @@ from truncate import truncate_index
 
 from torch.linalg import inv, norm
 
-from mcv import compute_mcv
-
 from torch.linalg import inv, norm
 
 from torch.serialization import save
 
 from scipy.spatial.distance import cosine
-from doduo import Doduo
+from observatory.models.DODUO.doduo.doduo import Doduo
 
 
 def fisher_yates_shuffle(seq):

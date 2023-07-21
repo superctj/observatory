@@ -6,12 +6,12 @@ import torch
 from readCompare import compare_directories
 # from concurrent.futures import ThreadPoolExecutor
 from torch.linalg import inv, norm
-from mcv import compute_mcv
 import random
 import math
 import itertools
 
-from doduo import Doduo
+from observatory.models.DODUO.doduo.doduo import Doduo
+
 
 
 

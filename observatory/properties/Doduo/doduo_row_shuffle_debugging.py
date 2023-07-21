@@ -12,7 +12,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from torch.linalg import norm
 import itertools
 
-from doduo import Doduo
+from observatory.models.DODUO.doduo.doduo import Doduo
 
 def fisher_yates_shuffle(seq):
 

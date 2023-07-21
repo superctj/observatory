@@ -12,13 +12,11 @@ import numpy as np
 
 from torch.linalg import inv, norm
 
-from mcv import compute_mcv
-
 from torch.serialization import save
 
 from scipy.spatial.distance import cosine
 
-from doduo import Doduo
+from observatory.models.DODUO.doduo.doduo import Doduo
 
 
 def fisher_yates_shuffle(seq):

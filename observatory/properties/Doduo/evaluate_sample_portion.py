@@ -14,7 +14,6 @@ from huggingface_models import  load_transformers_model, load_transformers_token
 from truncate import truncate_index
 from torch.linalg import inv, norm
 
-from mcv import compute_mcv
 from scipy.special import comb
 
 
@@ -24,7 +23,7 @@ from torch.serialization import save
 
 from scipy.spatial.distance import cosine
 
-from doduo import Doduo
+from observatory.models.DODUO.doduo.doduo import Doduo
 
 
 def get_subsets(n, m, portion):

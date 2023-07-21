@@ -13,7 +13,7 @@ from torch.utils.data import DataLoader, Dataset
 import transformers
 from transformers import BertTokenizer, BertConfig
 
-from doduo.model import BertForMultiOutputClassification, BertMultiPairPooler
+from observatory.models.DODUO.doduo.doduo.model import BertForMultiOutputClassification, BertMultiPairPooler
 
 
 class AnnotatedDataFrame:
