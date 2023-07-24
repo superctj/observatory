@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=Plot_coefficients_XS
+#SBATCH --job-name=Plot_coefficients_S
 #SBATCH --partition=standard
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
@@ -12,12 +12,12 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-python plot_coefficient.py  --save_dir="./p5/XS" \
+python plot_coefficient.py  --save_dir="./p5/S" \
 --files \
-/nfs/turbo/coe-jag/zjsun/p5/testbedXS/bert-base-uncased/results.pt \
-/nfs/turbo/coe-jag/zjsun/p5/testbedXS/roberta-base/results.pt \
-/nfs/turbo/coe-jag/zjsun/p5/testbedXS/t5-base/results.pt \
-/nfs/turbo/coe-jag/zjsun/p5/testbedXS/google/tapas-base/results.pt \
-/nfs/turbo/coe-jag/zjsun/p5/testbedXS/tabert/0to23940_results.pt \
-/nfs/turbo/coe-jag/zjsun/p5/testbedXS/doduo/results.pt \
+/nfs/turbo/coe-jag/zjsun/p5/testbedS/bert-base-uncased/results.pt \
+/nfs/turbo/coe-jag/zjsun/p5/testbedS/roberta-base/results.pt \
+/nfs/turbo/coe-jag/zjsun/p5/testbedS/t5-base/results.pt \
+/nfs/turbo/coe-jag/zjsun/p5/testbedS/google/tapas-base/results.pt \
+/nfs/turbo/coe-jag/zjsun/p5/testbedS/tabert/results.pt \
+/nfs/turbo/coe-jag/zjsun/p5/testbedS/doduo/results.pt \
 --labels BERT RoBERTa T5 TAPAS TaBERT  DODUO
