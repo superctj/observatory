@@ -3,7 +3,7 @@ import argparse
 import pandas as pd
 
 from typing import List
-from    observatory.models.huggingface_models import (
+from observatory.models.huggingface_models import (
     load_transformers_tokenizer,
     load_transformers_tokenizer_and_max_length,
 )
@@ -19,7 +19,7 @@ def truncate_index(table, tokenizer, max_length, model_name):
 
     def is_fit(cols, tokenizer, max_length, model_name):
         current_tokens = []
-        # if model_name.startswith("google/tapas"): 
+        # if model_name.startswith("google/tapas"):
         #     current_tokens = ["[CLS]"]  + ["[SEP]"]
 
         for col in cols:
@@ -27,7 +27,7 @@ def truncate_index(table, tokenizer, max_length, model_name):
                 current_tokens += ["<s>"]
             else:
                 current_tokens += ["[CLS]"]
-            
+
             for cell in col:
                 cell_tokens = tokenizer.tokenize(cell)
                 for token in cell_tokens:
@@ -39,7 +39,7 @@ def truncate_index(table, tokenizer, max_length, model_name):
             current_tokens += ["</s>"]
         else:
             current_tokens += ["[SEP]"]
-        
+
         if len(current_tokens) > max_length:
             return False
 
@@ -61,5 +61,3 @@ def truncate_index(table, tokenizer, max_length, model_name):
         return low
 
     return max_rows(table, tokenizer, max_length, model_name)
-
-

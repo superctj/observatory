@@ -1,18 +1,23 @@
-from observatory.models.huggingface_models import load_transformers_tokenizer, load_transformers_tokenizer_and_max_length
+from observatory.models.huggingface_models import (
+    load_transformers_tokenizer,
+    load_transformers_tokenizer_and_max_length,
+)
 import os
 import argparse
 import pandas as pd
 
 from typing import List
 
+
 def table2colList(table):
     cols = []
     for column in table.columns:
         # Convert column values to strings and join them with spaces
-        string_values = ' '.join(table[column].astype(str).tolist())
+        string_values = " ".join(table[column].astype(str).tolist())
         col_str = f"{column} {string_values}"
         cols.append(col_str)
     return cols
+
 
 def is_fit(cols, tokenizer, max_length, model_name):
     current_tokens = []
@@ -23,10 +28,10 @@ def is_fit(cols, tokenizer, max_length, model_name):
         # Check model name and use appropriate special tokens
         if model_name.startswith("t5"):
             # For T5, add <s> at the start and </s> at the end
-            col_tokens = ['<s>'] + col_tokens + ['</s>']
+            col_tokens = ["<s>"] + col_tokens + ["</s>"]
         else:
             # For other models (BERT, RoBERTa, TAPAS), add [CLS] at the start and [SEP] at the end
-            col_tokens = ['[CLS]'] + col_tokens + ['[SEP]']
+            col_tokens = ["[CLS]"] + col_tokens + ["[SEP]"]
         # Check if adding the new tokens would exceed the max length
         if len(current_tokens) + len(col_tokens) > max_length:
             # If so, stop and return false
@@ -58,12 +63,13 @@ def max_rows(table, tokenizer, max_length):
     # When low == high, we have found the maximum number of rows
     return low
 
+
 def main(args):
     # Load tokenizer and max_length
     tokenizer, max_length = load_transformers_tokenizer_and_max_length(args.model_name)
 
     # Read tables
-    table_files = [f for f in os.listdir(args.read_directory) if f.endswith('.csv')]
+    table_files = [f for f in os.listdir(args.read_directory) if f.endswith(".csv")]
     normal_tables = []
     for file in table_files:
         table = pd.read_csv(f"{args.read_directory}/{file}", keep_default_na=False)
@@ -76,13 +82,32 @@ def main(args):
     for i, table in enumerate(normal_tables):
         max_rows_fit = max_rows(table, tokenizer, max_length, args.model_name)
         truncated_table = table.iloc[:max_rows_fit, :]
-        truncated_table.to_csv(f"{args.save_directory}/table_{i}.csv", index=False, na_rep='')
+        truncated_table.to_csv(
+            f"{args.save_directory}/table_{i}.csv", index=False, na_rep=""
+        )
+
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Truncate tables based on tokenizer and max length.')
-    parser.add_argument('-r', '--read_directory', type=str, required=True, help='Directory to read tables from')
-    parser.add_argument('-s', '--save_directory', type=str, required=True, help='Directory to save truncated tables to')
-    parser.add_argument('-m', '--model_name', type=str, required=True, help='Model name for tokenizer')
+    parser = argparse.ArgumentParser(
+        description="Truncate tables based on tokenizer and max length."
+    )
+    parser.add_argument(
+        "-r",
+        "--read_directory",
+        type=str,
+        required=True,
+        help="Directory to read tables from",
+    )
+    parser.add_argument(
+        "-s",
+        "--save_directory",
+        type=str,
+        required=True,
+        help="Directory to save truncated tables to",
+    )
+    parser.add_argument(
+        "-m", "--model_name", type=str, required=True, help="Model name for tokenizer"
+    )
     # parser.add_argument('-l', '--max_length', type=int, default=512, help='Max length for tokenizer (default: 512)')
     args = parser.parse_args()
 

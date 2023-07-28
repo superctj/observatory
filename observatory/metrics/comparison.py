@@ -4,12 +4,12 @@ import torch
 def pairwise_cosine_knn(a, b, k):
     a_norm = a / a.norm(dim=1)[:, None]
     b_norm = b / b.norm(dim=1)[:, None]
-    res = torch.mm(a_norm, b_norm.transpose(0,1))
-    return torch.argsort(res, dim=1, descending=True)[:, 1:k+1]
+    res = torch.mm(a_norm, b_norm.transpose(0, 1))
+    return torch.argsort(res, dim=1, descending=True)[:, 1 : k + 1]
 
 
 def overlap(m1, m2, count, k, knn):
-    sum  = 0
+    sum = 0
     for i in range(count):
         a = set()
         b = set()
@@ -18,8 +18,8 @@ def overlap(m1, m2, count, k, knn):
             b.add(int(knn[m2][i][j]))
         sum += len(a.intersection(b)) / k
 
-    print(m1 + ' and ' + m2 + ' overlap:')
-    print(sum/count)
+    print(m1 + " and " + m2 + " overlap:")
+    print(sum / count)
 
 
 def jaccard(t1, t2):

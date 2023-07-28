@@ -10,7 +10,9 @@ def export_sqlite_to_csv(db_file_path: str, output_dir: str):
     conn = sqlite3.connect(db_file_path)
     cur = conn.cursor()
 
-    res = cur.execute("SELECT tbl_name FROM sqlite_master WHERE type='table' and tbl_name not like 'metadata%' and tbl_name not like 'sqlite_%' and tbl_name!='dataset_profile';").fetchall()
+    res = cur.execute(
+        "SELECT tbl_name FROM sqlite_master WHERE type='table' and tbl_name not like 'metadata%' and tbl_name not like 'sqlite_%' and tbl_name!='dataset_profile';"
+    ).fetchall()
 
     for row in res:
         table_name = row[0]
@@ -24,18 +26,17 @@ def export_sqlite_to_csv(db_file_path: str, output_dir: str):
         # except: # b'Web_client_accelerator'
         #     table_name = row[0].decode("utf-8")
         #     db_df = pd.read_sql_query(f"SELECT * FROM {table_name}", conn)
-        
+
         output_path = os.path.join(output_dir, f"{table_name}.csv")
-        db_df.columns= db_df.columns.str.lower()
+        db_df.columns = db_df.columns.str.lower()
         db_df.to_csv(output_path, index=False)
-    
+
     conn.close()
 
 
 def export_all():
     root_dir = "C:/Users/Ben/Documents/table_eval/great_lake/property4/data/DB_schema_abbreviation/database_post_perturbation/"
     output_dir = "C:/Users/Ben/Documents/table_eval/great_lake/property4/abbreviation"
-
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -50,5 +51,6 @@ def export_all():
             export_sqlite_to_csv(db_file_path, csv_output_dir)
         except:
             print(db_name)
+
 
 export_all()
