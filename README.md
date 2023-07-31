@@ -60,10 +60,12 @@ Assume using [Miniconda](https://docs.conda.io/projects/conda/en/latest/user-gui
 | SOTAB               	| sotab_data_type_datasets.zip                 	| https://drive.google.com/file/d/1K631KONGDVy2C2ViKcwSyMnWhr_kJdaK/view?usp=share_link                                 	| Heterogeneous Context                                                	|
 
 ## Evaluation
-All property experiments are under `observatory/properties`. To evaluate a model for a property, change all paths to local ones in the corresponding shell script and simply run, 
+All property experiments are under `observatory/properties`. To evaluate a model for a property, change all paths to local ones in the corresponding shell script and run
 
-    For models from HuggingFace (specify the model identifier in the script): e.g.,
+For models from HuggingFace (specify the model identifier in the script): e.g.,
+
     ./observatory/properties/Row_Order_Insignificance/hugging_face.sh
     
-    For other models: e.g.,
+For other models: e.g.,
+
     ./observatory/properties/Sample_Fidelity/doduo.sh
