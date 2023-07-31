@@ -30,8 +30,9 @@ def multiset_jaccard_similarity(df1, df2, col1, col2):
 
     minima = sum((multiset1 & multiset2).values())
     maxima = sum((multiset1 | multiset2).values())
-    multiset_jaccard_sim = minima / maxima if maxima != 0 else 0
-    return multiset_jaccard_sim
+    weighted_jaccard_coeff = minima / maxima 
+    multiset_jaccard_sim = minima / (maxima + minima) 
+    return multiset_jaccard_sim, weighted_jaccard_coeff
 
 
 class NextiaJDCSVDataLoader:
@@ -295,18 +296,20 @@ if __name__ == "__main__":
                 c1_avg_embedding.unsqueeze(0), c2_avg_embedding.unsqueeze(0)
             )
             data_jaccard_similarity = jaccard_similarity(t1, t2, c1_name, c2_name)
-            data_multiset_jaccard_similarity = multiset_jaccard_similarity(
+            data_multiset_jaccard_similarity, data_weighted_jaccard_coeff = multiset_jaccard_similarity(
                 t1, t2, c1_name, c2_name
             )
             print("containment: ", containment)
             print("trueQuality: ", row["trueQuality"])
             print("jaccard_similarity: ", data_jaccard_similarity)
+            print("weighted_jaccard_coeefient: ", data_weighted_jaccard_coeff)
             print("multiset_jaccard_similarity: ", data_multiset_jaccard_similarity)
             print("Cosine Similarity: ", data_cosine_similarity.item())
             result = {}
             result["containment"] = containment
             result["cosine_similarity"] = data_cosine_similarity.item()
             result["jaccard_similarity"] = data_jaccard_similarity
+            result["weighted_jaccard_coeefient"] = data_weighted_jaccard_coeff
             result["multiset_jaccard_similarity"] = data_multiset_jaccard_similarity
             results.append(result)
 
