@@ -13,4 +13,4 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-python entity_stability.py -m turl --start 0
+python entity_stability.py -m turl 
