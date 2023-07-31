@@ -12,15 +12,21 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-python plot_p5.py --results_file /nfs/turbo/coe-jag/zjsun/p5/testbedXS/t5-base/results.pt \
---save_dir ./p5_plot \
---pic_name t5_XS.png
-python plot_p5.py --results_file /nfs/turbo/coe-jag/zjsun/p5/testbedXS/roberta-base/results.pt \
---save_dir ./p5_plot \
---pic_name roberta_XS.png
-python plot_p5.py --results_file /nfs/turbo/coe-jag/zjsun/p5/testbedXS/google/tapas-base/results.pt \
---save_dir ./p5_plot \
---pic_name tapas_XS.png
-python plot_p5.py --results_file /nfs/turbo/coe-jag/zjsun/p5/testbedXS/bert-base-uncased/results.pt \
---save_dir ./p5_plot \
---pic_name bert_XS.png
+python plot_p5.py --results_file /nfs/turbo/coe-jag/zjsun/p5/testbedS/t5-base/results.pt \
+--save_dir ./p5_S \
+--pic_name t5_S.png
+python plot_p5.py --results_file /nfs/turbo/coe-jag/zjsun/p5/testbedS/roberta-base/results.pt \
+--save_dir ./p5_S \
+--pic_name roberta_S.png
+python plot_p5.py --results_file /nfs/turbo/coe-jag/zjsun/p5/testbedS/google/tapas-base/results.pt \
+--save_dir ./p5_S \
+--pic_name tapas_S.png
+python plot_p5.py --results_file /nfs/turbo/coe-jag/zjsun/p5/testbedS/bert-base-uncased/results.pt \
+--save_dir ./p5_S \
+--pic_name bert_S.png
+python plot_p5.py --results_file /nfs/turbo/coe-jag/zjsun/p5/testbedS/tabert/results.pt \
+--save_dir ./p5_S \
+--pic_name tabert_S.png
+python plot_p5.py --results_file /nfs/turbo/coe-jag/zjsun/p5/testbedS/doduo/results.pt \
+--save_dir ./p5_S \
+--pic_name doduo_S.png
