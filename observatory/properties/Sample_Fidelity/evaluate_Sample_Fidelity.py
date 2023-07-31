@@ -1,21 +1,44 @@
 #  python create_row_shuffle_embeddings.py -r normal_TD  -s RI_bert_TD -m bert-base-uncased -n 1000
 import os
 import argparse
-import itertools
-import random
-
 import pandas as pd
 import torch
-import numpy as np
 from observatory.models.huggingface_models import (
-    load_transformers_tokenizer,
     load_transformers_model,
     load_transformers_tokenizer_and_max_length,
 )
 from observatory.common_util.truncate import truncate_index
-from concurrent.futures import ThreadPoolExecutor
 from torch.linalg import inv, norm
 from observatory.common_util.mcv import compute_mcv
+import random
+import math
+import itertools
+
+
+def get_subsets(n, m, portion):
+    portion_size = int(n * portion)
+    max_possible_tables = math.comb(n, portion_size)
+
+    if max_possible_tables <= 10 * m:
+        # If the number of combinations is small, generate all combinations and randomly select from them
+        all_subsets = list(itertools.combinations(range(n), portion_size))
+        random.shuffle(all_subsets)
+        return [list(subset) for subset in all_subsets[:m]]
+    else:
+        # If the number of combinations is large, use random sampling to generate distinct subsets
+        subsets = set()
+        while len(subsets) < min(m, max_possible_tables):
+            new_subset = tuple(sorted(random.sample(range(n), portion_size)))
+            subsets.add(new_subset)
+        return [list(subset) for subset in subsets]
+
+
+def shuffle_df(df, m, portion):
+    subsets = get_subsets(len(df), m, portion)
+    dfs = [df]
+    for subset in subsets:
+        dfs.append(df.iloc[subset])
+    return dfs
 
 
 def table2colList(table):
@@ -64,52 +87,6 @@ def process_table(tokenizer, cols, max_length, model_name):
     return current_tokens, cls_positions
 
 
-def fisher_yates_shuffle(seq):
-    for i in reversed(range(1, len(seq))):
-        j = random.randint(0, i)
-        seq[i], seq[j] = seq[j], seq[i]
-    return seq
-
-
-def get_permutations(n, m):
-    if n < 10:
-        # Generate all permutations
-        all_perms = list(itertools.permutations(range(n)))
-        # Remove the original sequence
-        all_perms.remove(tuple(range(n)))
-        # Shuffle the permutations
-        random.shuffle(all_perms)
-        # If m > n! - 1 (because we removed one permutation), return all permutations
-        if m > len(all_perms):
-            return all_perms
-        # Otherwise, return the first m permutations
-        return all_perms[:m]
-    else:
-        original_seq = list(range(n))
-        perms = [original_seq.copy()]
-        for _ in range(m):  # we already have one permutation
-            while True:
-                new_perm = fisher_yates_shuffle(original_seq.copy())
-                if new_perm not in perms:
-                    perms.append(new_perm)
-                    break
-        perms.remove(list(range(n)))
-        return perms
-
-
-# Define the function to shuffle a dataframe and create new dataframes
-def shuffle_df(df, m):
-    # Get the permutations
-    perms = get_permutations(len(df), m)
-
-    # Create a new dataframe for each permutation
-    dfs = [df]
-    for perm in perms:
-        dfs.append(df.iloc[list(perm)])
-
-    return dfs
-
-
 def tapas_column_embeddings(inputs, last_hidden_states):
     # find the maximum column id
     max_column_id = inputs["token_type_ids"][0][:, 1].max()
@@ -132,20 +109,17 @@ def tapas_column_embeddings(inputs, last_hidden_states):
     return column_embeddings
 
 
-def generate_row_shuffle_embeddings(
-    tokenizer, model, device, max_length, padding_token, table, num_shuffles
+def generate_row_sample_embeddings(
+    tokenizer, model, device, max_length, padding_token, table, num_samples, percentage
 ):
-    all_embeddings = []
-    tables = shuffle_df(table, num_shuffles)
-    for j in range(len(tables)):
-        #     if j == 0:
-        #         processed_table = table
-        #     else:
-        #         processed_table = row_shuffle(table)
-        processed_table = tables[j]
+    all_shuffled_embeddings = []
+    sampled_tables = shuffle_df(table, num_samples, percentage)
+
+    for processed_table in sampled_tables:
         if model_name.startswith("google/tapas"):
             processed_table = processed_table.reset_index(drop=True)
             processed_table = processed_table.astype(str)
+
             inputs = tokenizer(
                 table=processed_table, padding="max_length", return_tensors="pt"
             )
@@ -185,9 +159,9 @@ def generate_row_shuffle_embeddings(
                 cls_embedding = last_hidden_state[0, position, :].detach().cpu()
                 embeddings.append(cls_embedding)
 
-        all_embeddings.append(embeddings)
+        all_shuffled_embeddings.append(embeddings)
 
-    return all_embeddings
+    return all_shuffled_embeddings
 
 
 def analyze_embeddings(all_shuffled_embeddings):
@@ -238,41 +212,61 @@ def process_table_wrapper(
     max_length,
     padding_token,
 ):
-
     save_directory_results = os.path.join(
         args.save_directory,
-        "Row_Order_Insignificance",
+        "Sample_Fidelity",
+        str(args.sample_portion),
         model_name,
         "results",
     )
     save_directory_embeddings = os.path.join(
-        "/nfs/turbo/coe-jag/zjsun",
-        "row_insig",
         args.save_directory,
+        "Sample_Fidelity",
+        str(args.sample_portion),
         model_name,
         "embeddings",
     )
-    # save_directory_results  = os.path.join( args.save_directory, model_name ,'results')
-    # save_directory_embeddings  = os.path.join( args.save_directory, model_name ,'embeddings')
+    # save_directory_results  = os.path.join( str(args.sample_portion), args.save_directory, model_name ,'results')
+    # save_directory_embeddings  = os.path.join( str(args.sample_portion), args.save_directory, model_name ,'embeddings')
     # Create the directories if they don't exist
     if not os.path.exists(save_directory_embeddings):
         os.makedirs(save_directory_embeddings)
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
 
-    all_shuffled_embeddings = generate_row_shuffle_embeddings(
+    all_shuffled_embeddings = generate_row_sample_embeddings(
         tokenizer,
         model,
         device,
         max_length,
         padding_token,
         truncated_table,
-        args.num_shuffles,
+        args.num_samples,
+        args.sample_portion,
     )
-    torch.save(
-        all_shuffled_embeddings,
-        os.path.join(save_directory_embeddings, f"table_{table_index}_embeddings.pt"),
+
+    save_file_path = os.path.join(
+        save_directory_embeddings, f"table_{table_index}_embeddings.pt"
     )
+    # If the file exists, load it and substitute the elements.
+    if os.path.exists(save_file_path):
+        existing_embeddings = torch.load(save_file_path)
+
+        # Ensure that existing_embeddings is long enough
+        if len(existing_embeddings) < len(all_shuffled_embeddings):
+            existing_embeddings = all_shuffled_embeddings
+        else:
+            # Substitute the elements
+            existing_embeddings[
+                : len(all_shuffled_embeddings)
+            ] = all_shuffled_embeddings
+
+        # Save the modified embeddings
+        torch.save(existing_embeddings, save_file_path)
+    else:
+        # If the file doesn't exist, just save all_shuffled_embeddings
+        torch.save(all_shuffled_embeddings, save_file_path)
+
     (
         avg_cosine_similarities,
         mcvs,
@@ -337,7 +331,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "-n",
-        "--num_shuffles",
+        "--num_samples",
         type=int,
         required=True,
         help="Number of times to shuffle and save embeddings",
@@ -349,6 +343,14 @@ if __name__ == "__main__":
         default="",
         help="Name of the Hugging Face model to use",
     )
+    parser.add_argument(
+        "-p",
+        "--sample_portion",
+        type=float,
+        default=0.25,
+        help="Portion of sample to use",
+    )
+
     args = parser.parse_args()
 
     table_files = [f for f in os.listdir(args.read_directory) if f.endswith(".csv")]
@@ -358,12 +360,7 @@ if __name__ == "__main__":
         normal_tables.append(table)
 
     if args.model_name == "":
-        model_names = [
-            "bert-base-uncased",
-            "roberta-base",
-            "t5-base",
-            "google/tapas-base",
-        ]
+        model_names = ["bert-base-uncased", "roberta-base", "t5-base"]
     else:
         model_names = [args.model_name]
     print()

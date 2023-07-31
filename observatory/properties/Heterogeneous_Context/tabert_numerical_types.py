@@ -4,12 +4,14 @@ os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 
 import argparse
 import torch
-import functools
+from observatory.models.TaBERT.table_bert import Table, Column
+from observatory.models.TaBERT.table_bert import TableBertModel
 
-from sotab_loader import SOTABDataLoader
+
+from observatory.datasets.sotab_loader import SOTABDataLoader
 from observatory.models.tabert_column_embeddings import get_tabert_embeddings
 import pandas as pd
-
+import functools
 device = torch.device("cpu")
 
 
@@ -51,11 +53,15 @@ if __name__ == "__main__":
         required=True,
         help="Name of the Hugging Face model to use",
     )
+    parser.add_argument(
+        "--tabert_bin",
+        type=str,
+        default=".",
+        help="Path to load the tabert model",
+    )
     args = parser.parse_args()
     model_name = args.model_name
-    save_directory_results = os.path.join(
-        "/nfs/turbo/coe-jag/zjsun", args.save_folder, model_name
-    )
+    save_directory_results = os.path.join(args.save_folder, model_name)
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
     n = args.n
@@ -64,7 +70,15 @@ if __name__ == "__main__":
     metadata_path = os.path.join(root_dir, args.metadata_path)
 
     data_loader = SOTABDataLoader(dataset_dir, metadata_path)
-    get_embedding = get_tabert_embeddings
+    model = TableBertModel.from_pretrained(
+        args.tabert_bin,
+    )
+    model = model.to(device)
+    model.eval()   
+    get_embedding = functools.partial(
+        get_tabert_embeddings, model=model
+    )
+
     col_itself = []
     subj_col_as_context = []
     neighbor_col_as_context = []

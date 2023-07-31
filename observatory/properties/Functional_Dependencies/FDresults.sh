@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=get_heat_map
+#SBATCH --job-name=p8_results
 #SBATCH --partition=standard
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
@@ -12,12 +12,12 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-save_dir=""
 dir1=""
 dir2=""
 label1=""
 label2=""
-python3 get_heat_map.py  --directories $dir1 $dir2 \
+python3 FDresults.py  --folders \
+$dir1 $dir2 \
 --labels $label1 $label2 \
 --save_dir $save_dir \
---K_values 10 20 30 40 50 \
+--min_length 2 

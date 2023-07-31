@@ -7,14 +7,9 @@ import random
 import pandas as pd
 import torch
 
-import numpy as np
-
-
 from torch.linalg import inv, norm
+from observatory.common_util.mcv import compute_mcv
 
-from torch.serialization import save
-
-from scipy.spatial.distance import cosine
 
 from observatory.models.DODUO.doduo.doduo import Doduo
 
@@ -215,17 +210,15 @@ def analyze_embeddings(all_shuffled_embeddings, tables):
 def process_table_wrapper(table_index, table, args, model_name, model, device):
 
     save_directory_results = os.path.join(
-        "/nfs/turbo/coe-jag/zjsun",
-        "col_insig",
         args.save_directory,
+        "Column_Order_Insignificance",
         model_name,
         "results",
     )
 
     save_directory_embeddings = os.path.join(
-        "/nfs/turbo/coe-jag/zjsun",
-        "col_insig",
         args.save_directory,
+        "Column_Order_Insignificance",
         model_name,
         "embeddings",
     )
@@ -290,7 +283,7 @@ def process_and_save_embeddings(model_name, args, tables):
 
     model_args.model = "wikitable"  # two models available "wikitable" and "viznet"
 
-    model = Doduo(model_args, basedir=".")
+    model = Doduo(model_args, basedir=args.doduo_path)
 
     for table_index, table in enumerate(tables):
         if table_index < args.table_num:
@@ -344,6 +337,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "-t", "--table_num", type=int, default=0, help="num of start table"
     )
+    
+    parser.add_argument(
+        "--doduo_path",
+        type=str,
+        default=".",
+        help="Path to load the doduo model",
+    )
     args = parser.parse_args()
     pd.set_option("display.max_columns", None)
     pd.set_option("display.max_rows", None)
@@ -358,7 +358,6 @@ if __name__ == "__main__":
         table = pd.read_csv(f"{args.read_directory}/{file}", keep_default_na=False)
         normal_tables.append(table)
 
-    model_name = args.model_name
     model_name = args.model_name
     print()
     with open("output.txt", "w") as f:

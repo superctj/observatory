@@ -166,12 +166,23 @@ if __name__ == "__main__":
         required=True,
         help="Name of the Hugging Face model to use",
     )
+    parser.add_argument(
+        "--save_dir",
+        type=str,
+        required=True,
+        help="Path to save the results",
+    )
     parser.add_argument("--start", type=int, required=True)
     parser.add_argument("--num_tables", type=int, required=True)
     parser.add_argument(
         "--value", default=None, type=int, help="An optional max number of rows to read"
     )
-
+    parser.add_argument(
+        "--doduo_path",
+        type=str,
+        default=".",
+        help="Path to load the doduo model",
+    )
     args = parser.parse_args()
     model_name = args.model_name
     model_args = argparse.Namespace
@@ -179,14 +190,14 @@ if __name__ == "__main__":
     model_args.model = "wikitable"  # two models available "wikitable" and "viznet"
     from observatory.models.DODUO.doduo.doduo import Doduo
 
-    from huggingface_models import (
+    from observatory.models.huggingface_models import (
         load_transformers_model,
         load_transformers_tokenizer_and_max_length,
     )
     import functools
     from observatory.models.doduo_column_embeddings import get_doduo_embeddings
 
-    model_path = "."
+    model_path = args.doduo_path
     model = Doduo(model_args, basedir=model_path)
     temp_model_name = "bert-base-uncased"
     tokenizer, max_length = load_transformers_tokenizer_and_max_length(temp_model_name)
@@ -201,7 +212,7 @@ if __name__ == "__main__":
     ground_truth_path = os.path.join(root_dir, f"groundTruth_{testbed}.csv")
     data_loader = NextiaJDCSVDataLoader(dataset_dir, metadata_path, ground_truth_path)
     save_directory_results = os.path.join(
-        "/nfs/turbo/coe-jag/zjsun", "p5", testbed, model_name
+        args.save_dir, "Join_Relationship", testbed, model_name
     )
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)

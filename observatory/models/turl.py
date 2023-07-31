@@ -180,7 +180,7 @@ def get_column_embeddings_example():
             break
 
 
-def get_entity_embeddings_example():
+def get_entity_embeddings_example(data_dir, config, ckpt_path):
     from observatory.datasets.turl_wiki_tables import (
         TurlWikiTableCellDataset,
         EntityEmbeddingLoader,
@@ -188,7 +188,6 @@ def get_entity_embeddings_example():
     from observatory.models.TURL.model.transformers import BertTokenizer
     from observatory.models.TURL.utils.util import load_entity_vocab
 
-    data_dir = "/home/congtj/observatory/data"
     min_ent_count = 2
 
     entity_vocab = load_entity_vocab(
@@ -201,14 +200,16 @@ def get_entity_embeddings_example():
     )
     test_dataloader = EntityEmbeddingLoader(test_dataset, batch_size=1, is_train=False)
 
-    config = "/home/congtj/observatory/observatory/models/TURL/configs/table-base-config_v2.json"
-    ckpt_path = "/ssd/congtj/observatory/turl_models/pytorch_model.bin"
-    device = torch.device("cuda:1")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     model = TURL(config, ckpt_path)
     model.to(device)
-
+    all_entity_embeddings = []
+    count = 0
     for batch in test_dataloader:
+        count += 1
+        while not line_exist[count]:
+            count += 1
         (
             table_ids,
             entity_info,
@@ -245,31 +246,33 @@ def get_entity_embeddings_example():
         labels = labels.to(device)
 
         with torch.no_grad():
-            entity_embeddings = model.get_entity_embeddings(
-                input_tok,
-                input_tok_type,
-                input_tok_pos,
-                input_tok_mask,
-                input_ent_text,
-                input_ent_text_length,
-                input_ent,
-                input_ent_type,
-                input_ent_mask,
-            )
-            # print(type(entity_info))
-            # print(len(entity_info[0]))
-            # print(entity_info)
-            # print(entity_embeddings.shape)
-            # print(entity_embeddings[0])
+            try:
+                entity_embeddings = model.get_entity_embeddings(
+                    input_tok,
+                    input_tok_type,
+                    input_tok_pos,
+                    input_tok_mask,
+                    input_ent_text,
+                    input_ent_text_length,
+                    input_ent,
+                    input_ent_type,
+                    input_ent_mask,
+                )
+                embedding_dict = {}
+                for i, ([r_idx, c_idx], (entity_id, entity_text)) in enumerate(
+                    entity_info[0]
+                ):
+                    embedding_dict[(r_idx, c_idx)] = (
+                        entity_embeddings[0][i + 1],
+                        entity_id,
+                    )  # i+1 because the first embedding is for page entity
+                all_entity_embeddings.append((count, embedding_dict))
 
-            embedding_dict = {}
-            for i, ((r_idx, c_idx), entity_id, entity_text) in enumerate(entity_info):
-                embedding_dict[(r_idx, c_idx)] = (
-                    entity_embeddings[0][i + 1],
-                    entity_id,
-                )  # i+1 because the first embedding is for page entity
+            except Exception as e:
+                print(e)
+                break
 
-            break
+    return all_entity_embeddings
 
 
 if __name__ == "__main__":

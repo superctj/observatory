@@ -8,79 +8,21 @@ import pandas as pd
 import torch
 
 import numpy as np
-from observatory.models.TaBERT.table_bert import Table, Column
-from observatory.models.TaBERT.table_bert import TableBertModel
+from observatory.models.huggingface_models import (
+    load_transformers_tokenizer_and_max_length,
+)
+from observatory.common_util.truncate import truncate_index
 
-
-from torch.linalg import norm
+from torch.linalg import inv, norm
 
 from observatory.common_util.mcv import compute_mcv
 
+from torch.linalg import inv, norm
 
-# def convert_to_table(df, tokenizer):
+from torch.serialization import save
 
-#     header = []
-#     data = []
-
-#     for col in df.columns:
-#         try:
-#             # Remove commas and attempt to convert to float
-#             val = float(str(df[col].iloc[0]).replace(',', ''))
-#             # If conversion is successful, it's a real column
-#             col_type = 'real'
-#             sample_value = df[col][0]
-#         except (ValueError, AttributeError):
-#             # If conversion fails, it's a text column
-#             col_type = 'text'
-#             sample_value = df[col][0]
-
-#         # Create a Column object
-#         header.append(Column(col, col_type, sample_value=sample_value))
-#         # Add the column data to 'data' list
-#         data.append(list(df[col]))
-
-#     # Create the Table
-#     table = Table(id='', header=header, data=data)
-
-#     # Tokenize
-#     table.tokenize(tokenizer)
-
-#     return table
-
-
-def convert_to_table(df, tokenizer):
-
-    header = []
-    data = []
-
-    for col in df.columns:
-        try:
-            # Remove commas and attempt to convert to float
-            val = float(str(df[col].iloc[0]).replace(",", ""))
-            # If conversion is successful, it's a real column
-            col_type = "real"
-            sample_value = df[col][0]
-        except (ValueError, AttributeError):
-            # If conversion fails, it's a text column
-            col_type = "text"
-            sample_value = df[col][0]
-
-        # Create a Column object
-        header.append(Column(col, col_type, sample_value=sample_value))
-
-        # Add the column data to 'data' list
-    for row_index in range(len(df)):
-        data.append(list(df.iloc[row_index]))
-        # print()
-        # print(col_type)
-        # print(sample_value)
-    # Create the Table
-    table = Table(id="", header=header, data=data)
-
-    # Tokenize
-    table.tokenize(tokenizer)
-
-    return table
+from scipy.spatial.distance import cosine
+from observatory.models.DODUO.doduo.doduo import Doduo
 
 
 def fisher_yates_shuffle(seq):
@@ -111,12 +53,11 @@ def get_permutations(n, m):
         # If m > n! - 1 (because we removed one permutation), return all permutations
 
         if m > len(all_perms):
-
-            return [list(range(n))] + all_perms
+            return all_perms
 
         # Otherwise, return the first m permutations
 
-        return [list(range(n))] + all_perms[:m]
+        return all_perms[:m]
 
     else:
 
@@ -135,72 +76,45 @@ def get_permutations(n, m):
                     perms.append(new_perm)
 
                     break
+
+        perms.remove(list(range(n)))
         return perms
 
 
-def shuffle_df_columns(df, m):
+# Define the function to shuffle a dataframe and create new dataframes
+
+
+def shuffle_df(df, m):
 
     # Get the permutations
-    perms = get_permutations(len(df.columns), m)
+    perms = get_permutations(len(df), m)
 
     # Create a new dataframe for each permutation
 
-    dfs = []
+    dfs = [df]
 
     for perm in perms:
 
-        dfs.append(df.iloc[:, list(perm)])
+        dfs.append(df.iloc[list(perm)])
 
-    return dfs, perms
+    return dfs
 
 
-def generate_col_shuffle_embeddings(model, table, num_shuffles):
+def generate_row_shuffle_embeddings(model, device, table, num_shuffles):
 
     all_shuffled_embeddings = []
-    tables, perms = shuffle_df_columns(table, num_shuffles)
+    tables = shuffle_df(table, num_shuffles)
 
-    for j in range(len(tables)):
-
-        processed_table = tables[j]
+    for processed_table in tables:
 
         processed_table = processed_table.reset_index(drop=True)
 
-        df_table = processed_table.astype(str)
-        processed_table = convert_to_table(df_table, model.tokenizer)
-        context = ""
-        # try:
-        context_encoding, column_encoding, info_dict = model.encode(
-            contexts=[model.tokenizer.tokenize(context)], tables=[processed_table]
-        )
-        embeddings = column_encoding[0]
-        # except Exception as e:
-        #     print("Error message:", e)
-        #     pd.set_option('display.max_columns', None)
-        #     pd.set_option('display.max_rows', None)
-        #     print(df_table.columns)
-        #     print(df_table)
-        #     # assert False
+        processed_table = processed_table.astype(str)
+        annot_df = model.annotate_columns(processed_table)
+        embeddings = annot_df.colemb
+        embeddings = [torch.tensor(embeddings[j]) for j in range(len(embeddings))]
 
-        perm = perms[j]
-
-        # Create a list of the same length as perm, filled with None
-
-        ordered_embeddings = [None] * len(perm)
-
-        # Assign each embedding to its original position
-
-        for i, p in enumerate(perm):
-
-            ordered_embeddings[p] = torch.tensor(embeddings[i])
-        all_shuffled_embeddings.append(ordered_embeddings)
-
-        # Free up some memory by deleting column_encoding and info_dict variables
-        del column_encoding
-        del info_dict
-        del context_encoding
-        del embeddings
-        # Empty the cache
-        torch.cuda.empty_cache()
+        all_shuffled_embeddings.append(embeddings)
 
     return all_shuffled_embeddings
 
@@ -210,6 +124,9 @@ def analyze_embeddings(all_shuffled_embeddings):
     avg_cosine_similarities = []
 
     mcvs = []
+
+    if len(all_shuffled_embeddings) < 24:
+        return [], [], None, None
 
     for i in range(len(all_shuffled_embeddings[0])):
 
@@ -256,17 +173,11 @@ def analyze_embeddings(all_shuffled_embeddings):
 def process_table_wrapper(table_index, table, args, model_name, model, device):
 
     save_directory_results = os.path.join(
-        args.save_directory,
-        "Column_Order_Insignificance",
-        model_name,
-        "results",
+        args.save_directory, "Row_Order_Insignificance", model_name, "results"
     )
 
     save_directory_embeddings = os.path.join(
-        args.save_directory,
-        "Column_Order_Insignificance",
-        model_name,
-        "embeddings",
+        args.save_directory, "Row_Order_Insignificance", model_name, "embeddings"
     )
 
     # save_directory_results  = os.path.join( args.save_directory, model_name ,'results')
@@ -283,8 +194,8 @@ def process_table_wrapper(table_index, table, args, model_name, model, device):
 
         os.makedirs(save_directory_results)
 
-    all_shuffled_embeddings = generate_col_shuffle_embeddings(
-        model, table, args.num_shuffles
+    all_shuffled_embeddings = generate_row_shuffle_embeddings(
+        model, device, table, args.num_shuffles
     )
 
     torch.save(
@@ -325,15 +236,16 @@ def process_and_save_embeddings(model_name, args, tables):
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model = TableBertModel.from_pretrained(
-        args.tabert_bin,
-    )
-    model = model.to(device)
-    model.eval()
+    model_args = argparse.Namespace
+
+    model_args.model = "wikitable"  # two models available "wikitable" and "viznet"
+
+    model = Doduo(model_args, basedir=args.doduo_path)
 
     for table_index, table in enumerate(tables):
         if table_index < args.table_num:
             continue
+
         try:
             process_table_wrapper(table_index, table, args, model_name, model, device)
         except Exception as e:
@@ -383,10 +295,10 @@ if __name__ == "__main__":
         "-t", "--table_num", type=int, default=0, help="num of start table"
     )
     parser.add_argument(
-        "--tabert_bin",
+        "--doduo_path",
         type=str,
         default=".",
-        help="Path to load the tabert model",
+        help="Path to load the doduo model",
     )
     args = parser.parse_args()
 
@@ -398,10 +310,19 @@ if __name__ == "__main__":
 
         table = pd.read_csv(f"{args.read_directory}/{file}", keep_default_na=False)
         normal_tables.append(table)
+
+    model_name = "bert-base-uncased"
+    tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
+    truncated_tables = []
+    for table_index, table in enumerate(normal_tables):
+        max_rows_fit = truncate_index(table, tokenizer, max_length, model_name)
+        truncated_table = table.iloc[:max_rows_fit, :]
+        truncated_tables.append(truncated_table)
+
     model_name = args.model_name
     print()
 
     print("Evaluate  for: ", model_name)
     print()
 
-    process_and_save_embeddings(model_name, args, normal_tables)
+    process_and_save_embeddings(model_name, args, truncated_tables)

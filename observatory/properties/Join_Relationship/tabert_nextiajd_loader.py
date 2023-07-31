@@ -26,8 +26,9 @@ def multiset_jaccard_similarity(df1, df2, col1, col2):
 
     minima = sum((multiset1 & multiset2).values())
     maxima = sum((multiset1 | multiset2).values())
-    multiset_jaccard_sim = minima / maxima if maxima != 0 else 0
-    return multiset_jaccard_sim
+    weighted_jaccard_coeff = minima / maxima
+    multiset_jaccard_sim = minima / (maxima + minima)
+    return multiset_jaccard_sim, weighted_jaccard_coeff
 
 
 class NextiaJDCSVDataLoader:
@@ -167,10 +168,22 @@ if __name__ == "__main__":
         required=True,
         help="Name of the Hugging Face model to use",
     )
+    parser.add_argument(
+        "--save_dir",
+        type=str,
+        required=True,
+        help="Path to save the results",
+    )
     parser.add_argument("--start", type=int, required=True)
     parser.add_argument("--num_tables", type=int, required=True)
     parser.add_argument(
         "--value", default=None, type=int, help="An optional max number of rows to read"
+    )
+    parser.add_argument(
+        "--tabert_bin",
+        type=str,
+        default=".",
+        help="Path to load the tabert model",
     )
 
     args = parser.parse_args()
@@ -179,11 +192,13 @@ if __name__ == "__main__":
     from observatory.models.TaBERT.table_bert import Table, Column
     from observatory.models.TaBERT.table_bert import TableBertModel
 
-    model_path = "/home/zjsun/TaBert/TaBERT/tabert_base_k3/model.bin"
+    model_path = args.tabert_bin
     model = TableBertModel.from_pretrained(
         model_path,
     )
-    model = model.to(torch.device("cuda"))
+    model.eval()
+    model = model.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+    
 
     get_embedding = functools.partial(get_tabert_embeddings, model=model)
 
@@ -195,7 +210,7 @@ if __name__ == "__main__":
     ground_truth_path = os.path.join(root_dir, f"groundTruth_{testbed}.csv")
     data_loader = NextiaJDCSVDataLoader(dataset_dir, metadata_path, ground_truth_path)
     save_directory_results = os.path.join(
-        "/nfs/turbo/coe-jag/zjsun", "p5", testbed, model_name
+        args.save_dir, "Join_Relationship", "p5", testbed, model_name
     )
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
@@ -286,18 +301,21 @@ if __name__ == "__main__":
                 c1_avg_embedding.unsqueeze(0), c2_avg_embedding.unsqueeze(0)
             )
             data_jaccard_similarity = jaccard_similarity(t1, t2, c1_name, c2_name)
-            data_multiset_jaccard_similarity = multiset_jaccard_similarity(
-                t1, t2, c1_name, c2_name
-            )
+            (
+                data_multiset_jaccard_similarity,
+                data_weighted_jaccard_coeff,
+            ) = multiset_jaccard_similarity(t1, t2, c1_name, c2_name)
             print("containment: ", containment)
             print("trueQuality: ", row["trueQuality"])
             print("jaccard_similarity: ", data_jaccard_similarity)
+            print("weighted_jaccard_coeefient: ", data_weighted_jaccard_coeff)
             print("multiset_jaccard_similarity: ", data_multiset_jaccard_similarity)
             print("Cosine Similarity: ", data_cosine_similarity.item())
             result = {}
             result["containment"] = containment
             result["cosine_similarity"] = data_cosine_similarity.item()
             result["jaccard_similarity"] = data_jaccard_similarity
+            result["weighted_jaccard_coeefient"] = data_weighted_jaccard_coeff
             result["multiset_jaccard_similarity"] = data_multiset_jaccard_similarity
             results.append(result)
 

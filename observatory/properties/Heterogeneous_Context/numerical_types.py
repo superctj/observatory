@@ -6,8 +6,10 @@ import argparse
 import torch
 import functools
 
-from sotab_loader import SOTABDataLoader
-from get_hugging_face_embeddings import get_hugging_face_embeddings
+from observatory.datasets.sotab_loader import SOTABDataLoader
+from observatory.models.hugging_face_column_embeddings import (
+    get_hugging_face_embeddings,
+)
 import pandas as pd
 
 device = torch.device("cpu")
@@ -53,9 +55,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     model_name = args.model_name
-    save_directory_results = os.path.join(
-        "/nfs/turbo/coe-jag/zjsun", args.save_folder, model_name
-    )
+    save_directory_results = os.path.join(args.save_folder, model_name)
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
     n = args.n

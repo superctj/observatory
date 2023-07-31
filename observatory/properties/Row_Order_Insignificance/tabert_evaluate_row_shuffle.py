@@ -10,7 +10,7 @@ import torch
 import numpy as np
 
 
-from mcv import compute_mcv
+from observatory.common_util.mcv import compute_mcv
 
 from torch.linalg import norm
 from observatory.models.TaBERT.table_bert import Table, Column
@@ -209,17 +209,15 @@ def analyze_embeddings(all_shuffled_embeddings):
 def process_table_wrapper(table_index, table, args, model_name, model, device):
 
     save_directory_results = os.path.join(
-        "/nfs/turbo/coe-jag/zjsun",
-        "row_insig",
         args.save_directory,
+        "Row_Order_Insignificance",
         model_name,
         "results",
     )
 
     save_directory_embeddings = os.path.join(
-        "/nfs/turbo/coe-jag/zjsun",
-        "row_insig",
         args.save_directory,
+        "Row_Order_Insignificance",
         model_name,
         "embeddings",
     )
@@ -284,7 +282,7 @@ def process_and_save_embeddings(model_name, args, tables):
     print()
 
     model = TableBertModel.from_pretrained(
-        "/home/zjsun/TaBert/TaBERT/tabert_base_k3/model.bin",
+         args.tabert_bin,
     )
     model = model.to(device)
     model.eval()
@@ -340,6 +338,12 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "-t", "--table_num", type=int, default=0, help="num of start table"
+    )
+    parser.add_argument(
+        "--tabert_bin",
+        type=str,
+        default=".",
+        help="Path to load the tabert model",
     )
     args = parser.parse_args()
 

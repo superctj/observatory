@@ -1,11 +1,13 @@
 import os
 import argparse
 import torch
-from get_hugging_face_embeddings import get_hugging_face_embeddings
+from observatory.models.hugging_face_column_embeddings import (
+    get_hugging_face_embeddings,
+)
 from typing import Dict, List
 from torch.nn.functional import cosine_similarity
 import functools
-from huggingface_models import (
+from observatory.models.huggingface_models import (
     load_transformers_model,
     load_transformers_tokenizer_and_max_length,
 )
@@ -30,8 +32,8 @@ def multiset_jaccard_similarity(df1, df2, col1, col2):
 
     minima = sum((multiset1 & multiset2).values())
     maxima = sum((multiset1 | multiset2).values())
-    weighted_jaccard_coeff = minima / maxima 
-    multiset_jaccard_sim = minima / (maxima + minima) 
+    weighted_jaccard_coeff = minima / maxima
+    multiset_jaccard_sim = minima / (maxima + minima)
     return multiset_jaccard_sim, weighted_jaccard_coeff
 
 
@@ -174,6 +176,12 @@ if __name__ == "__main__":
         required=True,
         help="Name of the Hugging Face model to use",
     )
+    parser.add_argument(
+        "--save_dir",
+        type=str,
+        required=True,
+        help="Path to save the results",
+    )
     parser.add_argument("--start", type=int, required=True)
     parser.add_argument("--num_tables", type=int, required=True)
     parser.add_argument(
@@ -205,7 +213,7 @@ if __name__ == "__main__":
     ground_truth_path = os.path.join(root_dir, f"groundTruth_{testbed}.csv")
     data_loader = NextiaJDCSVDataLoader(dataset_dir, metadata_path, ground_truth_path)
     save_directory_results = os.path.join(
-        "/nfs/turbo/coe-jag/zjsun", "p5", testbed, model_name
+        args.save_dir, "Join_Relationship", testbed, model_name
     )
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
@@ -227,17 +235,7 @@ if __name__ == "__main__":
             containment = row["trueContainment"]
             t1 = data_loader.read_table(t1_name, drop_nan=False, nrows=args.value)
             t2 = data_loader.read_table(t2_name, drop_nan=False, nrows=args.value)
-            # print("t1_name: ", t1_name)
-            # print("c1_name: ", c1_name)
-            # print("t2_name: ", t2_name)
-            # print("c2_name: ", c2_name)
 
-            # print("t1.columns: ")
-            # for column in t1.columns:
-            #     print(column)
-            # print("t2.columns: ")
-            # for column in t2.columns:
-            #     print(column)
             try:
                 c1_idx = list(t1.columns).index(c1_name)
                 c2_idx = list(t2.columns).index(c2_name)
@@ -296,9 +294,10 @@ if __name__ == "__main__":
                 c1_avg_embedding.unsqueeze(0), c2_avg_embedding.unsqueeze(0)
             )
             data_jaccard_similarity = jaccard_similarity(t1, t2, c1_name, c2_name)
-            data_multiset_jaccard_similarity, data_weighted_jaccard_coeff = multiset_jaccard_similarity(
-                t1, t2, c1_name, c2_name
-            )
+            (
+                data_multiset_jaccard_similarity,
+                data_weighted_jaccard_coeff,
+            ) = multiset_jaccard_similarity(t1, t2, c1_name, c2_name)
             print("containment: ", containment)
             print("trueQuality: ", row["trueQuality"])
             print("jaccard_similarity: ", data_jaccard_similarity)

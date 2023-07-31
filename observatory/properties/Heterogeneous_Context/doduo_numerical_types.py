@@ -1,12 +1,15 @@
 import os
 
 os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
-
+from observatory.models.DODUO.doduo.doduo import Doduo
+from observatory.models.hugging_face_column_embeddings import (
+    load_transformers_tokenizer_and_max_length,
+)
 import argparse
 import torch
 import functools
 
-from sotab_loader import SOTABDataLoader
+from observatory.datasets.sotab_loader import SOTABDataLoader
 from observatory.models.doduo_column_embeddings import get_doduo_embeddings
 import pandas as pd
 
@@ -42,8 +45,6 @@ if __name__ == "__main__":
     parser.add_argument("--n", type=int, required=True)
     parser.add_argument("--save_folder", type=str, default="p6")
     parser.add_argument("--metadata_path", type=str, default="metadata.csv")
-
-    # parser.add_argument('--r', type=int, required=True)
     parser.add_argument(
         "-m",
         "--model_name",
@@ -51,11 +52,15 @@ if __name__ == "__main__":
         required=True,
         help="Name of the Hugging Face model to use",
     )
+    parser.add_argument(
+        "--doduo_path",
+        type=str,
+        default=".",
+        help="Path to load the doduo model",
+    )
     args = parser.parse_args()
     model_name = args.model_name
-    save_directory_results = os.path.join(
-        "/nfs/turbo/coe-jag/zjsun", args.save_folder, model_name
-    )
+    save_directory_results = os.path.join(args.save_folder, model_name)
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
     n = args.n
@@ -64,7 +69,17 @@ if __name__ == "__main__":
     metadata_path = os.path.join(root_dir, args.metadata_path)
 
     data_loader = SOTABDataLoader(dataset_dir, metadata_path)
-    get_embedding = get_doduo_embeddings
+
+
+    model_args = argparse.Namespace
+
+    model_args.model = "wikitable"  # two models available "wikitable" and "viznet"
+
+    doduo = Doduo(model_args, basedir=args.doduo_path)
+    tokenizer, max_length = load_transformers_tokenizer_and_max_length("bert-base-uncased")
+    get_embedding = functools.partial(
+        get_doduo_embeddings, model=doduo, tokenizer=tokenizer, max_length=max_length
+    )
     col_itself = []
     subj_col_as_context = []
     neighbor_col_as_context = []
