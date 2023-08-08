@@ -45,7 +45,7 @@ def is_fit(cols, tokenizer, max_length, model_name):
     return True
 
 
-def max_rows(table, tokenizer, max_length):
+def truncate_index(table, tokenizer, max_length):
     # assuming table is a list of lists, where each sublist is a row
     # and all rows have the same number of columns
     low = 0
