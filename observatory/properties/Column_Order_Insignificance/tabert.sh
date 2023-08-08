@@ -13,10 +13,10 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabert
-results_dir=""
-num_shuffle=""
+results_dir="/home/zjsun/test" 
+num_shuffle=1000
 model_name=tabert
-tabert_bin=""
+tabert_bin="/home/zjsun/TaBert/TaBERT/tabert_base_k3/model.bin"
 csv_dir="/nfs/turbo/coe-jag/zjsun/data/normal_TD"
 python3 tabert_evaluate_col_shuffle.py \
 -r $csv_dir  \
