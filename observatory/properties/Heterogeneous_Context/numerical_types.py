@@ -76,7 +76,7 @@ if __name__ == "__main__":
     model = load_transformers_model(model_name, device)
     model.eval()
     get_embedding = functools.partial(
-        get_hugging_face_embeddings, model_name=model_name
+        get_hugging_face_embeddings, model_name=model_name, tokenizer=tokenizer, max_length=max_length, model=model
     )
 
     col_itself = []
