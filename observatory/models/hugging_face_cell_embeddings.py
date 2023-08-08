@@ -96,13 +96,13 @@ def get_tapas_cell_embeddings(inputs, last_hidden_states):
     return cell_embeddings
 
 
-def get_hugging_face_cell_embeddings(table, model_name):
-    tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+def get_hugging_face_cell_embeddings(table, model_name, model, tokenizer, max_length, device):
+    # tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
+    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    print(device)
-    model = load_transformers_model(model_name, device)
-    model.eval()
+    # print(device)
+    # model = load_transformers_model(model_name, device)
+    # model.eval()
     padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
     # truncated_tables =[]
     # for table_index, table in enumerate(tables):

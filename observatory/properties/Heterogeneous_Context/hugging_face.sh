@@ -13,8 +13,8 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-root_dir=""
-model_name=""
+root_dir="/home/zjsun/data/sotab_numerical_data_type_datasets/sotab_numerical_data_type_datasets"
+model_name="t5-base"
 non_text_save_folder="/home/zjsun/test"
 text_save_folder="/home/zjsun/test"
 non_text_metadata_path="/nfs/turbo/coe-jag/zjsun/data/sotab_data_type_datasets/sotab_data_type_datasets/nontext_types_10-classes_metadata.csv"

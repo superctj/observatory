@@ -20,7 +20,7 @@ start=0
 # specify testbed and root_dir
 testbed=""
 root_dir=""
-model_name=""
+model_name="t5-base"
 # loop n times
 for (( i=0; i<$n; i++ ))
 do

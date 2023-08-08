@@ -13,7 +13,7 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-model_name=""
+model_name="t5-base"
 original_dir=""
 abbreviation_dir=""
 synonym_dir=""

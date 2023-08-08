@@ -21,7 +21,7 @@ start=0
 testbed=""
 root_dir=""
 model_name="tabert"
-tabert_bin=""
+tabert_bin="/home/zjsun/TaBert/TaBERT/tabert_base_k3/model.bin"
 # loop n times
 for (( i=0; i<$n; i++ ))
 do

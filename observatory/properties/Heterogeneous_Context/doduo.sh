@@ -13,7 +13,7 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-root_dir=""
+root_dir="/home/zjsun/data/sotab_numerical_data_type_datasets/sotab_numerical_data_type_datasets"
 model_name="doduo"
 non_text_save_folder="/home/zjsun/test"
 text_save_folder="/home/zjsun/test"

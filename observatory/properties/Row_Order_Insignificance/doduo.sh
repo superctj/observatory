@@ -16,7 +16,7 @@ conda activate tabeval
 results_dir=""
 num_shuffle=""
 model_name="doduo"
-doduo_path=""
+doduo_path="/home/zjsun/DuDuo/doduo"
 csv_dir="/nfs/turbo/coe-jag/zjsun/data/normal_TD"
 python3 doduo_evaluate_row_shuffle.py \
 -r $csv_dir  \

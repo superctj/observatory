@@ -21,7 +21,7 @@ start=0
 testbed=""
 root_dir=""
 model_name="doduo"
-doduo_path=""
+doduo_path="/home/zjsun/DuDuo/doduo"
 # loop n times
 for (( i=0; i<$n; i++ ))
 do

@@ -19,7 +19,7 @@ abbreviation_dir=""
 synonym_dir=""
 abbreviation_save_dir=""
 synonym_save_dir=""
-tabert_bin=""
+tabert_bin="/home/zjsun/TaBert/TaBERT/tabert_base_k3/model.bin"
 python3 tabert_evaluate_Perturbation_Robustness.py \
 --model_name $model_name \
 -o $original_dir \

@@ -15,7 +15,7 @@ conda init
 conda activate tabeval
 results_dir="" 
 num_shuffle=""
-model_name="" 
+model_name="t5-base" 
 csv_dir="/nfs/turbo/coe-jag/zjsun/data/normal_TD"
 python3 evaluate_row_shuffle.py \
 -r $csv_dir  \

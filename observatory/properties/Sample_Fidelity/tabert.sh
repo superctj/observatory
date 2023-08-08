@@ -16,7 +16,7 @@ conda activate tabert
 results_dir=""
 num_shuffle=""
 model_name="tabert"
-tabert_bin=""
+tabert_bin="/home/zjsun/TaBert/TaBERT/tabert_base_k3/model.bin"
 p=0.5
 csv_dir="/nfs/turbo/coe-jag/zjsun/data/normal_TD"
 python3 tabert_evaluate_Sample_Fidelity.py \
