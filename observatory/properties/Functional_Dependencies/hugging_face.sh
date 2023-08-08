@@ -13,9 +13,9 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-root_dir=""
-model_name=""
-save_dir=""
+root_dir="/nfs/turbo/coe-jag/zjsun/data/spider_fd_artifact/fd_artifact"
+model_name="t5-base"
+save_dir="/home/zjsun/test"
 python Functional_Dependencies.py \
 -m $model_name \
 --root_dir $root_dir \

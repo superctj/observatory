@@ -13,14 +13,11 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabert
-file_path="" 
 results_dir=""
 num_shuffle=""
 model_name=tabert
 tabert_bin=""
-csv_dir="./Turl_csv_dataset"
-python3 turl2normal.py --file_path $file_path\
---directory $csv_dir
+csv_dir="/nfs/turbo/coe-jag/zjsun/data/normal_TD"
 python3 tabert_evaluate_col_shuffle.py \
 -r $csv_dir  \
 -s $results_dir  \

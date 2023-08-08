@@ -13,15 +13,12 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-file_path=""
 results_dir=""
 num_shuffle=""
 model_name="doduo"
 doduo_path=""
 p=0.5
-csv_dir="./Turl_csv_dataset"
-python3 turl2normal.py --file_path $file_path\
---directory $csv_dir
+csv_dir="/nfs/turbo/coe-jag/zjsun/data/normal_TD"
 python3 doduo_evaluate_Sample_Fidelity.py \
 -r $csv_dir  \
 -s $results_dir  \

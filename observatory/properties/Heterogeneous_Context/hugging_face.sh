@@ -15,10 +15,10 @@ conda init
 conda activate tabeval
 root_dir=""
 model_name=""
-non_text_save_folder=""
-text_save_folder=""
-non_text_metadata_path=""
-text_metadata_path=""
+non_text_save_folder="/home/zjsun/test"
+text_save_folder="/home/zjsun/test"
+non_text_metadata_path="/nfs/turbo/coe-jag/zjsun/data/sotab_data_type_datasets/sotab_data_type_datasets/nontext_types_10-classes_metadata.csv"
+text_metadata_path="/nfs/turbo/coe-jag/zjsun/data/sotab_data_type_datasets/sotab_data_type_datasets/text_types_10-classes_metadata.csv"
 python3 numerical_types.py  --root_dir $root_dir \
 --model_name $model_name --n 1000 \
 --save_folder $non_text_save_folder \
