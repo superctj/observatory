@@ -90,7 +90,7 @@ def get_hugging_face_embeddings(tables, model_name, tokenizer, max_length, model
     padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
     truncated_tables = []
     for table_index, table in enumerate(tables):
-        max_rows_fit = truncate_index(table, tokenizer, max_length, model_name)
+        max_rows_fit = truncate_index(table, tokenizer, max_length)
         if max_rows_fit < 1:
             ##################
             ## for other properties, do something here
