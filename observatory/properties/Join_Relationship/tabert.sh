@@ -22,6 +22,7 @@ testbed="testbedXS"
 root_dir="/nfs/turbo/coe-jag/zjsun/data/nextiajd_datasets"
 model_name="tabert"
 tabert_bin="/home/zjsun/TaBert/TaBERT/tabert_base_k3/model.bin"
+save_dir="/home/zjsun/Join_Relationship_tabert"
 # loop n times
 for (( i=0; i<$n; i++ ))
 do
@@ -36,7 +37,8 @@ do
   $current_start \
   --num_tables 10000 \
   --value 1000 \
-  --tabert_bin $tabert_bin
+  --tabert_bin $tabert_bin \
+  --save_dir $save_dir
 
   echo "Completed iteration $((i+1)) out of $n"
 done
