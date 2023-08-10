@@ -892,10 +892,10 @@ class TurlWikiTableCellDataset(Dataset):
             self.data_dir, f"preprocessed_hybrid", f"{self.split}_cells.pickle"
         )
 
-        if not self.force_new and os.path.exists(preprocessed_filename):
-            print("Try loading preprocessed data from: ", preprocessed_filename)
-            with open(preprocessed_filename, "rb") as f:
-                return pickle.load(f)
+        # if not self.force_new and os.path.exists(preprocessed_filename):
+        #     print("Try loading preprocessed data from: ", preprocessed_filename)
+        #     with open(preprocessed_filename, "rb") as f:
+        #         return pickle.load(f)
 
         print("Try creating preprocessed data in: ", preprocessed_filename)
         base_dir = os.path.dirname(preprocessed_filename)
