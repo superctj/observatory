@@ -73,7 +73,7 @@ if __name__ == "__main__":
     data_loader = SOTABDataLoader(dataset_dir, metadata_path)
     tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
     
-    model = load_transformers_model(model_name, device)
+    model = load_transformers_model(model_name, torch.device("cuda" if torch.cuda.is_available() else "cpu"))
     model.eval()
     get_embedding = functools.partial(
         get_hugging_face_embeddings, model_name=model_name, tokenizer=tokenizer, max_length=max_length, model=model

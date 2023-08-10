@@ -14,11 +14,11 @@ source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
 model_name="t5-base"
-original_dir=""
-abbreviation_dir=""
-synonym_dir=""
-abbreviation_save_dir=""
-synonym_save_dir=""
+original_dir="/home/zjsun/data/processed_db_data/original"
+abbreviation_dir="/home/zjsun/data/processed_db_data/abbreviation"
+synonym_dir="/home/zjsun/data/processed_db_data/synonym"
+abbreviation_save_dir="/home/zjsun/test_Perturbation_Robustness"
+synonym_save_dir="/home/zjsun/test_Perturbation_Robustness"
 python3 evaluate_Perturbation_Robustness.py \
 --model_name $model_name \
 -o $original_dir \

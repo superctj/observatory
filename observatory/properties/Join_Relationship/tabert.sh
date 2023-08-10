@@ -18,8 +18,8 @@ n=4
 # specify starting number
 start=0
 # specify testbed and root_dir
-testbed=""
-root_dir=""
+testbed="testbedXS"
+root_dir="/nfs/turbo/coe-jag/zjsun/data/nextiajd_datasets"
 model_name="tabert"
 tabert_bin="/home/zjsun/TaBert/TaBERT/tabert_base_k3/model.bin"
 # loop n times

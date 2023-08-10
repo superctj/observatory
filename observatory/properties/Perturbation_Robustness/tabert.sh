@@ -14,11 +14,11 @@ source ~/miniconda3/bin/activate
 conda init
 conda activate tabert
 model_name="tabert"
-original_dir=""
-abbreviation_dir=""
-synonym_dir=""
-abbreviation_save_dir=""
-synonym_save_dir=""
+original_dir="/home/zjsun/data/processed_db_data/original"
+abbreviation_dir="/home/zjsun/data/processed_db_data/abbreviation"
+synonym_dir="/home/zjsun/data/processed_db_data/synonym"
+abbreviation_save_dir="/home/zjsun/test_Perturbation_Robustness"
+synonym_save_dir="/home/zjsun/test_Perturbation_Robustness"
 tabert_bin="/home/zjsun/TaBert/TaBERT/tabert_base_k3/model.bin"
 python3 tabert_evaluate_Perturbation_Robustness.py \
 --model_name $model_name \
