@@ -12,15 +12,16 @@
 #SBATCH --array=1
 source ~/miniconda3/bin/activate
 conda init
-conda activate tabeval
+conda activate observatory
 # specify number of iterations
 n=4
 # specify starting number
 start=0
 # specify testbed and root_dir
-testbed=""
-root_dir=""
-model_name=""
+testbed="testbedXS"
+root_dir="/nfs/turbo/coe-jag/zjsun/data/nextiajd_datasets"
+model_name="t5-base"
+save_dir="/home/zjsun/Join_Relationship_hug"
 # loop n times
 for (( i=0; i<$n; i++ ))
 do
@@ -34,7 +35,8 @@ do
   --n 1000 --start \
   $current_start \
   --num_tables 10000 \
-  --value 1000
+  --value 1000 \
+  --save_dir $save_dir
 
   echo "Completed iteration $((i+1)) out of $n"
 done

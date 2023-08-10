@@ -2,7 +2,7 @@ import os
 
 os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 from observatory.models.DODUO.doduo.doduo import Doduo
-from observatory.models.hugging_face_column_embeddings import (
+from observatory.models.huggingface_models import (
     load_transformers_tokenizer_and_max_length,
 )
 import argparse

@@ -195,7 +195,7 @@ if __name__ == "__main__":
         get_embedding = functools.partial(
             get_hugging_face_cell_embeddings, model_name=model_name
         )
-        load_and_process_data(get_embedding, save_directory, start)
+        load_and_process_data(get_embedding, save_directory, start, args.file_path, args.data_dir)
     elif model_name.startswith("turl"):
         all_entity_embeddings = get_entity_embeddings_example(
             args.data_dir, args.config, args.ckpt_path
@@ -217,4 +217,4 @@ if __name__ == "__main__":
         doduo = Doduo(model_args, basedir=args.doduo_path)
 
         get_embedding = doduo.get_entity_embeddings
-        load_and_process_data(get_embedding, save_directory, start, ifentity_info=True)
+        load_and_process_data(get_embedding, save_directory, start, args.file_path, args.data_dir, ifentity_info=True)

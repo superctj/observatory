@@ -13,10 +13,10 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-root_dir=""
+root_dir="/nfs/turbo/coe-jag/zjsun/data/spider_fd_artifact/fd_artifact"
 model_name="doduo"
-save_dir=""
-doduo_path=""
+save_dir="/home/zjsun/test"
+doduo_path="/home/zjsun/DuDuo/doduo"
 python Functional_Dependencies.py \
 -m $model_name \
 --root_dir $root_dir \

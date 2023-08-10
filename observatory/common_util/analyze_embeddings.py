@@ -1,4 +1,4 @@
-from mcv import compute_mcv
+from observatory.common_util.mcv import compute_mcv
 import torch
 from torch.linalg import inv, norm
 

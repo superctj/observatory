@@ -13,10 +13,10 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-model_name=""
-save_dir=""
-data_dir=""
-file_path=""
+model_name="t5-base"
+file_path="/home/zjsun/row_insig/test_tables.jsonl"
+save_dir="/home/zjsun/test"
+data_dir="/home/zjsun/Turl"
 python entity_stability.py \
 -m $model_name \
 --save_dir $save_dir \

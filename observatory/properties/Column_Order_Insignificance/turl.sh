@@ -12,5 +12,15 @@
 #SBATCH --array=1
 source ~/miniconda3/bin/activate
 conda init
-conda activate tabeval
-python3 col_shuffle_turl.py --data_dir "/home/congtj/observatory/data" --config_path "/home/congtj/observatory/observatory/models/TURL/configs/table-base-config_v2.json" --ckpt_path "/ssd/congtj/observatory/turl_models/pytorch_model.bin" --cuda_device 1 -s CI_TD -l 0
+conda activate observatory
+data_dir="/home/zjsun/Turl"
+config_path="/home/zjsun/Turl/table-base-config_v2.json"
+ckpt_path="/home/zjsun/Turl/pytorch_model.bin"
+save_dir="CI_TD"
+python3 col_shuffle_turl.py \
+--data_dir $data_dir \
+--config_path $config_path \
+--ckpt_path $ckpt_path \
+--cuda_device 0 \
+-s $save_dir \
+-l 0

@@ -12,15 +12,12 @@
 #SBATCH --array=1
 source ~/miniconda3/bin/activate
 conda init
-conda activate tabeval
-file_path=""
-results_dir=""
-num_shuffle=""
+conda activate observatory
+results_dir="/home/zjsun/test" 
+num_shuffle=1000
 model_name="doduo"
-doduo_path=""
-csv_dir="./Turl_csv_dataset"
-python3 turl2normal.py --file_path $file_path\
---directory $csv_dir
+doduo_path="/home/zjsun/DuDuo/doduo"
+csv_dir="/nfs/turbo/coe-jag/zjsun/data/normal_TD"
 python3 doduo_evaluate_row_shuffle.py \
 -r $csv_dir  \
 -s $results_dir  \

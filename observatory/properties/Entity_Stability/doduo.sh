@@ -14,13 +14,13 @@ source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
 model_name="doduo"
-save_dir=""
-data_dir=""
-file_path=""
-doduo_path=""
+file_path="/home/zjsun/row_insig/test_tables.jsonl"
+doduo_path="/home/zjsun/DuDuo/doduo"
+save_dir="/home/zjsun/test"
+data_dir="/home/zjsun/Turl"
 python entity_stability.py \
 -m $model_name \
 --save_dir $save_dir \
 --data_dir $data_dir \
---file_path $file_path
+--file_path $file_path \
 --doduo_path $doduo_path

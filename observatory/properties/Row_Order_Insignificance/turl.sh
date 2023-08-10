@@ -12,5 +12,15 @@
 #SBATCH --array=1
 source ~/miniconda3/bin/activate
 conda init
-conda activate tabeval
-python3 row_shuffle_turl.py   -s RI_TD   -l 2357
+conda activate observatory
+data_dir="/home/zjsun/Turl"
+config_path="/home/zjsun/Turl/table-base-config_v2.json"
+ckpt_path="/home/zjsun/Turl/pytorch_model.bin"
+save_dir="RI_TD"
+python3 row_shuffle_turl.py \
+--data_dir $data_dir \
+--config_path $config_path \
+--ckpt_path $ckpt_path \
+--cuda_device 0 \
+-s $save_dir \
+-l 0

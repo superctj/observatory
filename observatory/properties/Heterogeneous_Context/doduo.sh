@@ -13,13 +13,13 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-root_dir=""
+root_dir="/home/zjsun/data/sotab_numerical_data_type_datasets/sotab_numerical_data_type_datasets"
 model_name="doduo"
-non_text_save_folder=""
-text_save_folder=""
-non_text_metadata_path=""
-text_metadata_path=""
-doduo_path=""
+non_text_save_folder="/home/zjsun/test"
+text_save_folder="/home/zjsun/test"
+non_text_metadata_path="/nfs/turbo/coe-jag/zjsun/data/sotab_data_type_datasets/sotab_data_type_datasets/nontext_types_10-classes_metadata.csv"
+text_metadata_path="/nfs/turbo/coe-jag/zjsun/data/sotab_data_type_datasets/sotab_data_type_datasets/text_types_10-classes_metadata.csv"
+doduo_path="/home/zjsun/DuDuo/doduo"
 python3 doduo_numerical_types.py  --root_dir $root_dir \
 --model_name $model_name --n 1000 \
 --save_folder $non_text_save_folder \

@@ -45,7 +45,7 @@ def is_fit(cols, tokenizer, max_length, model_name):
     return True
 
 
-def max_rows(table, tokenizer, max_length):
+def truncate_index(table, tokenizer, max_length, model_name):
     # assuming table is a list of lists, where each sublist is a row
     # and all rows have the same number of columns
     low = 0
@@ -55,7 +55,7 @@ def max_rows(table, tokenizer, max_length):
         mid = (low + high + 1) // 2  # middle point
         sample_table = table[:mid]  # sample table with 'mid' rows
         cols = table2colList(sample_table)
-        if is_fit(cols, tokenizer, max_length):
+        if is_fit(cols, tokenizer, max_length, model_name):
             low = mid  # if it fits, try with more rows
         else:
             high = mid - 1  # if it doesn't fit, try with less rows
@@ -80,7 +80,7 @@ def main(args):
         os.makedirs(args.save_directory)
 
     for i, table in enumerate(normal_tables):
-        max_rows_fit = max_rows(table, tokenizer, max_length, args.model_name)
+        max_rows_fit = truncate_index(table, tokenizer, max_length, args.model_name)
         truncated_table = table.iloc[:max_rows_fit, :]
         truncated_table.to_csv(
             f"{args.save_directory}/table_{i}.csv", index=False, na_rep=""

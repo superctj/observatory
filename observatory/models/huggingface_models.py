@@ -84,11 +84,17 @@ def load_transformers_tokenizer_and_max_length(model_name: str):
         try:
             tokenizer = T5Tokenizer.from_pretrained(model_name, local_files_only=True)
             model = T5Model.from_pretrained(model_name)
-            max_length = model.config.max_position_embeddings
+            try:
+                max_length = model.config.max_position_embeddings
+            except:
+                max_length = 512
         except OSError:
             tokenizer = T5Tokenizer.from_pretrained(model_name)
             model = T5Model.from_pretrained(model_name)
-            max_length = model.config.max_position_embeddings
+            try:
+                max_length = model.config.max_position_embeddings
+            except:
+                max_length = 512
     else:
         print(f"Unrecognized tokenizer name: {model_name}")
         print(f"You may choose one of: {SUPPORTED_MODELS}")

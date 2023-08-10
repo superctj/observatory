@@ -191,8 +191,8 @@ class SingleTableCellEmbeddingDataset(Dataset):
 
 class Doduo:
     def __init__(self, args=None, basedir="./"):
-        # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.device = torch.device("cuda:1")
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        # self.device = torch.device("cuda:1")
 
         if args is None:
             args = argparse.Namespace
