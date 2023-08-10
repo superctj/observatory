@@ -13,8 +13,8 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-results_dir="" 
-num_shuffle=""
+results_dir="/home/zjsun/test" 
+num_shuffle=1000
 model_name="t5-base" 
 p=0.5
 csv_dir="/nfs/turbo/coe-jag/zjsun/data/normal_TD"
