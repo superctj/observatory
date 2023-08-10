@@ -198,6 +198,7 @@ def get_entity_embeddings_example(data_dir, config, ckpt_path):
     test_dataset = TurlWikiTableCellDataset(
         data_dir, entity_vocab, tokenizer, split="test", force_new=False
     )
+    line_exist = test_dataset.line_exist
     test_dataloader = EntityEmbeddingLoader(test_dataset, batch_size=1, is_train=False)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
