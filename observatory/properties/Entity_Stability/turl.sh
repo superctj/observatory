@@ -12,7 +12,7 @@
 #SBATCH --array=1
 source ~/miniconda3/bin/activate
 conda init
-conda activate tabeval
+conda activate observatory
 model_name="turl"
 save_dir=""
 data_dir=""

@@ -12,7 +12,7 @@
 #SBATCH --array=1
 source ~/miniconda3/bin/activate
 conda init
-conda activate tabeval
+conda activate observatory
 data_dir="/home/zjsun/Turl"
 config_path="/home/zjsun/Turl/table-base-config_v2.json"
 ckpt_path="/home/zjsun/Turl/pytorch_model.bin"

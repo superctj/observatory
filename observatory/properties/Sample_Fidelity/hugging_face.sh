@@ -12,7 +12,7 @@
 #SBATCH --array=1
 source ~/miniconda3/bin/activate
 conda init
-conda activate tabeval
+conda activate observatory
 results_dir="/home/zjsun/test" 
 num_shuffle=1000
 model_name="t5-base" 

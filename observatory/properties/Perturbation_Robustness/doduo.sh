@@ -12,7 +12,7 @@
 #SBATCH --array=1
 source ~/miniconda3/bin/activate
 conda init
-conda activate tabeval
+conda activate observatory
 model_name="doduo"
 original_dir="/home/zjsun/data/processed_db_data/original"
 abbreviation_dir="/home/zjsun/data/processed_db_data/abbreviation"
