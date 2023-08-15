@@ -247,14 +247,14 @@ def process_and_save_embeddings(model_name, args, tables):
         if table_index < args.table_num:
             continue
 
-        try:
-            process_table_wrapper(table_index, table, args, model_name, model, device)
-        except Exception as e:
-            print("Error message:", e)
-            pd.set_option("display.max_columns", None)
-            pd.set_option("display.max_rows", None)
-            print(table.columns)
-            print(table)
+        # try:
+        process_table_wrapper(table_index, table, args, model_name, model, device)
+        # except Exception as e:
+        #     print("Error message:", e)
+        #     pd.set_option("display.max_columns", None)
+        #     pd.set_option("display.max_rows", None)
+        #     print(table.columns)
+        #     print(table)
 
 
 if __name__ == "__main__":
