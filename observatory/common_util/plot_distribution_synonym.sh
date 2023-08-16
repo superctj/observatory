@@ -12,8 +12,4 @@
 source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
-python plot_distribution.py --read_folder /nfs/turbo/coe-jag/zjsun/p4/p4_SD_synonym/bert-base-uncased/results --save_folder ./p4_plot1 --picture_name  bert_synonym.png
-python plot_distribution.py --read_folder /nfs/turbo/coe-jag/zjsun/p4/p4_SD_synonym/google/tapas-base/results --save_folder ./p4_plot1 --picture_name  tapas_synonym.png
-python plot_distribution.py --read_folder /nfs/turbo/coe-jag/zjsun/p4/p4_SD_synonym/roberta-base/results --save_folder ./p4_plot1 --picture_name  roberta_synonym.png
-python plot_distribution.py --read_folder /nfs/turbo/coe-jag/zjsun/p4/p4_SD_synonym/t5-base/results --save_folder ./p4_plot1 --picture_name  t5_synonym.png
-python plot_distribution.py --read_folder /nfs/turbo/coe-jag/zjsun/p4/p4_SD_synonym/tabert/results --save_folder ./p4_plot1 --picture_name  tabert_synonym.png
+python plot_distribution.py --read_folder /home/zjsun/test_Perturbation_Robustness/Perturbation_Robustness/t5-base/results --save_folder ./p4_test --picture_name  t5_synonym.png --labels t5

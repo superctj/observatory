@@ -13,7 +13,3 @@ source ~/miniconda3/bin/activate
 conda init
 conda activate tabeval
 python plot_distribution.py --read_folder /nfs/turbo/coe-jag/zjsun/p4/p4_SD_abbreviation/bert-base-uncased/results --save_folder ./p4_plot1 --picture_name  bert_abbreviation.png
-python plot_distribution.py --read_folder /nfs/turbo/coe-jag/zjsun/p4/p4_SD_abbreviation/google/tapas-base/results --save_folder ./p4_plot1 --picture_name  tapas_abbreviation.png
-python plot_distribution.py --read_folder /nfs/turbo/coe-jag/zjsun/p4/p4_SD_abbreviation/roberta-base/results --save_folder ./p4_plot1 --picture_name  roberta_abbreviation.png
-python plot_distribution.py --read_folder /nfs/turbo/coe-jag/zjsun/p4/p4_SD_abbreviation/t5-base/results --save_folder ./p4_plot1 --picture_name  t5_abbreviation.png
-python plot_distribution.py --read_folder /nfs/turbo/coe-jag/zjsun/p4/p4_SD_abbreviation/tabert/results --save_folder ./p4_plot1 --picture_name  tabert_abbreviation.png
