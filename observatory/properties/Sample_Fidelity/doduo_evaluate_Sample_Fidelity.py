@@ -14,6 +14,7 @@ from observatory.models.huggingface_models import (
     load_transformers_tokenizer_and_max_length,
 )
 from observatory.common_util.truncate import truncate_index
+from observatory.common_util.mcv import compute_mcv
 from torch.linalg import inv, norm
 
 from scipy.special import comb
@@ -325,7 +326,7 @@ if __name__ == "__main__":
     tokenizer, max_length = load_transformers_tokenizer_and_max_length("bert-base-uncased")
     truncated_tables = []
     for table_index, table in enumerate(normal_tables):
-        max_rows_fit = truncate_index(table, tokenizer, max_length, model_name)
+        max_rows_fit = truncate_index(table, tokenizer, max_length, "bert-base-uncased")
         truncated_table = table.iloc[:max_rows_fit, :]
         truncated_tables.append(truncated_table)
     model_name = args.model_name
