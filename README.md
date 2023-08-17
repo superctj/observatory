@@ -70,5 +70,5 @@ For other models: e.g.,
 
     ./observatory/properties/Sample_Fidelity/doduo.sh
 
-## Tips
-To evaluate doduo model on GPU, please substitute observatory/models/DODUO/doduo/doduo/doduo.py with observatory/models/doduo.py.
+## Side Notes
+To evaluate the doduo model on GPU, please substitute observatory/models/DODUO/doduo/doduo.py with observatory/models/doduo.py.
