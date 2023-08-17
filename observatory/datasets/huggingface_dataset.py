@@ -4,7 +4,8 @@ from observatory.common_util.column_based_truncate import (
     max_rows,
 )
 import pandas as pd
-from observatory.models.hugging_face_column_embeddings import process_table
+from observatory.models.hugging_face_column_embeddings import column_based_process_table
+from observatory.models.hugging_face_cell_embeddings import cell_based_process_table
 
 from pandas import DataFrame
 
@@ -53,8 +54,15 @@ def chunk_tables(tables, max_col, model_name, max_length, tokenizer, max_row=Non
                 start_row = start_row + optimal_rows
 
             start_col = end_col
-
-    return chunked_tables
+    
+    
+    chunked_list = []
+    for table_index, column_chunks in chunked_tables.items():
+        for position, chunk in column_chunks.items():
+            chunked_list.append(
+                {"table": chunk, "position": position, "index": table_index}
+            )
+    return chunked_list
 
 
 from torch.utils.data import Dataset, DataLoader
@@ -62,7 +70,7 @@ from pandas import DataFrame
 import torch
 
 
-class TableDataset(Dataset):
+class TableColumnDataset(Dataset):
     def __init__(self, tables, tokenizer, max_length, padding_token, model_name):
         self.tables = tables
         self.tokenizer = tokenizer
@@ -89,7 +97,7 @@ class TableDataset(Dataset):
             return {"inputs": inputs, "position": table_position, "index": table_index}
         else:
             cols = table2colList(table)
-            processed_tokens, cls_positions = process_table(
+            processed_tokens, cls_positions = column_based_process_table(
                 self.tokenizer, cols, self.max_length, self.model_name
             )
             input_ids = self.tokenizer.convert_tokens_to_ids(processed_tokens[0])
@@ -103,21 +111,47 @@ class TableDataset(Dataset):
                 "position": table_position,
                 "index": table_index,
             }
+            
+class TableCellDataset(Dataset):
+    def __init__(self, tables, tokenizer, max_length, padding_token, model_name):
+        self.tables = tables
+        self.tokenizer = tokenizer
+        self.max_length = max_length
+        self.model_name = model_name
+        self.padding_token = padding_token
 
+    def __len__(self):
+        return len(self.tables)
 
-def get_dataloader(
-    tables, max_col, max_row, batch_size, tokenizer, max_length, model_name
-):
-    chunked_tables_dict = chunk_tables(
-        tables, max_col, max_row, tokenizer, max_length, model_name
-    )
-    chunked_tables = []
-    for table_index, column_chunks in chunked_tables_dict.items():
-        for position, chunk in column_chunks.items():
-            chunked_tables.append(
-                {"table": chunk, "position": position, "index": table_index}
+    def __getitem__(self, idx):
+        table_info = self.tables[idx]
+        table = table_info["table"]
+        table_position = table_info["position"]
+        table_index = table_info["index"]
+
+        if self.model_name.startswith("google/tapas"):
+            table.columns = table.columns.astype(str)
+            table = table.reset_index(drop=True)
+            table = table.astype(str)
+            inputs = self.tokenizer(
+                table=table, padding="max_length", return_tensors="pt", truncation=True
             )
+            return {"inputs": inputs, "position": table_position, "index": table_index}
+        else:
+            cols = [list(table[column]) for column in table.columns]
+            processed_tokens, token_positions = cell_based_process_table(
+                self.tokenizer, cols, self.max_length, self.model_name
+            )
+            input_ids = self.tokenizer.convert_tokens_to_ids(processed_tokens)
+            attention_mask = [
+                1 if token != self.padding_token else 0 for token in processed_tokens
+            ]
+            return {
+                "input_ids": torch.tensor(input_ids, dtype=torch.long),
+                "attention_mask": torch.tensor(attention_mask, dtype=torch.long),
+                "token_positions": token_positions,
+                "position": table_position,
+                "index": table_index,
+            }
 
-    dataset = TableDataset(chunked_tables, tokenizer, max_length, model_name)
-    dataloader = DataLoader(dataset, batch_size=batch_size)
-    return dataloader
+

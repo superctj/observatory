@@ -17,7 +17,7 @@ def table2colList(table):
     return cols
 
 
-def process_table(tokenizer, cols, max_length, model_name):
+def column_based_process_table(tokenizer, cols, max_length, model_name):
     current_tokens = []
     cls_positions = []
 
@@ -142,7 +142,7 @@ def get_hugging_face_embeddings(tables, model_name, tokenizer, max_length, model
         for processed_table in truncated_tables:
 
             col_list = table2colList(processed_table)
-            processed_tokens = process_table(
+            processed_tokens = column_based_process_table(
                 tokenizer, col_list, max_length, model.name_or_path
             )
             input_ids = tokenizer.convert_tokens_to_ids(processed_tokens[0])

@@ -3,7 +3,7 @@ import argparse
 import pandas as pd
 import torch
 from observatory.models.DODUO.doduo.doduo import Doduo
-from huggingface_models import (
+from observatory.models.huggingface_models import (
     load_transformers_model,
     load_transformers_tokenizer_and_max_length,
 )

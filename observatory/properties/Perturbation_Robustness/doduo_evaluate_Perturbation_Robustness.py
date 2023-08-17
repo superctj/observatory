@@ -146,12 +146,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     result_dict = compare_directories(args.original_directory, args.changed_directory)
-    pd.set_option("display.max_columns", None)
-    pd.set_option("display.max_rows", None)
-    for key, value in result_dict.items():
-        print(key)
-        for things in value:
-            print(things)
+    # pd.set_option("display.max_columns", None)
+    # pd.set_option("display.max_rows", None)
+    # for key, value in result_dict.items():
+    #     print(key)
+    #     for things in value:
+    #         print(things)
 
     model_name = args.model_name
 

@@ -241,6 +241,7 @@ def process_and_save_embeddings(model_name, args, tables):
     model_args.model = "wikitable"  # two models available "wikitable" and "viznet"
 
     model = Doduo(model_args, basedir=args.doduo_path)
+    print(model.device)
 
     for table_index, table in enumerate(tables):
         if table_index < args.table_num:

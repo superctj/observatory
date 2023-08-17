@@ -69,3 +69,6 @@ For models from HuggingFace (specify the model identifier in the script): e.g.,
 For other models: e.g.,
 
     ./observatory/properties/Sample_Fidelity/doduo.sh
+
+## Tips
+To evaluate doduo model on GPU, please substitute observatory/models/DODUO/doduo/doduo/doduo.py with observatory/models/doduo.py.
