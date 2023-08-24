@@ -59,16 +59,15 @@ def sample_top_k_rows(df, k):
 def sample_top_k_cols(df, k):
     return df.iloc[:, :k]
 
-def chunk_tables(tables,  model_name, max_length, tokenizer, max_col=None, max_row=None, max_token_per_cell=None):
-    chunked_tables = {}
-    
+def chunk_tables(tables, model_name, max_length, tokenizer, max_col=None, max_row=None, max_token_per_cell=None):
+
     # Iterate over each table
     for table_index, table in enumerate(tables):
         # Convert table to pandas DataFrame for easier manipulation
         df = DataFrame(table)
         if not max_col:
             max_col = df.shape[1]
-        chunked_tables[table_index] = {}
+
         # Split each table into chunks based on max_col
         start_col = 0
         while start_col < df.shape[1]:
@@ -83,40 +82,31 @@ def chunk_tables(tables,  model_name, max_length, tokenizer, max_col=None, max_r
                 if max_token_per_cell:
                     approxiamte_optimal_rows = max_length // (chunk.shape[1] * max_token_per_cell)
                     if max_row:
-                        approxiamte_optimal_rows = min(max_row,approxiamte_optimal_rows)
+                        approxiamte_optimal_rows = min(max_row, approxiamte_optimal_rows)
                 end_row = min(start_row + approxiamte_optimal_rows, chunk.shape[0])
                 sub_chunk = chunk.iloc[start_row:end_row, :]
-                cols = table2colList(sub_chunk)
-                optimal_rows = max_rows(cols, tokenizer, max_length, model_name)
+                cols = table2colList(sub_chunk)  # Assuming table2colList is some external function
+                optimal_rows = max_rows(cols, tokenizer, max_length, model_name)  # Assuming max_rows is some external function
 
                 # Ensure optimal_rows is at least 1 to prevent infinite loops
                 if optimal_rows == 0:
-                    print("Column headers too Many, please set a vaild max_col or reduce teh current max_col!")
-                    print("You may also try to set a vaild max_token_per_cell or reduce teh current max_token_per_cell")
+                    print("Column headers too many, please set a valid max_col or reduce the current max_col!")
+                    print("You may also try to set a valid max_token_per_cell or reduce the current max_token_per_cell")
                     start_row = start_row + 1
                     continue
 
                 truncated_chunk = sub_chunk.iloc[:optimal_rows, :]
 
-                # Store the chunk with its start and end row indices
-                if (start_col, end_col) not in chunked_tables[table_index]:
-                    chunked_tables[table_index][(start_col, end_col)] = {}
-                chunked_tables[table_index][(start_col, end_col)][
-                    (start_row, start_row + optimal_rows)
-                ] = truncated_chunk
+                # Yield the chunk with its start and end row indices and other relevant information
+                yield {
+                    "table": truncated_chunk,
+                    "position": ((start_col, end_col), (start_row, start_row + optimal_rows)),
+                    "index": table_index
+                }
 
                 start_row = start_row + optimal_rows
 
             start_col = end_col
-    
-    
-    chunked_list = []
-    for table_index, column_chunks in chunked_tables.items():
-        for position, chunk in column_chunks.items():
-            chunked_list.append(
-                {"table": chunk, "position": position, "index": table_index}
-            )
-    return chunked_list
 
 
 
