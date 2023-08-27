@@ -9,7 +9,8 @@ import random
 from torch.utils.data import Dataset, DataLoader
 import torch
 from pandas import DataFrame
-
+from sklearn.feature_extraction.text import TfidfVectorizer
+import numpy as np
 from collections import Counter
 from sklearn.feature_extraction.text import CountVectorizer
 
@@ -58,6 +59,105 @@ def sample_top_k_rows(df, k):
 
 def sample_top_k_cols(df, k):
     return df.iloc[:, :k]
+
+
+
+def filter_rows_by_tfidf(df, text_column, top_n=None, threshold=None):
+    """
+    Filter rows in a DataFrame based on high TF-IDF scores of a text column.
+    
+    Parameters:
+    - df (pd.DataFrame): DataFrame containing the data.
+    - text_column (str): Name of the column containing text data.
+    - top_n (int, optional): Number of top rows to keep. If None, all rows above the threshold are kept.
+    - threshold (float, optional): Minimum sum of TF-IDF scores to keep a row. If None, no threshold is applied.
+    
+    Returns:
+    - pd.DataFrame: Filtered DataFrame.
+    """
+    
+    # Initialize TF-IDF Vectorizer
+    vectorizer = TfidfVectorizer()
+    
+    # Generate TF-IDF matrix
+    tfidf_matrix = vectorizer.fit_transform(df[text_column])
+    
+    # Calculate the sum of TF-IDF scores for each row
+    tfidf_sum = np.sum(tfidf_matrix.toarray(), axis=1)
+    
+    # Create a new DataFrame with TF-IDF sum
+    df_tfidf = df.copy()
+    df_tfidf['tfidf_sum'] = tfidf_sum
+    
+    # Sort DataFrame by TF-IDF sum
+    df_tfidf = df_tfidf.sort_values(by='tfidf_sum', ascending=False)
+    
+    # Apply top_n and threshold filters
+    if top_n is not None:
+        df_tfidf = df_tfidf.head(top_n)
+    if threshold is not None:
+        df_tfidf = df_tfidf[df_tfidf['tfidf_sum'] >= threshold]
+        
+    # Drop the TF-IDF sum column before returning
+    df_tfidf.drop(columns=['tfidf_sum'], inplace=True)
+    
+    return df_tfidf
+
+def filter_rows_by_avg_tfidf(df, top_n=None, threshold=None):
+    """
+    Filter rows in a DataFrame based on high average TF-IDF scores across all text columns.
+    
+    Parameters:
+    - df (pd.DataFrame): DataFrame containing the data.
+    - top_n (int, optional): Number of top rows to keep. If None, all rows above the threshold are kept.
+    - threshold (float, optional): Minimum average TF-IDF scores to keep a row. If None, no threshold is applied.
+    
+    Returns:
+    - pd.DataFrame: Filtered DataFrame.
+    """
+    
+    # Initialize a list to store TF-IDF sums for each row
+    tfidf_sums = []
+    
+    # Initialize TF-IDF Vectorizer
+    vectorizer = TfidfVectorizer()
+    
+    for col in df.columns:
+        # Check if the column contains text data
+        if df[col].dtype == 'object':
+            # Generate TF-IDF matrix for the column
+            tfidf_matrix = vectorizer.fit_transform(df[col])
+            
+            # Calculate the sum of TF-IDF scores for each row
+            tfidf_sum = np.sum(tfidf_matrix.toarray(), axis=1)
+            
+            # Append to the list of TF-IDF sums
+            tfidf_sums.append(tfidf_sum)
+    
+    # Calculate the average TF-IDF score for each row
+    avg_tfidf = np.mean(np.array(tfidf_sums), axis=0)
+    
+    # Create a new DataFrame with the average TF-IDF score
+    df_tfidf = df.copy()
+    df_tfidf['avg_tfidf'] = avg_tfidf
+    
+    # Sort DataFrame by average TF-IDF score
+    df_tfidf = df_tfidf.sort_values(by='avg_tfidf', ascending=False)
+    
+    # Apply top_n and threshold filters
+    if top_n is not None:
+        df_tfidf = df_tfidf.head(top_n)
+    if threshold is not None:
+        df_tfidf = df_tfidf[df_tfidf['avg_tfidf'] >= threshold]
+        
+    # Drop the average TF-IDF score column before returning
+    df_tfidf.drop(columns=['avg_tfidf'], inplace=True)
+    
+    return df_tfidf
+
+
+
+
 
 def chunk_tables(tables, model_name, max_length, tokenizer, max_col=None, max_row=None, max_token_per_cell=None):
 
