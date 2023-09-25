@@ -211,7 +211,7 @@ def get_average_embedding(table, column_name, get_embedding, batch_size=10):
         embeddings = get_embedding(tables_list)
         for embedding in embeddings:
             if sum_embeddings is None:
-                sum_embeddings = torch.zeros(embedding.size()).to(device)
+                sum_embeddings = torch.zeros(embedding[col_index].size()).to(device)
             sum_embeddings += embedding[col_index].to(device)
             num_embeddings += 1
     avg_embedding = sum_embeddings / num_embeddings
@@ -300,8 +300,14 @@ if __name__ == "__main__":
             t1_name, t2_name = row["ds_name"], row["ds_name_2"]
             c1_name, c2_name = row["att_name"], row["att_name_2"]
             containment = row["trueContainment"]
-            t1 = data_loader.read_table(t1_name, drop_nan=False, nrows=args.value)
-            t2 = data_loader.read_table(t2_name, drop_nan=False, nrows=args.value)
+            try:
+                t1 = data_loader.read_table(t1_name, drop_nan=False, nrows=args.value)
+                t2 = data_loader.read_table(t2_name, drop_nan=False, nrows=args.value)
+            except Exception as e:
+                print("Error: ")
+                print(e)
+                print("Skip The pair")
+                
             # print("t1_name: ", t1_name)
             # print("c1_name: ", c1_name)
             # print("t2_name: ", t2_name)
