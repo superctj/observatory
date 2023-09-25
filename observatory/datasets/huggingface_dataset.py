@@ -24,7 +24,46 @@ def truncate_cell(text, tokenizer, max_token_per_cell):
         tokens = tokens[:max_token_per_cell]
     return tokenizer.convert_tokens_to_string(tokens)
 
+def chunk_neighbor_tables_tabert(tables, column_name, n, max_length, max_row=None, max_token_per_cell=None):
+    """
+    Chunk tables based on a central column and its neighbors.
+    """
 
+    for table_index, df in enumerate(tables):
+        
+        if column_name not in df.columns:
+            print(f"Column '{column_name}' not found in table {table_index}. Skipping...")
+            continue
+        
+        # Find the index of the specified column
+        col_index = df.columns.get_loc(column_name)
+        
+        # Determine the range of columns to select based on n
+        start_col_idx = max(0, col_index - n)
+        end_col_idx = min(df.shape[1], col_index + n + 1)
+        
+        # Extract the central and neighboring columns
+        chunk = df.iloc[:, start_col_idx:end_col_idx]
+        
+        # Integrate the chunking mechanism from the previous function
+        start_row = 0
+        while start_row < chunk.shape[0]:
+            optimal_rows = max_length // chunk.shape[1]
+            if max_token_per_cell:
+                optimal_rows = max_length // (chunk.shape[1] * max_token_per_cell)
+            if max_row:
+                optimal_rows = min(max_row, optimal_rows)
+            end_row = min(start_row + optimal_rows, chunk.shape[0])
+            truncated_chunk = chunk.iloc[start_row:end_row, :]
+            
+            # Yield the chunk with its start and end row indices and other relevant information
+            yield {
+                "table": truncated_chunk,
+                "position": ((start_col_idx, end_col_idx), (start_row, start_row + optimal_rows)),
+                "index": table_index
+            }
+
+            start_row = start_row + optimal_rows
 
 def chunk_neighbor_tables(tables, column_name, n, model_name, max_length, tokenizer, max_row=None, max_token_per_cell=None):
     """

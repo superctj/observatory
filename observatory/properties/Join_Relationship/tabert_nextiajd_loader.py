@@ -5,7 +5,7 @@ from typing import Dict, List
 from torch.nn.functional import cosine_similarity
 import functools
 from observatory.models.tabert_column_embeddings import get_tabert_embeddings
-from observatory.datasets.huggingface_dataset import chunk_neighbor_tables, batch_generator
+from observatory.datasets.huggingface_dataset import chunk_neighbor_tables_tabert, batch_generator
 from observatory.models.huggingface_models import load_transformers_tokenizer
 import itertools
 import pandas as pd
@@ -145,10 +145,9 @@ def get_average_embedding(table, column_name, get_embedding, batch_size=10):
     sum_embeddings = None
     num_embeddings = 0
     # chunks_generator = split_table(table, n=n, m=m)
-    chunks_generator = chunk_neighbor_tables(tables = [table,], \
+    chunks_generator = chunk_neighbor_tables_tabert(tables = [table,], \
         column_name = column_name, n = 2 , \
-        model_name = 'bert-base-uncased', max_length = 512, \
-        tokenizer = load_transformers_tokenizer('bert-base-uncased'), \
+        max_length = 512, \
         max_token_per_cell=8)
     # Find the index of the column in the chunk table headers
     first_chunk = next(chunks_generator)
@@ -224,7 +223,7 @@ if __name__ == "__main__":
 
     get_embedding = functools.partial(get_tabert_embeddings, model=model)
 
-    n = args.n
+    # n = args.n
     testbed = args.testbed
     root_dir = os.path.join(args.root_dir, testbed)
     dataset_dir = os.path.join(root_dir, "datasets")
