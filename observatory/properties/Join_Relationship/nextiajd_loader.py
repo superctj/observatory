@@ -7,6 +7,7 @@ from observatory.models.hugging_face_column_embeddings import (
 from typing import Dict, List
 from torch.nn.functional import cosine_similarity
 import functools
+from observatory.datasets.huggingface_dataset import TableColumnDataset
 from observatory.models.huggingface_models import (
     load_transformers_model,
     load_transformers_tokenizer_and_max_length,
@@ -266,6 +267,7 @@ if __name__ == "__main__":
                 # print(t1)
                 # c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding)
                 continue
+            
             try:
                 c2_avg_embedding = get_average_embedding(t2, c2_idx, n, get_embedding)
             except AssertionError:
@@ -290,6 +292,8 @@ if __name__ == "__main__":
                 # print(t2)
                 # c2_avg_embedding = get_average_embedding(t2, c2_idx, n,  get_embedding)
                 continue
+            
+            
             data_cosine_similarity = cosine_similarity(
                 c1_avg_embedding.unsqueeze(0), c2_avg_embedding.unsqueeze(0)
             )

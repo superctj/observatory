@@ -5,7 +5,9 @@ from typing import Dict, List
 from torch.nn.functional import cosine_similarity
 import functools
 from observatory.models.tabert_column_embeddings import get_tabert_embeddings
-
+from observatory.datasets.huggingface_dataset import chunk_neighbor_tables, batch_generator
+from observatory.models.huggingface_models import load_transformers_tokenizer
+import itertools
 import pandas as pd
 from collections import Counter
 
@@ -138,17 +140,31 @@ def split_table(table: pd.DataFrame, n: int, m: int):
         yield [table.iloc[j : j + m] for j in range(i, min(i + m * n, total_rows), m)]
 
 
-def get_average_embedding(table, index, n, get_embedding):
-    m = max(min(100 // len(table.columns.tolist()), 3), 1)
+def get_average_embedding(table, column_name, get_embedding, batch_size=10):
+    # m = max(min(100 // len(table.columns.tolist()), 3), 1)
     sum_embeddings = None
     num_embeddings = 0
-    chunks_generator = split_table(table, n=n, m=m)
-    for tables in chunks_generator:
-        embeddings = get_embedding(tables)
-        if sum_embeddings is None:
-            sum_embeddings = torch.zeros(embeddings[0][index].size())
+    # chunks_generator = split_table(table, n=n, m=m)
+    chunks_generator = chunk_neighbor_tables(tables = [table,], \
+        column_name = column_name, n = 2 , \
+        model_name = 'bert-base-uncased', max_length = 512, \
+        tokenizer = load_transformers_tokenizer('bert-base-uncased'), \
+        max_token_per_cell=8)
+    # Find the index of the column in the chunk table headers
+    first_chunk = next(chunks_generator)
+    col_index = first_chunk["table"].columns.get_loc(column_name)
+
+    # Use the batch_generator
+    for batch_tables in batch_generator(itertools.chain([first_chunk], chunks_generator), batch_size):
+        # Extract the actual tables from the dictionaries
+        tables_list = [chunk_dict["table"] for chunk_dict in batch_tables]
+
+        # Assuming your get_embedding function can handle a batch of tables
+        embeddings = get_embedding(tables_list)
         for embedding in embeddings:
-            sum_embeddings += embedding[index].to(device)
+            if sum_embeddings is None:
+                sum_embeddings = torch.zeros(embedding.size()).to(device)
+            sum_embeddings += embedding[col_index].to(device)
             num_embeddings += 1
     avg_embedding = sum_embeddings / num_embeddings
     return avg_embedding
@@ -185,7 +201,12 @@ if __name__ == "__main__":
         default=".",
         help="Path to load the tabert model",
     )
-
+    parser.add_argument(
+        "--batch_size",
+        type=int,
+        default=10,
+        help="The btach size for inference",
+    )
     args = parser.parse_args()
     model_name = args.model_name
 
@@ -193,6 +214,7 @@ if __name__ == "__main__":
     from observatory.models.TaBERT.table_bert import TableBertModel
 
     model_path = args.tabert_bin
+    batch_size = args.batch_size 
     model = TableBertModel.from_pretrained(
         model_path,
     )
@@ -250,7 +272,7 @@ if __name__ == "__main__":
                 print("Error message:", e)
                 continue
             try:
-                c1_avg_embedding = get_average_embedding(t1, c1_idx, n, get_embedding)
+                c1_avg_embedding = get_average_embedding(t1, c1_name, get_embedding, batch_size)
             except AssertionError:
                 continue
             except Exception as e:
@@ -274,7 +296,7 @@ if __name__ == "__main__":
                 # c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding)
                 continue
             try:
-                c2_avg_embedding = get_average_embedding(t2, c2_idx, n, get_embedding)
+                c2_avg_embedding = get_average_embedding(t2, c2_name, get_embedding, batch_size)
             except AssertionError:
                 continue
             except Exception as e:
