@@ -189,13 +189,13 @@ def split_table(table: pd.DataFrame, n: int, m: int):
         yield [table.iloc[j : j + m] for j in range(i, min(i + m * n, total_rows), m)]
 
 
-def get_average_embedding(table, column_name, get_embedding, batch_size=10):
+def get_average_embedding(table, column_name, get_embedding, n=1, batch_size=10):
     # m = max(min(100 // len(table.columns.tolist()), 3), 1)
     sum_embeddings = None
     num_embeddings = 0
     # chunks_generator = split_table(table, n=n, m=m)
     chunks_generator = chunk_neighbor_tables_tabert(tables = [table,], \
-        column_name = column_name, n = 2 , \
+        column_name = column_name, n = n , \
         max_length = 512, \
         max_token_per_cell=8)
     # Find the index of the column in the chunk table headers
@@ -250,6 +250,12 @@ if __name__ == "__main__":
         help="Path to load the tabert model",
     )
     parser.add_argument(
+        "--nearby_column",
+        type=int,
+        default=1,
+        help="The number of nearby columns",
+    )
+    parser.add_argument(
         "--batch_size",
         type=int,
         default=10,
@@ -262,7 +268,8 @@ if __name__ == "__main__":
     from observatory.models.TaBERT.table_bert import TableBertModel
 
     model_path = args.tabert_bin
-    batch_size = args.batch_size 
+    batch_size = args.batch_size
+    n = args.nearby_column 
     model = TableBertModel.from_pretrained(
         model_path,
     )
@@ -326,7 +333,7 @@ if __name__ == "__main__":
                 print("Error message:", e)
                 continue
             try:
-                c1_avg_embedding = get_average_embedding(t1, c1_name, get_embedding, batch_size)
+                c1_avg_embedding = get_average_embedding(t1, c1_name, get_embedding, n, batch_size)
             except AssertionError:
                 continue
             except Exception as e:
@@ -350,7 +357,7 @@ if __name__ == "__main__":
                 # c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding)
                 continue
             try:
-                c2_avg_embedding = get_average_embedding(t2, c2_name, get_embedding, batch_size)
+                c2_avg_embedding = get_average_embedding(t2, c2_name, get_embedding, n, batch_size)
             except AssertionError:
                 continue
             except Exception as e:
