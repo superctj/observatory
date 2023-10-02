@@ -140,6 +140,7 @@ def get_hugging_face_row_embeddings_batched(tables, model_name, tokenizer, max_l
 
     batch_input_ids = []
     batch_attention_masks = []
+    batch_token_type_ids = []
     batch_cls_positions = []
 
     for processed_table in truncated_tables:

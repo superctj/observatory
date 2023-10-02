@@ -181,9 +181,10 @@ def get_hugging_face_table_embeddings_batched(tables, model_name, tokenizer, max
             )
             input_ids = tokenizer.convert_tokens_to_ids(processed_tokens)
             attention_mask = [1 if token != padding_token else 0 for token in processed_tokens]
-
-            batch_input_ids.append(input_ids)
-            batch_attention_masks.append(attention_mask)
+            input_ids_torch = torch.tensor([input_ids], device=device)
+            attention_mask_torch = torch.tensor([attention_mask], device=device)
+            batch_input_ids.append(input_ids_torch)
+            batch_attention_masks.append(attention_mask_torch)
 
             if len(batch_input_ids) == batch_size or processed_table is truncated_tables[-1]:
                 input_ids_tensor = torch.stack(batch_input_ids, dim=0).to(device)
