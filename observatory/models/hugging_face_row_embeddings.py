@@ -175,11 +175,13 @@ def get_hugging_face_row_embeddings_batched(tables, model_name, tokenizer, max_l
 
                 # Extracting embeddings for rows
                 for batch_idx in range(last_hidden_states.shape[0]):
+                    row_embeddings = []
                     for row_id in range(1, max(batched_inputs["token_type_ids"][batch_idx][:, 2]) + 1):
                         indices = torch.where(batched_inputs["token_type_ids"][batch_idx][:, 2] == row_id)[0]
                         embeddings = last_hidden_states[batch_idx][indices]
                         row_embedding = embeddings.mean(dim=0)
-                        all_embeddings.append(row_embedding)
+                        row_embeddings.append(row_embedding)
+                    all_embeddings.append(row_embeddings)
 
                 # Clear the batch lists
                 batch_input_ids, batch_token_type_ids, batch_attention_masks = [], [], []
