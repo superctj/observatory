@@ -145,9 +145,45 @@ def get_hugging_face_row_embeddings_batched(tables, model_name, tokenizer, max_l
 
     for processed_table in truncated_tables:
         if model_name.startswith("google/tapas"):
-            # [NOTE]: Batching for TAPAS is a bit more involved. For simplicity, we're skipping it for now.
-            # Implementing batching for TAPAS would require adjusting token_type_ids and other specifics.
-            pass
+            processed_table.columns = processed_table.columns.astype(str)
+            processed_table = processed_table.reset_index(drop=True)
+            processed_table = processed_table.astype(str)
+
+            inputs = tokenizer(
+                table=processed_table,
+                padding="max_length",
+                return_tensors="pt",
+                truncation=True,
+            )
+
+            batch_input_ids.append(inputs["input_ids"][0])
+            batch_token_type_ids.append(inputs["token_type_ids"][0])
+            batch_attention_masks.append(inputs["attention_mask"][0])
+
+            # If batch size is reached or it's the last table, then process the batch.
+            if len(batch_input_ids) == batch_size or processed_table is truncated_tables[-1]:
+                batched_inputs = {
+                    "input_ids": torch.stack(batch_input_ids, dim=0).to(device),
+                    "token_type_ids": torch.stack(batch_token_type_ids, dim=0).to(device),
+                    "attention_mask": torch.stack(batch_attention_masks, dim=0).to(device)
+                }
+
+                with torch.no_grad():
+                    outputs = model(**batched_inputs)
+
+                last_hidden_states = outputs.last_hidden_state
+
+                # Extracting embeddings for rows
+                for batch_idx in range(last_hidden_states.shape[0]):
+                    for row_id in range(1, max(batched_inputs["token_type_ids"][batch_idx][:, 2]) + 1):
+                        indices = torch.where(batched_inputs["token_type_ids"][batch_idx][:, 2] == row_id)[0]
+                        embeddings = last_hidden_states[batch_idx][indices]
+                        row_embedding = embeddings.mean(dim=0)
+                        all_embeddings.append(row_embedding)
+
+                # Clear the batch lists
+                batch_input_ids, batch_token_type_ids, batch_attention_masks = [], [], []
+
         else:
             row_list = row2strList(processed_table)
             processed_tokens, cls_positions = row_based_process_table(
