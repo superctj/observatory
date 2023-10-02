@@ -5,7 +5,7 @@ import argparse
 import pandas as pd
 import torch
 
-from observatory.common_util.column_based_truncate import truncate_index
+from observatory.common_util.column_based_truncate import column_based_truncate
 
 
 def table2colList(table):
@@ -80,7 +80,7 @@ def get_tapas_column_embeddings(inputs, last_hidden_states):
     return column_embeddings
 
 
-def get_hugging_face_embeddings(tables, model_name, tokenizer, max_length, model):
+def get_hugging_face_column_embeddings(tables, model_name, tokenizer, max_length, model):
     # tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -90,7 +90,7 @@ def get_hugging_face_embeddings(tables, model_name, tokenizer, max_length, model
     padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
     truncated_tables = []
     for table_index, table in enumerate(tables):
-        max_rows_fit = truncate_index(table, tokenizer, max_length, model_name)
+        max_rows_fit = column_based_truncate(table, tokenizer, max_length, model_name)
         if max_rows_fit < 1:
             ##################
             ## for other properties, do something here
@@ -153,17 +153,17 @@ def get_hugging_face_embeddings(tables, model_name, tokenizer, max_length, model
 
             input_ids_tensor = torch.tensor([input_ids], device=device)
             attention_mask_tensor = torch.tensor([attention_mask], device=device)
-
-            if model.name_or_path.startswith("t5"):
-                outputs = model(
-                    input_ids=input_ids_tensor,
-                    attention_mask=attention_mask_tensor,
-                    decoder_input_ids=input_ids_tensor,
-                )
-            else:
-                outputs = model(
-                    input_ids=input_ids_tensor, attention_mask=attention_mask_tensor
-                )
+            with torch.no_grad():
+                if model.name_or_path.startswith("t5"):
+                    outputs = model(
+                        input_ids=input_ids_tensor,
+                        attention_mask=attention_mask_tensor,
+                        decoder_input_ids=input_ids_tensor,
+                    )
+                else:
+                    outputs = model(
+                        input_ids=input_ids_tensor, attention_mask=attention_mask_tensor
+                    )
             last_hidden_state = outputs.last_hidden_state
 
             embeddings = []

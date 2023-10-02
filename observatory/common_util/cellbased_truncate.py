@@ -9,7 +9,7 @@ from observatory.models.huggingface_models import (
 )
 
 
-def truncate_index(table, tokenizer, max_length, model_name):
+def cellbased_truncate(table, tokenizer, max_length, model_name):
     def table2colList(table):
         cols = []
         for i in range(len(table.columns)):

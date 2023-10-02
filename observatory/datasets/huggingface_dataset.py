@@ -1,5 +1,5 @@
 from observatory.common_util.column_based_truncate import (
-    truncate_index,
+    column_based_truncate,
     table2colList,
 )
 import pandas as pd
@@ -24,7 +24,7 @@ def truncate_cell(text, tokenizer, max_token_per_cell):
         tokens = tokens[:max_token_per_cell]
     return tokenizer.convert_tokens_to_string(tokens)
 
-def chunk_neighbor_tables_tabert(tables, column_name, n, max_length, max_row=None, max_token_per_cell=None):
+def chunk_neighbor_tables_template(tables, column_name, n, max_length, max_row=None, max_token_per_cell=None):
     """
     Chunk tables based on a central column and its neighbors.
     """
@@ -104,8 +104,7 @@ def chunk_neighbor_tables(tables, column_name, n, model_name, max_length, tokeni
                     sub_chunk[col] = sub_chunk[col].apply(lambda x: truncate_cell(str(x), tokenizer, max_token_per_cell))
             
             # Assuming table2colList and truncate_index are some external functions
-            cols = table2colList(sub_chunk)
-            optimal_rows = truncate_index(df, tokenizer, max_length, model_name)
+            optimal_rows = column_based_truncate(df, tokenizer, max_length, model_name)
 
             # Ensure optimal_rows is at least 1 to prevent infinite loops
             if optimal_rows == 0:
@@ -156,8 +155,7 @@ def chunk_tables(tables, model_name, max_length, tokenizer, max_col=None, max_ro
                 if max_token_per_cell:
                     for col in sub_chunk.columns:
                         sub_chunk[col] = sub_chunk[col].apply(lambda x: truncate_cell(str(x), tokenizer, max_token_per_cell))
-                cols = table2colList(sub_chunk)  # Assuming table2colList is some external function
-                optimal_rows = truncate_index(df, tokenizer, max_length, model_name)  # Assuming max_rows is some external function
+                optimal_rows = column_based_truncate(df, tokenizer, max_length, model_name)  # Assuming max_rows is some external function
 
                 # Ensure optimal_rows is at least 1 to prevent infinite loops
                 if optimal_rows == 0:

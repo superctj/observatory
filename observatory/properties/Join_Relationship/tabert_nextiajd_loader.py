@@ -19,7 +19,7 @@ def batch_generator(generator, batch_size):
     if batch:
         yield batch
         
-def chunk_neighbor_tables_tabert(tables, column_name, n, max_length, max_row=None, max_token_per_cell=None):
+def chunk_neighbor_tables_tabert(tables, column_name, n, max_length, max_row=None, max_token_per_cell=20):
     """
     Chunk tables based on a central column and its neighbors.
     """

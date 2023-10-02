@@ -2,7 +2,7 @@ import os
 import argparse
 import torch
 from observatory.models.hugging_face_column_embeddings import (
-    get_hugging_face_embeddings,
+    get_hugging_face_column_embeddings,
 )
 from typing import Dict, List
 from torch.nn.functional import cosine_similarity
@@ -198,7 +198,7 @@ if __name__ == "__main__":
     model = load_transformers_model(model_name, device)
     model = model.eval()
     get_embedding = functools.partial(
-        get_hugging_face_embeddings,
+        get_hugging_face_column_embeddings,
         model_name=model_name,
         tokenizer=tokenizer,
         max_length=max_length,

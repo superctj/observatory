@@ -45,7 +45,7 @@ def is_fit(cols, tokenizer, max_length, model_name):
     return True
 
 
-def truncate_index(table, tokenizer, max_length, model_name):
+def column_based_truncate(table, tokenizer, max_length, model_name):
     # assuming table is a list of lists, where each sublist is a row
     # and all rows have the same number of columns
     low = 0
@@ -80,7 +80,7 @@ def main(args):
         os.makedirs(args.save_directory)
 
     for i, table in enumerate(normal_tables):
-        max_rows_fit = truncate_index(table, tokenizer, max_length, args.model_name)
+        max_rows_fit = column_based_truncate(table, tokenizer, max_length, args.model_name)
         truncated_table = table.iloc[:max_rows_fit, :]
         truncated_table.to_csv(
             f"{args.save_directory}/table_{i}.csv", index=False, na_rep=""

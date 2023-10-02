@@ -14,7 +14,7 @@ from observatory.common_util.truncate import truncate_index
 from observatory.common_util.mcv import compute_mcv
 from torch.linalg import inv, norm
 from observatory.models.hugging_face_column_embeddings import (
-    get_hugging_face_embeddings,
+    get_hugging_face_column_embeddings,
 )
 
 
