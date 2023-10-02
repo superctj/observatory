@@ -77,7 +77,7 @@ def analyze_embeddings(all_embeddings):
         cosine_similarities.append(cosine_similarity.item())
     
     avg_cosine_similarity = torch.mean(torch.tensor(cosine_similarities))
-    mcv = compute_mcv(torch.stack(all_embeddings))
+    mcv = compute_mcv(all_embeddings)
 
 
     return (

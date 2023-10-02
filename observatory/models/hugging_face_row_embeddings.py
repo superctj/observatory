@@ -89,9 +89,8 @@ def get_hugging_face_row_embeddings(tables, model_name, tokenizer, max_length, m
         else:
             # Logic for models other than TAPAS
             # Convert your processed_table to appropriate row strings and tokenize them
-            row_list = row2strList(processed_table) 
             processed_tokens, cls_positions = row_based_process_table(
-                tokenizer, row_list, max_length, model.name_or_path
+                tokenizer, processed_table, max_length, model.name_or_path
             ) 
             input_ids = tokenizer.convert_tokens_to_ids(processed_tokens[0])
             attention_mask = [
@@ -185,9 +184,8 @@ def get_hugging_face_row_embeddings_batched(tables, model_name, tokenizer, max_l
                 batch_input_ids, batch_token_type_ids, batch_attention_masks = [], [], []
 
         else:
-            row_list = row2strList(processed_table)
             processed_tokens, cls_positions = row_based_process_table(
-                tokenizer, row_list, max_length, model.name_or_path
+                tokenizer, processed_table, max_length, model.name_or_path
             )
             input_ids = tokenizer.convert_tokens_to_ids(processed_tokens)
             attention_mask = [
