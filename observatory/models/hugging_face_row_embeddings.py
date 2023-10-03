@@ -204,7 +204,7 @@ def get_hugging_face_row_embeddings_batched(tables, model_name, tokenizer, max_l
             if len(batch_input_ids) == batch_size or num_all_tables == table_num + 1:
                 input_ids_tensor = torch.tensor(batch_input_ids, device=device)
                 attention_mask_tensor = torch.tensor(batch_attention_masks, device=device)
-
+                
                 with torch.no_grad():
                     if model.name_or_path.startswith("t5"):
                         outputs = model(
