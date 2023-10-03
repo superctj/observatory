@@ -65,6 +65,9 @@ def shuffle_df_columns(df, m):
 
 
 def analyze_embeddings(all_embeddings):
+    table_embeddings = []
+    for j in range(len(all_embeddings)):
+            table_embeddings.append(all_embeddings[j])
 
     cosine_similarities = []
     for j in range(1, len(all_embeddings)):
@@ -77,7 +80,7 @@ def analyze_embeddings(all_embeddings):
         cosine_similarities.append(cosine_similarity.item())
     
     avg_cosine_similarity = torch.mean(torch.tensor(cosine_similarities))
-    mcv = compute_mcv(all_embeddings)
+    mcv = compute_mcv(torch.stack(table_embeddings))
 
 
     return (

@@ -135,6 +135,7 @@ def get_hugging_face_table_embeddings_batched(tables, model_name, tokenizer, max
     batch_input_ids = []
     batch_token_type_ids = []
     batch_attention_masks = []
+    batch_cls_positions = []
 
     for processed_table in truncated_tables:
         if model_name.startswith("google/tapas"):
@@ -181,14 +182,14 @@ def get_hugging_face_table_embeddings_batched(tables, model_name, tokenizer, max
             )
             input_ids = tokenizer.convert_tokens_to_ids(processed_tokens)
             attention_mask = [1 if token != padding_token else 0 for token in processed_tokens]
-            input_ids_torch = torch.tensor([input_ids], device=device)
-            attention_mask_torch = torch.tensor([attention_mask], device=device)
-            batch_input_ids.append(input_ids_torch)
-            batch_attention_masks.append(attention_mask_torch)
-
+            
+            batch_input_ids.append(input_ids)
+            batch_attention_masks.append(attention_mask)
+            batch_cls_positions.append(cls_position)
+            
             if len(batch_input_ids) == batch_size or processed_table is truncated_tables[-1]:
-                input_ids_tensor = torch.stack(batch_input_ids, dim=0).to(device)
-                attention_mask_tensor = torch.stack(batch_attention_masks, dim=0).to(device)
+                input_ids_tensor = torch.tensor(batch_input_ids, device=device)
+                attention_mask_tensor = torch.tensor(batch_attention_masks, device=device)
 
                 with torch.no_grad():
                     if model.name_or_path.startswith("t5"):
@@ -202,11 +203,12 @@ def get_hugging_face_table_embeddings_batched(tables, model_name, tokenizer, max
                             input_ids=input_ids_tensor, attention_mask=attention_mask_tensor
                         )
 
-                for last_hidden_state in outputs.last_hidden_state:
+                for i, last_hidden_state in enumerate(outputs.last_hidden_state):
+                    cls_position = batch_cls_positions[i]
                     table_embedding = last_hidden_state[0, cls_position, :].detach().cpu()
                     all_embeddings.append(table_embedding)
 
                 # Clear the batch lists
-                batch_input_ids, batch_attention_masks = [], []
+                batch_input_ids, batch_attention_masks, batch_cls_positions = [], [], []
 
     return all_embeddings
