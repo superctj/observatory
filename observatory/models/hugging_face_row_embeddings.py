@@ -1,6 +1,8 @@
-
+import os
+os.environ ['CUDA_LAUNCH_BLOCKING'] = "1"
 import pandas as pd
 import torch
+
 
 from observatory.common_util.row_based_truncate import row_based_truncate
 
@@ -92,13 +94,15 @@ def get_hugging_face_row_embeddings(tables, model_name, tokenizer, max_length, m
             processed_tokens, cls_positions = row_based_process_table(
                 tokenizer, processed_table, max_length, model.name_or_path
             ) 
-            input_ids = tokenizer.convert_tokens_to_ids(processed_tokens[0])
+            input_ids = tokenizer.convert_tokens_to_ids(processed_tokens)
             attention_mask = [
-                1 if token != padding_token else 0 for token in processed_tokens[0]
+                1 if token != padding_token else 0 for token in processed_tokens
             ]
             
-            input_ids_tensor = torch.tensor([input_ids], device=device)
-            attention_mask_tensor = torch.tensor([attention_mask], device=device)
+            input_ids_tensor = torch.tensor([input_ids,], device=device)
+            attention_mask_tensor = torch.tensor([attention_mask,], device=device)
+            print(input_ids_tensor.shape)
+            print(attention_mask_tensor.shape)
             with torch.no_grad():
                 if model.name_or_path.startswith("t5"):
                     outputs = model(
@@ -196,14 +200,14 @@ def get_hugging_face_row_embeddings_batched(tables, model_name, tokenizer, max_l
                 1 if token != padding_token else 0 for token in processed_tokens
             ]
 
-            batch_input_ids.append(input_ids)
-            batch_attention_masks.append(attention_mask)
+            batch_input_ids.append(torch.tensor(input_ids))
+            batch_attention_masks.append(torch.tensor(attention_mask))
             batch_cls_positions.append(cls_positions)
 
             # If batch size is reached or it's the last table, then process the batch.
             if len(batch_input_ids) == batch_size or num_all_tables == table_num + 1:
-                input_ids_tensor = torch.tensor(batch_input_ids, device=device)
-                attention_mask_tensor = torch.tensor(batch_attention_masks, device=device)
+                input_ids_tensor = torch.stack(batch_input_ids, dim=0).to(device)
+                attention_mask_tensor = torch.stack(batch_attention_masks, dim=0).to(device)
                 
                 with torch.no_grad():
                     if model.name_or_path.startswith("t5"):

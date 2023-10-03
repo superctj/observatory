@@ -62,55 +62,50 @@ def load_transformers_tokenizer_and_max_length(model_name: str):
     if model_name.startswith("bert"):
         try:
             tokenizer = BertTokenizer.from_pretrained(model_name, local_files_only=True)
-            model = BertModel.from_pretrained(model_name)
-            max_length = model.config.max_position_embeddings
         except OSError:
             tokenizer = BertTokenizer.from_pretrained(model_name)
-            model = BertModel.from_pretrained(model_name)
-            max_length = model.config.max_position_embeddings
+        try:
+            max_length = tokenizer.model_max_length
+        except:
+            max_length = 512
     elif model_name.startswith("roberta"):
         try:
             tokenizer = RobertaTokenizer.from_pretrained(
                 model_name, local_files_only=True
             )
-            model = RobertaModel.from_pretrained(model_name)
-            max_length = model.config.max_position_embeddings
         except OSError:
             tokenizer = RobertaTokenizer.from_pretrained(model_name)
-            model = RobertaModel.from_pretrained(model_name)
-            max_length = model.config.max_position_embeddings
+        try:
+            max_length = tokenizer.model_max_length
+        except:
+            max_length = 512
     elif model_name.startswith("google/tapas"):
         try:
             tokenizer = TapasTokenizer.from_pretrained(
                 model_name, local_files_only=True
             )
-            max_length = 512  # TAPAS typically has a maximum sequence length of 512
         except OSError:
             tokenizer = TapasTokenizer.from_pretrained(model_name)
+        try:
+            max_length = tokenizer.model_max_length
+        except:
             max_length = 512
     elif model_name.startswith("t5"):
         try:
             tokenizer = T5Tokenizer.from_pretrained(model_name, local_files_only=True)
-            model = T5Model.from_pretrained(model_name)
-            try:
-                max_length = model.config.max_position_embeddings
-            except:
-                max_length = 512
         except OSError:
             tokenizer = T5Tokenizer.from_pretrained(model_name)
-            model = T5Model.from_pretrained(model_name)
-            try:
-                max_length = model.config.max_position_embeddings
-            except:
-                max_length = 512
+        try:
+            max_length = tokenizer.model_max_length
+        except:
+            max_length = 512
     elif model_name.startswith("microsoft/tapex"):
         try:
             tokenizer = AutoTokenizer.from_pretrained(model_name, local_files_only=True)
         except OSError:
             tokenizer = AutoTokenizer.from_pretrained(model_name)
-        model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
         try:
-            max_length = model.config.max_position_embeddings
+            max_length = tokenizer.model_max_length
         except:
             max_length = 1024
     else:
@@ -150,7 +145,7 @@ def load_transformers_model(model_name: str, device):  # "bert-base-uncased"
         print(f"Unrecognized model name: {model_name}")
         print(f"You may choose any variant of: {SUPPORTED_MODELS}")
 
-    model.to(device)
+    model = model.to(device)
     model.eval()
 
     return model
