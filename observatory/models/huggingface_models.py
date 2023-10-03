@@ -11,10 +11,12 @@ from transformers import (
     TapasModel,
     T5Tokenizer,
     T5Model,
+    AutoTokenizer, 
+    AutoModelForSeq2SeqLM
 )
 
 
-SUPPORTED_MODELS = ["BERT", "RoBERTa", "TAPAS", "T5"]
+SUPPORTED_MODELS = ["BERT", "RoBERTa", "TAPAS", "T5", "TAPEX"]
 
 
 def load_transformers_tokenizer(model_name: str):
@@ -42,6 +44,12 @@ def load_transformers_tokenizer(model_name: str):
             tokenizer = T5Tokenizer.from_pretrained(model_name, local_files_only=True)
         except OSError:
             tokenizer = T5Tokenizer.from_pretrained(model_name)
+    elif model_name.startswith("microsoft/tapex"):
+        try:
+            tokenizer = AutoTokenizer.from_pretrained(model_name, local_files_only=True)
+        except OSError:
+            tokenizer = AutoTokenizer.from_pretrained(model_name)
+        
     else:
         print(f"Unrecognized tokenizer name: {model_name}")
         print(f"You may choose one of: {SUPPORTED_MODELS}")
@@ -95,6 +103,16 @@ def load_transformers_tokenizer_and_max_length(model_name: str):
                 max_length = model.config.max_position_embeddings
             except:
                 max_length = 512
+    elif model_name.startswith("microsoft/tapex"):
+        try:
+            tokenizer = AutoTokenizer.from_pretrained(model_name, local_files_only=True)
+        except OSError:
+            tokenizer = AutoTokenizer.from_pretrained(model_name)
+        model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+        try:
+            max_length = model.config.max_position_embeddings
+        except:
+            max_length = 1024
     else:
         print(f"Unrecognized tokenizer name: {model_name}")
         print(f"You may choose one of: {SUPPORTED_MODELS}")
@@ -123,6 +141,11 @@ def load_transformers_model(model_name: str, device):  # "bert-base-uncased"
             model = T5Model.from_pretrained(model_name, local_files_only=True)
         except OSError:
             model = T5Model.from_pretrained(model_name)
+    elif model_name.startswith("microsoft/tapex"):
+        try:
+            model = AutoModelForSeq2SeqLM.from_pretrained(model_name, local_files_only=True)
+        except OSError:
+            model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
     else:
         print(f"Unrecognized model name: {model_name}")
         print(f"You may choose any variant of: {SUPPORTED_MODELS}")

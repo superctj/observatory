@@ -163,9 +163,9 @@ def get_hugging_face_row_embeddings_batched(tables, model_name, tokenizer, max_l
             # If batch size is reached or it's the last table, then process the batch.
             if len(batch_input_ids) == batch_size or processed_table is truncated_tables[-1]:
                 batched_inputs = {
-                    "input_ids": torch.stack(batch_input_ids, dim=0).to(device),
-                    "token_type_ids": torch.stack(batch_token_type_ids, dim=0).to(device),
-                    "attention_mask": torch.stack(batch_attention_masks, dim=0).to(device)
+                    'input_ids': torch.stack(batch_input_ids, dim=0).to(device),
+                    'token_type_ids': torch.stack(batch_token_type_ids, dim=0).to(device),
+                    'attention_mask': torch.stack(batch_attention_masks, dim=0).to(device)
                 }
 
                 with torch.no_grad():

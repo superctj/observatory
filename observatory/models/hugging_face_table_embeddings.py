@@ -204,8 +204,8 @@ def get_hugging_face_table_embeddings_batched(tables, model_name, tokenizer, max
                         )
 
                 for i, last_hidden_state in enumerate(outputs.last_hidden_state):
-                    cls_position = batch_cls_positions[i]
-                    table_embedding = last_hidden_state[0, cls_position, :].detach().cpu()
+                    cls_position = batch_cls_positions[i][0]
+                    table_embedding = last_hidden_state[cls_position, :].detach().cpu()
                     all_embeddings.append(table_embedding)
 
                 # Clear the batch lists
