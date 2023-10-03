@@ -3,34 +3,15 @@
 import pandas as pd
 import torch
 
-from observatory.common_util.table_based_truncate import table_based_truncate, table2colList
+from observatory.common_util.table_based_truncate import table_based_truncate, table2colList, table2str_using_columns
 
-def table_based_process_table(tokenizer, cols, max_length, model_name):
-    current_tokens = []
+def table_based_process_table(tokenizer, table_str, max_length, model_name):
+    current_tokens = tokenizer.tokenize(table_str)
 
-    # Check model name and use appropriate special tokens
     if model_name.startswith("t5"):
-        # For T5, add <s> at the start only once for the whole table
-        current_tokens = ["<s>"]
+        current_tokens = ["<s>"] + current_tokens + ["</s>"]
     else:
-        # For other models, add [CLS] at the start only once for the whole table
-        current_tokens = ["[CLS]"]
-
-    for idx, col in enumerate(cols):
-        col_tokens = tokenizer.tokenize(col)
-        # Do not add [CLS] or <s> in between columns
-        if model_name.startswith("t5"):
-            col_tokens += ["</s>"]  # only add </s> at the end for T5
-        else:
-            col_tokens += ["[SEP]"]  # only add [SEP] at the end for others
-
-        if len(current_tokens) + len(col_tokens) > max_length:
-            assert False, "The length of the tokens exceeds the max length. Please run the truncate.py first."
-            break
-        else:
-            if current_tokens and model_name.startswith("t5"):
-                current_tokens = current_tokens[:-1]  # Remove previous </s> for T5
-            current_tokens += col_tokens
+        current_tokens = ["[CLS]"] + current_tokens + ["[SEP]"]
 
     if len(current_tokens) < max_length:
         padding_length = max_length - len(current_tokens)
@@ -84,9 +65,9 @@ def get_hugging_face_table_embeddings(tables, model_name, tokenizer, max_length,
         else:
             # Logic for models other than TAPAS
             # Convert your processed_table to a single string representing the entire table and tokenize it
-            cols = table2colList(processed_table)
+            table_str = table2str_using_columns(processed_table)
             processed_tokens, cls_position = table_based_process_table(
-                tokenizer, cols, max_length, model.name_or_path
+                tokenizer, table_str, max_length, model.name_or_path
             )
             input_ids = tokenizer.convert_tokens_to_ids(processed_tokens)
             attention_mask = [1 if token != padding_token else 0 for token in processed_tokens]
