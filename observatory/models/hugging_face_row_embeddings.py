@@ -136,7 +136,7 @@ def get_hugging_face_row_embeddings_batched(tables, model_name, tokenizer, max_l
             continue
         truncated_table = table.iloc[:max_rows_fit, :]
         truncated_tables.append(truncated_table)
-
+    num_all_tables = len(truncated_tables)
     all_embeddings = []
 
     batch_input_ids = []
@@ -144,7 +144,7 @@ def get_hugging_face_row_embeddings_batched(tables, model_name, tokenizer, max_l
     batch_token_type_ids = []
     batch_cls_positions = []
 
-    for processed_table in truncated_tables:
+    for table_num, processed_table in enumerate(truncated_tables):
         if model_name.startswith("google/tapas"):
             processed_table.columns = processed_table.columns.astype(str)
             processed_table = processed_table.reset_index(drop=True)
@@ -162,7 +162,7 @@ def get_hugging_face_row_embeddings_batched(tables, model_name, tokenizer, max_l
             batch_attention_masks.append(inputs["attention_mask"][0])
 
             # If batch size is reached or it's the last table, then process the batch.
-            if len(batch_input_ids) == batch_size or processed_table is truncated_tables[-1]:
+            if len(batch_input_ids) == batch_size or num_all_tables == table_num + 1:
                 batched_inputs = {
                     'input_ids': torch.stack(batch_input_ids, dim=0).to(device),
                     'token_type_ids': torch.stack(batch_token_type_ids, dim=0).to(device),
@@ -201,7 +201,7 @@ def get_hugging_face_row_embeddings_batched(tables, model_name, tokenizer, max_l
             batch_cls_positions.append(cls_positions)
 
             # If batch size is reached or it's the last table, then process the batch.
-            if len(batch_input_ids) == batch_size or processed_table is truncated_tables[-1]:
+            if len(batch_input_ids) == batch_size or num_all_tables == table_num + 1:
                 input_ids_tensor = torch.tensor(batch_input_ids, device=device)
                 attention_mask_tensor = torch.tensor(batch_attention_masks, device=device)
 
