@@ -144,6 +144,9 @@ def process_table_wrapper(
         model,
         args.batch_size
     )
+    if len(all_embeddings)<24:
+        print("len(all_embeddings)<24")
+        return
     torch.save(
         all_embeddings,
         os.path.join(save_directory_embeddings, f"table_{table_index}_embeddings.pt"),
