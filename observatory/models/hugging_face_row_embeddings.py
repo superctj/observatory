@@ -122,6 +122,7 @@ def get_hugging_face_row_embeddings(tables, model_name, tokenizer, max_length, m
     return all_embeddings
 
 def get_hugging_face_row_embeddings_batched(tables, model_name, tokenizer, max_length, model, batch_size=32):
+    model = model.eval()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
 

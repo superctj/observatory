@@ -157,9 +157,9 @@ def get_hugging_face_table_embeddings_batched(tables, model_name, tokenizer, max
 
         else:
             # Logic for models other than TAPAS
-            cols = table2colList(processed_table)
+            table_str = table2str_using_columns(processed_table)
             processed_tokens, cls_position = table_based_process_table(
-                tokenizer, cols, max_length, model.name_or_path
+                tokenizer, table_str, max_length, model.name_or_path
             )
             input_ids = tokenizer.convert_tokens_to_ids(processed_tokens)
             attention_mask = [1 if token != padding_token else 0 for token in processed_tokens]
