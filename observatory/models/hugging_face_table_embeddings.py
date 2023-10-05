@@ -10,6 +10,7 @@ def table_based_process_table(tokenizer, processed_table, max_length, model_name
     if model_name.startswith("microsoft/tapex"):
         encoding = tokenizer(processed_table, return_tensors="pt")
         input_ids = encoding['input_ids'][0].tolist()
+        input_ids = input_ids + [tokenizer.pad_token_id] * (max_length - len(input_ids))
         return input_ids, [0]  # [0] since there's only one [CLS] at the start
     else:
         table_str = table2str_using_columns(processed_table)
