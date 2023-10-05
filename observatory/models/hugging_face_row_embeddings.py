@@ -101,8 +101,6 @@ def get_hugging_face_row_embeddings(tables, model_name, tokenizer, max_length, m
             
             input_ids_tensor = torch.tensor([input_ids,], device=device)
             attention_mask_tensor = torch.tensor([attention_mask,], device=device)
-            print(input_ids_tensor.shape)
-            print(attention_mask_tensor.shape)
             with torch.no_grad():
                 if model.name_or_path.startswith("t5"):
                     outputs = model(

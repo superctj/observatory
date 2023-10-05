@@ -14,7 +14,7 @@ source ~/miniconda3/bin/activate
 conda init
 conda activate tabert
 # specify number of iterations
-n=4
+n=1
 # specify starting number
 start=0
 # specify testbed and root_dir
@@ -22,21 +22,23 @@ testbed="testbedXS"
 root_dir="/nfs/turbo/coe-jag/zjsun/data/nextiajd_datasets"
 model_name="tabert"
 tabert_bin="/home/zjsun/TaBert/TaBERT/tabert_base_k3/model.bin"
-save_dir="/home/zjsun/Join_Relationship_tabert"
+save_dir="/nfs/turbo/coe-jag/zjsun/revision"
+batch_size=256
+num_pair=90000
 # loop n times
 for (( i=0; i<$n; i++ ))
 do
   # calculate the current start number
-  current_start=$((start + (i * 10000)))
+  current_start=$((start + (i * $num_pair)))
 
   python3 tabert_nextiajd_loader.py \
   --testbed $testbed \
   --root_dir $root_dir \
   --model_name $model_name \
-  --n 1000 --start \
+  --nearby_column 1 --start \
   $current_start \
-  --num_tables 10000 \
-  --value 1000 \
+  --num_tables $num_pair \
+  --value 10000 \
   --tabert_bin $tabert_bin \
   --save_dir $save_dir
 
