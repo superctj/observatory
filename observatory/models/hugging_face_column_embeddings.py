@@ -4,7 +4,7 @@ os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 import argparse
 import pandas as pd
 import torch
-from tapex import tapex_inference
+from observatory.models.tapex import tapex_inference
 from observatory.common_util.column_based_truncate import column_based_truncate
 
 

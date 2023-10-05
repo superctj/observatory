@@ -2,7 +2,7 @@
 
 import pandas as pd
 import torch
-from tapex import tapex_inference
+from observatory.models.tapex import tapex_inference
 from observatory.common_util.table_based_truncate import table_based_truncate, table2colList, table2str_using_columns
 
 def table_based_process_table(tokenizer, processed_table, max_length, model_name):
