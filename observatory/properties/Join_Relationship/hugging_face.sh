@@ -12,7 +12,7 @@
 #SBATCH --array=1
 source ~/miniconda3/bin/activate
 conda init
-conda activate observatory
+conda activate tabeval
 # specify number of iterations
 n=1
 # specify starting number

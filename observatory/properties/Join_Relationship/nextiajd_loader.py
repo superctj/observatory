@@ -145,15 +145,18 @@ def split_table(table: pd.DataFrame, n: int, m: int):
         yield [table.iloc[j : j + m] for j in range(i, min(i + m * n, total_rows), m)]
 
 
-def get_average_embedding(table, column_name, get_embedding, n=1, batch_size=10):
+def get_average_embedding(table, column_name, get_embedding, model_name, tokenizer, max_length,  n=1, batch_size=10):
     # m = max(min(100 // len(table.columns.tolist()), 3), 1)
     sum_embeddings = None
     num_embeddings = 0
     # chunks_generator = split_table(table, n=n, m=m)
     chunks_generator = chunk_neighbor_tables(tables = [table,], \
         column_name = column_name, n = n , \
-        max_length = 512, \
-        max_token_per_cell=8)
+            model_name= model_name,  max_length=max_length,
+            tokenizer = tokenizer, \
+                max_length = max_length, \
+            max_token_per_cell= 20, 
+        )
     # Find the index of the column in the chunk table headers
     first_chunk = next(chunks_generator)
     col_index = first_chunk["table"].columns.get_loc(column_name)
@@ -266,7 +269,8 @@ if __name__ == "__main__":
                 print("Error message:", e)
                 continue
             try:
-                c1_avg_embedding = get_average_embedding(t1, c1_name,  get_embedding, n, batch_size)
+                c1_avg_embedding = get_average_embedding(table=t1, column_name=c1_name,  get_embedding=get_embedding, \
+                    model_name=model_name, tokenizer=tokenizer, max_length=max_length, n =  n, batch_size = batch_size)
             except AssertionError:
                 continue
             except Exception as e:
@@ -291,7 +295,8 @@ if __name__ == "__main__":
                 continue
             
             try:
-                c2_avg_embedding = get_average_embedding(t2, c2_name,  get_embedding, n, batch_size)
+                c2_avg_embedding = get_average_embedding(table=t2, column_name=c2_name,  get_embedding=get_embedding, \
+                    model_name=model_name, tokenizer=tokenizer, max_length=max_length, n =  n, batch_size = batch_size)
             except AssertionError:
                 continue
             except Exception as e:
