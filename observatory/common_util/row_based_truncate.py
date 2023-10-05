@@ -1,3 +1,6 @@
+import pandas as pd
+
+
 def table2rowList(table):
     rows = []
     for index, row in table.iterrows():
@@ -12,7 +15,7 @@ def is_fit(table, tokenizer, max_length, model_name):
         
         # Tokenize each row and append to result
         for _, row in table.iterrows():
-            one_row_table = table.DataFrame([row])
+            one_row_table = pd.DataFrame([row])
             encoding = tokenizer(one_row_table, return_tensors="pt")
             row_ids = encoding['input_ids'][0].tolist()[1:-1]  # Remove cls and sep tokens
             result.extend(row_ids)
