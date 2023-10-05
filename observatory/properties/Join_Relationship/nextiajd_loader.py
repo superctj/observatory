@@ -154,7 +154,6 @@ def get_average_embedding(table, column_name, get_embedding, model_name, tokeniz
         column_name = column_name, n = n , \
             model_name= model_name,  max_length=max_length,
             tokenizer = tokenizer, \
-                max_length = max_length, \
             max_token_per_cell= 20, 
         )
     # Find the index of the column in the chunk table headers
