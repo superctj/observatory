@@ -19,29 +19,44 @@ def table2colList(table):
     return cols
 
 
-def is_fit(cols, tokenizer, max_length, model_name):
-    current_tokens = []
+def is_fit(sample_table, tokenizer, max_length, model_name):
+    if model_name.startswith("microsoft/tapex"):
+        # Initialize result
+        result = [tokenizer.cls_token_id]
+        
+        # Tokenize each column and append to result
+        for column in sample_table.columns:
+            one_col_table = pd.DataFrame(sample_table[column])
+            encoding = tokenizer(one_col_table, return_tensors="pt")
+            column_ids = encoding['input_ids'][0].tolist()[1:-1]  # Remove cls and sep tokens
+            result.extend(column_ids)
+            result.append(tokenizer.cls_token_id)
+            if len(result) > max_length:
+                return False
+    else:
+        cols = table2colList(sample_table)
+        current_tokens = []
 
-    for col in cols:
-        # Tokenize col without special tokens
-        col_tokens = tokenizer.tokenize(col)
-        # Check model name and use appropriate special tokens
-        if model_name.startswith("t5"):
-            # For T5, add <s> at the start and </s> at the end
-            col_tokens = ["<s>"] + col_tokens + ["</s>"]
-        else:
-            # For other models (BERT, RoBERTa, TAPAS), add [CLS] at the start and [SEP] at the end
-            col_tokens = ["[CLS]"] + col_tokens + ["[SEP]"]
-        # Check if adding the new tokens would exceed the max length
-        if len(current_tokens) + len(col_tokens) > max_length:
-            # If so, stop and return false
-            return False
-        else:
-            # If not, remove the last token (</s> or [SEP]) from the current tokens
-            if current_tokens:
-                current_tokens = current_tokens[:-1]
-            # Then concatenate the new tokens
-            current_tokens += col_tokens
+        for col in cols:
+            # Tokenize col without special tokens
+            col_tokens = tokenizer.tokenize(col)
+            # Check model name and use appropriate special tokens
+            if model_name.startswith("t5"):
+                # For T5, add <s> at the start and </s> at the end
+                col_tokens = ["<s>"] + col_tokens + ["</s>"]
+            else:
+                # For other models (BERT, RoBERTa, TAPAS), add [CLS] at the start and [SEP] at the end
+                col_tokens = ["[CLS]"] + col_tokens + ["[SEP]"]
+            # Check if adding the new tokens would exceed the max length
+            if len(current_tokens) + len(col_tokens) > max_length:
+                # If so, stop and return false
+                return False
+            else:
+                # If not, remove the last token (</s> or [SEP]) from the current tokens
+                if current_tokens:
+                    current_tokens = current_tokens[:-1]
+                # Then concatenate the new tokens
+                current_tokens += col_tokens
     return True
 
 
@@ -54,8 +69,8 @@ def column_based_truncate(table, tokenizer, max_length, model_name):
     while low < high:
         mid = (low + high + 1) // 2  # middle point
         sample_table = table[:mid]  # sample table with 'mid' rows
-        cols = table2colList(sample_table)
-        if is_fit(cols, tokenizer, max_length, model_name):
+        
+        if is_fit(sample_table, tokenizer, max_length, model_name):
             low = mid  # if it fits, try with more rows
         else:
             high = mid - 1  # if it doesn't fit, try with less rows
