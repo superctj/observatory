@@ -180,7 +180,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--testbed", type=str, required=True)
     parser.add_argument("--root_dir", type=str, required=True)
-    parser.add_argument("--n", type=int, required=True)
     parser.add_argument(
         "-m",
         "--model_name",
@@ -230,7 +229,6 @@ if __name__ == "__main__":
         batch_size=batch_size,
     )
 
-    n = args.n
     testbed = args.testbed
     root_dir = os.path.join(args.root_dir, testbed)
     dataset_dir = os.path.join(root_dir, "datasets")
