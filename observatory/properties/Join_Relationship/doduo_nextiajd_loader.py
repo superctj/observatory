@@ -168,7 +168,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--testbed", type=str, required=True)
     parser.add_argument("--root_dir", type=str, required=True)
-    parser.add_argument("--n", type=int, required=True)
     parser.add_argument(
         "-m",
         "--model_name",
@@ -193,6 +192,12 @@ if __name__ == "__main__":
         default=".",
         help="Path to load the doduo model",
     )
+    parser.add_argument(
+        "--nearby_column",
+        type=int,
+        default=1,
+        help="The number of nearby columns",
+    )
     args = parser.parse_args()
     model_name = args.model_name
     model_args = argparse.Namespace
@@ -215,7 +220,7 @@ if __name__ == "__main__":
     get_embedding = functools.partial(
         get_doduo_embeddings, model=model, tokenizer=tokenizer, max_length=max_length
     )
-    n = args.n
+    n = args.nearby_column
     testbed = args.testbed
     root_dir = os.path.join(args.root_dir, testbed)
     dataset_dir = os.path.join(root_dir, "datasets")
