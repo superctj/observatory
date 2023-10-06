@@ -100,8 +100,9 @@ def chunk_neighbor_tables(tables, column_name, n, model_name, max_length, tokeni
             
             # Ensure each cell adheres to the max_token_per_cell limit
             if max_token_per_cell:
+                sub_chunk = sub_chunk.copy()
                 for col in sub_chunk.columns:
-                    sub_chunk.loc[:, col] = sub_chunk[col].apply(lambda x: truncate_cell(str(x), tokenizer, max_token_per_cell))
+                    sub_chunk.loc[:, col] = sub_chunk.loc[:, col].apply(lambda x: truncate_cell(str(x), tokenizer, max_token_per_cell))
 
             
             # Assuming table2colList and truncate_index are some external functions
