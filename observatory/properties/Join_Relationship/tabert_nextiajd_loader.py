@@ -224,7 +224,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--testbed", type=str, required=True)
     parser.add_argument("--root_dir", type=str, required=True)
-    parser.add_argument("--n", type=int, required=True)
     parser.add_argument(
         "-m",
         "--model_name",
