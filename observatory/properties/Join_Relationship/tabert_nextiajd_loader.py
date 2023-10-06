@@ -286,7 +286,7 @@ if __name__ == "__main__":
     ground_truth_path = os.path.join(root_dir, f"groundTruth_{testbed}.csv")
     data_loader = NextiaJDCSVDataLoader(dataset_dir, metadata_path, ground_truth_path)
     save_directory_results = os.path.join(
-        args.save_dir, "Join_Relationship", "p5", testbed, model_name
+        args.save_dir, "Join_Relationship", testbed, model_name
     )
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
