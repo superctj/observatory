@@ -4,9 +4,11 @@ import torch
 from typing import Dict, List
 from torch.nn.functional import cosine_similarity
 import functools
+from observatory.datasets.huggingface_dataset import chunk_neighbor_tables, batch_generator
 
 import pandas as pd
 from collections import Counter
+import itertools
 
 
 def jaccard_similarity(df1, df2, col1, col2):
@@ -129,24 +131,32 @@ class NextiaJDCSVDataLoader:
         return queries
 
 
-def split_table(table: pd.DataFrame, n: int, m: int):
-    # m = min(100//len(table.iloc[0]), 3)
-    total_rows = table.shape[0]
-    for i in range(0, total_rows, m * n):
-        yield [table.iloc[j : j + m] for j in range(i, min(i + m * n, total_rows), m)]
-
-
-def get_average_embedding(table, index, n, get_embedding):
-    m = max(min(100 // len(table.columns.tolist()), 3), 1)
+def get_average_embedding(table, column_name, get_embedding, model_name, tokenizer, max_length,  n=1, batch_size=10):
+    # m = max(min(100 // len(table.columns.tolist()), 3), 1)
     sum_embeddings = None
     num_embeddings = 0
-    chunks_generator = split_table(table, n=n, m=m)
-    for tables in chunks_generator:
-        embeddings = get_embedding(tables)
-        if sum_embeddings is None:
-            sum_embeddings = torch.zeros(embeddings[0][index].size())
+    # chunks_generator = split_table(table, n=n, m=m)
+    chunks_generator = chunk_neighbor_tables(tables = [table,], \
+        column_name = column_name, n = n , \
+            model_name= model_name,  max_length=max_length,
+            tokenizer = tokenizer, \
+            max_token_per_cell= 20, 
+        )
+    # Find the index of the column in the chunk table headers
+    first_chunk = next(chunks_generator)
+    col_index = first_chunk["table"].columns.get_loc(column_name)
+
+    # Use the batch_generator
+    for batch_tables in batch_generator(itertools.chain([first_chunk], chunks_generator), batch_size):
+        # Extract the actual tables from the dictionaries
+        tables_list = [chunk_dict["table"] for chunk_dict in batch_tables]
+
+        # Assuming your get_embedding function can handle a batch of tables
+        embeddings = get_embedding(tables_list)
         for embedding in embeddings:
-            sum_embeddings += embedding[index].to(device)
+            if sum_embeddings is None:
+                sum_embeddings = torch.zeros(embedding[col_index].size()).to(device)
+            sum_embeddings += embedding[col_index].to(device)
             num_embeddings += 1
     avg_embedding = sum_embeddings / num_embeddings
     return avg_embedding
@@ -201,6 +211,7 @@ if __name__ == "__main__":
     model = Doduo(model_args, basedir=model_path)
     temp_model_name = "bert-base-uncased"
     tokenizer, max_length = load_transformers_tokenizer_and_max_length(temp_model_name)
+    
     get_embedding = functools.partial(
         get_doduo_embeddings, model=model, tokenizer=tokenizer, max_length=max_length
     )
@@ -256,7 +267,8 @@ if __name__ == "__main__":
                 print("Error message:", e)
                 continue
             try:
-                c1_avg_embedding = get_average_embedding(t1, c1_idx, n, get_embedding)
+                c1_avg_embedding = get_average_embedding(table=t1, column_name=c1_name,  \
+                    get_embedding=get_embedding, model_name=temp_model_name, tokenizer=tokenizer, max_length=max_length)
             except AssertionError:
                 continue
             except Exception as e:
@@ -280,7 +292,8 @@ if __name__ == "__main__":
                 # c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding)
                 continue
             try:
-                c2_avg_embedding = get_average_embedding(t2, c2_idx, n, get_embedding)
+                c2_avg_embedding = get_average_embedding(table=t2, column_name=c2_name,  \
+                    get_embedding=get_embedding, model_name=temp_model_name, tokenizer=tokenizer, max_length=max_length)
             except AssertionError:
                 continue
             except Exception as e:

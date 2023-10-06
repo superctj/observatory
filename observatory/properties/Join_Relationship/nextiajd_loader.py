@@ -138,12 +138,6 @@ class NextiaJDCSVDataLoader:
         return queries
 
 
-def split_table(table: pd.DataFrame, n: int, m: int):
-    # m = min(100//len(table.iloc[0]), 3)
-    total_rows = table.shape[0]
-    for i in range(0, total_rows, m * n):
-        yield [table.iloc[j : j + m] for j in range(i, min(i + m * n, total_rows), m)]
-
 
 def get_average_embedding(table, column_name, get_embedding, model_name, tokenizer, max_length,  n=1, batch_size=10):
     # m = max(min(100 // len(table.columns.tolist()), 3), 1)
