@@ -91,8 +91,8 @@ def chunk_neighbor_tables(tables, column_name, n, model_name, max_length, tokeni
         while start_row < chunk.shape[0]:
             optimal_rows = 0
             approxiamte_optimal_rows = max_length // chunk.shape[1]
-            if max_token_per_cell:
-                approxiamte_optimal_rows = max_length // (chunk.shape[1] * max_token_per_cell)
+            # if max_token_per_cell:
+            #     approxiamte_optimal_rows = max_length // (chunk.shape[1] * max_token_per_cell)
             if max_row:
                 approxiamte_optimal_rows = min(max_row, approxiamte_optimal_rows)
             end_row = min(start_row + approxiamte_optimal_rows, chunk.shape[0])
@@ -101,10 +101,11 @@ def chunk_neighbor_tables(tables, column_name, n, model_name, max_length, tokeni
             # Ensure each cell adheres to the max_token_per_cell limit
             if max_token_per_cell:
                 for col in sub_chunk.columns:
-                    sub_chunk[col] = sub_chunk[col].apply(lambda x: truncate_cell(str(x), tokenizer, max_token_per_cell))
+                    sub_chunk.loc[:, col] = sub_chunk[col].apply(lambda x: truncate_cell(str(x), tokenizer, max_token_per_cell))
+
             
             # Assuming table2colList and truncate_index are some external functions
-            optimal_rows = column_based_truncate(df, tokenizer, max_length, model_name)
+            optimal_rows = column_based_truncate(sub_chunk, tokenizer, max_length, model_name)
 
             # Ensure optimal_rows is at least 1 to prevent infinite loops
             if optimal_rows == 0:

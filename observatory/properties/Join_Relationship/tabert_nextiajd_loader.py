@@ -197,7 +197,7 @@ def get_average_embedding(table, column_name, get_embedding, n=1, batch_size=10)
     chunks_generator = chunk_neighbor_tables_tabert(tables = [table,], \
         column_name = column_name, n = n , \
         max_length = 512, \
-        max_token_per_cell=8)
+        max_token_per_cell=20)
     # Find the index of the column in the chunk table headers
     first_chunk = next(chunks_generator)
     col_index = first_chunk["table"].columns.get_loc(column_name)
