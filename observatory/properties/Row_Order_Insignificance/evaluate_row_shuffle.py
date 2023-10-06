@@ -118,13 +118,10 @@ def process_table_wrapper(
 
     save_directory_results = os.path.join(
         args.save_directory,
-        "Row_Order_Insignificance",
         model_name,
         "results",
     )
     save_directory_embeddings = os.path.join(
-        "/nfs/turbo/coe-jag/zjsun",
-        "row_insig",
         args.save_directory,
         model_name,
         "embeddings",

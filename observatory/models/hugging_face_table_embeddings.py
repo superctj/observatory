@@ -83,8 +83,8 @@ def get_hugging_face_table_embeddings_batched(tables, model_name, tokenizer, max
                 with torch.no_grad():
                     outputs = model(**batched_inputs)
 
-                for last_hidden_state in outputs.last_hidden_state:
-                    indices = torch.where(batched_inputs["token_type_ids"][:, 1] > 0)[0]
+                for i, last_hidden_state in enumerate(outputs.last_hidden_states):
+                    indices = torch.where(batched_inputs["token_type_ids"][i][:, 1] > 0)[0]
                     embeddings = last_hidden_state[indices]
                     table_embedding = embeddings.mean(dim=0)
                     all_embeddings.append(table_embedding)
