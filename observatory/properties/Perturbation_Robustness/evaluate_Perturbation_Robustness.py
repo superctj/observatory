@@ -63,7 +63,7 @@ def process_table_wrapper(
         os.makedirs(save_directory_results)
 
     all_embeddings = get_hugging_face_column_embeddings_batched(
-        model_name=model_name, tokenizer=tokenizer, max_length=max_length, model=model, batch_size=args.batch_size
+        truncated_tables, model_name=model_name, tokenizer=tokenizer, max_length=max_length, model=model, batch_size=args.batch_size
     )
     torch.save(
         all_embeddings,
