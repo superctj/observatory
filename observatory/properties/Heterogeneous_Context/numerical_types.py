@@ -14,7 +14,7 @@ from observatory.models.huggingface_models import (
 )
 
 from observatory.models.hugging_face_column_embeddings import (
-    get_hugging_face_column_embeddings,
+    get_hugging_face_column_embeddings_batched,
 
 )
 import pandas as pd
@@ -60,6 +60,13 @@ if __name__ == "__main__":
         required=True,
         help="Name of the Hugging Face model to use",
     )
+    parser.add_argument(
+        "-b",
+        "--batch_size",
+        type=int,
+        default=32,
+        help="The batch size for parallel inference",
+    )
     args = parser.parse_args()
     model_name = args.model_name
     save_directory_results = os.path.join(args.save_folder, model_name)
@@ -76,7 +83,8 @@ if __name__ == "__main__":
     model = load_transformers_model(model_name, torch.device("cuda" if torch.cuda.is_available() else "cpu"))
     model.eval()
     get_embedding = functools.partial(
-        get_hugging_face_column_embeddings, model_name=model_name, tokenizer=tokenizer, max_length=max_length, model=model
+        get_hugging_face_column_embeddings_batched, model_name=model_name, \
+            tokenizer=tokenizer, max_length=max_length, model=model, batch_size=args.batch_size
     )
 
     col_itself = []

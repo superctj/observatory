@@ -14,7 +14,7 @@ from observatory.common_util.truncate import truncate_index
 from observatory.common_util.mcv import compute_mcv
 from torch.linalg import inv, norm
 from observatory.models.hugging_face_column_embeddings import (
-    get_hugging_face_column_embeddings,
+    get_hugging_face_column_embeddings_batched,
 )
 
 
@@ -108,93 +108,6 @@ def shuffle_df_columns(df, m):
     return dfs, perms
 
 
-def tapas_column_embeddings(inputs, last_hidden_states):
-    # find the maximum column id
-    max_column_id = inputs["token_type_ids"][0][:, 1].max()
-
-    column_embeddings = []
-
-    # loop over all column ids
-    for column_id in range(1, max_column_id + 1):
-        # find all indices where the token_type_ids is equal to the column id
-        indices = torch.where(inputs["token_type_ids"][0][:, 1] == column_id)[0]
-
-        # get the embeddings at these indices
-        embeddings = last_hidden_states[0][indices]
-
-        # compute the average embedding
-        column_embedding = embeddings.mean(dim=0)
-
-        column_embeddings.append(column_embedding)
-
-    return column_embeddings
-
-
-def generate_col_shuffle_embeddings(
-    tokenizer, model, device, max_length, padding_token, table, num_shuffles
-):
-    all_embeddings = []
-    tables, perms = shuffle_df_columns(table, num_shuffles)
-
-    for j in range(len(tables)):
-        #     if j == 0:
-        #         processed_table = table
-        #     else:
-        #         processed_table = row_shuffle(table)
-        processed_table = tables[j]
-        if model_name.startswith("google/tapas"):
-            processed_table = processed_table.reset_index(drop=True)
-            processed_table = processed_table.astype(str)
-
-            inputs = tokenizer(
-                table=processed_table, padding="max_length", return_tensors="pt"
-            )
-            inputs = inputs.to(device)
-            with torch.no_grad():  # Turn off gradients to save memory
-                outputs = model(**inputs)
-            last_hidden_states = outputs.last_hidden_state
-            embeddings = tapas_column_embeddings(inputs, last_hidden_states)
-        else:
-            col_list = table2colList(processed_table)
-            processed_tokens = process_table(
-                tokenizer, col_list, max_length, model.name_or_path
-            )
-            input_ids = tokenizer.convert_tokens_to_ids(processed_tokens[0])
-            attention_mask = [
-                1 if token != padding_token else 0 for token in processed_tokens[0]
-            ]
-            cls_positions = processed_tokens[1]
-
-            input_ids_tensor = torch.tensor([input_ids], device=device)
-            attention_mask_tensor = torch.tensor([attention_mask], device=device)
-
-            if model.name_or_path.startswith("t5"):
-                outputs = model(
-                    input_ids=input_ids_tensor,
-                    attention_mask=attention_mask_tensor,
-                    decoder_input_ids=input_ids_tensor,
-                )
-            else:
-                outputs = model(
-                    input_ids=input_ids_tensor, attention_mask=attention_mask_tensor
-                )
-            last_hidden_state = outputs.last_hidden_state
-
-            embeddings = []
-            for position in cls_positions:
-                cls_embedding = last_hidden_state[0, position, :].detach().cpu()
-                embeddings.append(cls_embedding)
-        # Get the permutation used for this table
-        perm = perms[j]
-        # Create a list of the same length as perm, filled with None
-        ordered_embeddings = [None] * len(perm)
-        # Assign each embedding to its original position
-        for i, p in enumerate(perm):
-            ordered_embeddings[p] = embeddings[i]
-        all_embeddings.append(ordered_embeddings)
-
-    return all_embeddings
-
 
 def analyze_embeddings(all_embeddings):
     avg_cosine_similarities = []
@@ -263,18 +176,25 @@ def process_table_wrapper(
         os.makedirs(save_directory_embeddings)
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
-
-    all_shuffled_embeddings = generate_col_shuffle_embeddings(
-        tokenizer,
-        model,
-        device,
-        max_length,
-        padding_token,
-        truncated_table,
-        args.num_shuffles,
+    tables, perms = shuffle_df_columns(table, args.num_shuffles)
+    all_embeddings = get_hugging_face_column_embeddings_batched(
+        tables=tables, model_name=model_name,  tokenizer=tokenizer, max_length=max_length, model=model, batch_size=args.batch_size
     )
+    
+    all_ordered_embeddings = []
+    for perm ,embeddings in  zip(perms, all_embeddings):
+        
+        # Create a list of the same length as perm, filled with None
+        ordered_embeddings = [None] * len(perm)
+        # Assign each embedding to its original position
+        for i, p in enumerate(perm):
+            ordered_embeddings[p] = embeddings[i]
+        all_ordered_embeddings.append(ordered_embeddings)
+    all_embeddings = all_ordered_embeddings
+    
+    
     torch.save(
-        all_shuffled_embeddings,
+        all_embeddings,
         os.path.join(save_directory_embeddings, f"table_{table_index}_embeddings.pt"),
     )
     (
@@ -282,7 +202,7 @@ def process_table_wrapper(
         mcvs,
         table_avg_cosine_similarity,
         table_avg_mcv,
-    ) = analyze_embeddings(all_shuffled_embeddings)
+    ) = analyze_embeddings(all_embeddings)
     results = {
         "avg_cosine_similarities": avg_cosine_similarities,
         "mcvs": mcvs,
@@ -352,6 +272,13 @@ if __name__ == "__main__":
         type=str,
         default="",
         help="Name of the Hugging Face model to use",
+    )
+    parser.add_argument(
+        "-b",
+        "--batch_size",
+        type=int,
+        default=32,
+        help="The batch size for parallel inference",
     )
     args = parser.parse_args()
 
