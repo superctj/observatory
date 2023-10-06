@@ -15,6 +15,9 @@ def row2strList(table):
     return rows
 
 def row_based_process_table(tokenizer, table, max_length, model_name):
+    table.columns = table.columns.astype(str)
+    table = table.reset_index(drop=True)
+    table = table.astype(str)
     if model_name.startswith("microsoft/tapex"):
         # Initialize result
         result = [tokenizer.cls_token_id]

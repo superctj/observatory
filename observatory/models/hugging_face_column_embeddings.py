@@ -17,17 +17,19 @@ def table2colList(table):
     return cols
 
 
-def column_based_process_table(tokenizer, processed_table, max_length, model_name):
+def column_based_process_table(tokenizer, table, max_length, model_name):
     cls_positions = []
-    
+    table.columns = table.columns.astype(str)
+    table = table.reset_index(drop=True)
+    table = table.astype(str)
     if model_name.startswith("microsoft/tapex"):
         # Initialize result
         result = [tokenizer.cls_token_id]
         cls_positions = [0]  # The first token is always cls_token_id
         
         # Tokenize each column and append to result
-        for column in processed_table.columns:
-            one_col_table = pd.DataFrame(processed_table[column])
+        for column in table.columns:
+            one_col_table = pd.DataFrame(table[column])
             encoding = tokenizer(one_col_table, return_tensors="pt")
             column_ids = encoding['input_ids'][0].tolist()[1:-1]  # Remove cls and sep tokens
             result.extend(column_ids)
@@ -45,7 +47,7 @@ def column_based_process_table(tokenizer, processed_table, max_length, model_nam
         return result, cls_positions
     else:
         result = []
-        cols = table2colList(processed_table)
+        cols = table2colList(table)
 
         for idx, col in enumerate(cols):
             col_tokens = tokenizer.tokenize(col)

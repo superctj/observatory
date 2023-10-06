@@ -70,7 +70,7 @@ def analyze_embeddings(all_embeddings):
     avg_cosine_similarities = []
     mcvs = []
 
-    for i in range(len(all_embeddings[0])):
+    for i in range(min([len(embeddings) for embeddings in all_embeddings])):
         cosine_similarities = []
         row_embeddings = []
 

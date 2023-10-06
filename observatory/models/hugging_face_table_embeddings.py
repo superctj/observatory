@@ -5,15 +5,17 @@ import torch
 from observatory.models.tapex import tapex_inference
 from observatory.common_util.table_based_truncate import table_based_truncate, table2colList, table2str_using_columns
 
-def table_based_process_table(tokenizer, processed_table, max_length, model_name):
-
+def table_based_process_table(tokenizer, table, max_length, model_name):
+    table.columns = table.columns.astype(str)
+    table = table.reset_index(drop=True)
+    table = table.astype(str)
     if model_name.startswith("microsoft/tapex"):
-        encoding = tokenizer(processed_table, return_tensors="pt")
+        encoding = tokenizer(table, return_tensors="pt")
         input_ids = encoding['input_ids'][0].tolist()
         input_ids = input_ids + [tokenizer.pad_token_id] * (max_length - len(input_ids))
         return input_ids, [0]  # [0] since there's only one [CLS] at the start
     else:
-        table_str = table2str_using_columns(processed_table)
+        table_str = table2str_using_columns(table)
 
         current_tokens = tokenizer.tokenize(table_str)
         if model_name.startswith("t5"):
