@@ -19,6 +19,9 @@ def table_based_is_fit(sample_table, tokenizer, max_length, model_name):
         return len(tokens) <= max_length
 
 def table_based_truncate(table, tokenizer, max_length, model_name):
+    table.columns = table.columns.astype(str)
+    table = table.reset_index(drop=True)
+    table = table.astype(str)
     low = 0
     high = len(table)
 

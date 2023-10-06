@@ -10,6 +10,9 @@ from observatory.models.huggingface_models import (
 
 
 def cellbased_truncate(table, tokenizer, max_length, model_name):
+    table.columns = table.columns.astype(str)
+    table = table.reset_index(drop=True)
+    table = table.astype(str)
     def table2colList(table):
         cols = []
         for i in range(len(table.columns)):

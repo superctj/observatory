@@ -61,8 +61,10 @@ def is_fit(sample_table, tokenizer, max_length, model_name):
 
 
 def column_based_truncate(table, tokenizer, max_length, model_name):
-    # assuming table is a list of lists, where each sublist is a row
-    # and all rows have the same number of columns
+
+    table.columns = table.columns.astype(str)
+    table = table.reset_index(drop=True)
+    table = table.astype(str)
     low = 0
     high = len(table)
 
