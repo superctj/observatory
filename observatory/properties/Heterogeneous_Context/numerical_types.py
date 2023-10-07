@@ -91,12 +91,12 @@ if __name__ == "__main__":
     subj_col_as_context = []
     neighbor_col_as_context = []
     entire_table_as_context = []
-    with open(f'output_{model_name.replace("/", "")}.txt', "w") as f:
-        f.write(f"Error message for {model_name}\n\n")
+    # with open(f'output_{model_name.replace("/", "")}.txt', "w") as f:
+    #     f.write(f"Error message for {model_name}\n\n")
     for _, row in data_loader.metadata.iterrows():
         table_name = row["table_name"]
         table = data_loader.read_table(table_name)
-        table.columns = [""] * len(table.columns)
+        table.columns = [" "] * len(table.columns)
 
         # input_tables = []
         # Only consider numerical column alone for representation inference
@@ -138,13 +138,13 @@ if __name__ == "__main__":
             pd.set_option("display.max_rows", None)
             # print(numerical_col.columns)
             print(numerical_col)
-            with open(f"output_{model_name}.txt", "a") as f:
-                f.write(f"In table: {table_name}\n")
-                f.write(
-                    "In col_itself_embedding = get_average_embedding(numerical_col, 0, n,  get_embedding): "
-                )
-                f.write(f"Error message: {e}\n\n")
-                f.write(f"\n\n")
+            # with open(f"output_{model_name}.txt", "a") as f:
+            #     f.write(f"In table: {table_name}\n")
+            #     f.write(
+            #         "In col_itself_embedding = get_average_embedding(numerical_col, 0, n,  get_embedding): "
+            #     )
+            #     f.write(f"Error message: {e}\n\n")
+            #     f.write(f"\n\n")
             continue
 
         try:
@@ -161,13 +161,13 @@ if __name__ == "__main__":
             pd.set_option("display.max_rows", None)
             # print(numerical_col.columns)
             print(numerical_col)
-            with open(f"output_{model_name}.txt", "a") as f:
-                f.write(f"In table: {table_name}\n")
-                f.write(
-                    "In subj_col_as_context_embedding = get_average_embedding(two_col_table, 1, n,  get_embedding) "
-                )
-                f.write(f"Error message: {e}\n\n")
-                f.write(f"\n\n")
+            # with open(f"output_{model_name}.txt", "a") as f:
+            #     f.write(f"In table: {table_name}\n")
+            #     f.write(
+            #         "In subj_col_as_context_embedding = get_average_embedding(two_col_table, 1, n,  get_embedding) "
+            #     )
+            #     f.write(f"Error message: {e}\n\n")
+            #     f.write(f"\n\n")
             continue
         # subj_col_as_context_embedding = get_average_embedding(two_col_table, 1, n,  get_embedding)
 
@@ -185,13 +185,13 @@ if __name__ == "__main__":
             pd.set_option("display.max_rows", None)
             # print(numerical_col.columns)
             print(numerical_col)
-            with open(f"output_{model_name}.txt", "a") as f:
-                f.write(f"In table: {table_name}\n")
-                f.write(
-                    "In neighbor_col_as_context_embedding = get_average_embedding(three_col_table, 1, n,  get_embedding) "
-                )
-                f.write(f"Error message: {e}\n\n")
-                f.write(f"\n\n")
+            # with open(f"output_{model_name}.txt", "a") as f:
+            #     f.write(f"In table: {table_name}\n")
+            #     f.write(
+            #         "In neighbor_col_as_context_embedding = get_average_embedding(three_col_table, 1, n,  get_embedding) "
+            #     )
+            #     f.write(f"Error message: {e}\n\n")
+            #     f.write(f"\n\n")
             continue
 
         try:
@@ -208,13 +208,13 @@ if __name__ == "__main__":
             pd.set_option("display.max_rows", None)
             # print(numerical_col.columns)
             print(numerical_col)
-            with open(f"output_{model_name}.txt", "a") as f:
-                f.write(f"In table: {table_name}\n")
-                f.write(
-                    "In entire_table_as_context_embedding = get_average_embedding(table, numerical_col_idx, n,  get_embedding) "
-                )
-                f.write(f"Error message: {e}\n\n")
-                f.write(f"\n\n")
+            # with open(f"output_{model_name}.txt", "a") as f:
+            #     f.write(f"In table: {table_name}\n")
+            #     f.write(
+            #         "In entire_table_as_context_embedding = get_average_embedding(table, numerical_col_idx, n,  get_embedding) "
+            #     )
+            #     f.write(f"Error message: {e}\n\n")
+            #     f.write(f"\n\n")
             continue
 
         col_itself.append((col_itself_embedding, row["label"]))
