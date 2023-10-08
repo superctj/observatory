@@ -174,6 +174,8 @@ def process_and_save_embeddings(model_name, args, tables):
     padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
 
     for table_index, table in enumerate(tables):
+        if table_index < args.start_index:
+            continue
         max_rows_fit = table_based_truncate(table, tokenizer, max_length, model_name)
         truncated_table = table.iloc[:max_rows_fit, :]
         process_table_wrapper(
@@ -225,6 +227,12 @@ if __name__ == "__main__":
         type=int,
         default=32,
         help="The batch size for parallel inference",
+    )
+    parser.add_argument(
+        "--start_index",
+        type=int,
+        default=0,
+        help="Start table index",
     )
     args = parser.parse_args()
 
