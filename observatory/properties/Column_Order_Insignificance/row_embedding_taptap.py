@@ -138,6 +138,7 @@ class TableEmbedder:
     def __init__(self, model, tokenizer, device):
         self.model = model.to(device)
         self.tokenizer = tokenizer
+        self.device = device
 
     def get_last_hidden_state(self, input_ids, attention_mask=None):
         outputs = self.model.transformer(input_ids=input_ids, attention_mask=attention_mask)
@@ -183,8 +184,8 @@ class TableEmbedder:
                 padded_attention_masks.append(torch.tensor(attention_mask))
 
             # Convert lists to tensors
-            input_ids = torch.stack(padded_input_ids)
-            attention_masks = torch.stack(padded_attention_masks)
+            input_ids = torch.stack(padded_input_ids).to(self.device)
+            attention_masks = torch.stack(padded_attention_masks).to(self.device)
 
             hidden_states = self.get_last_hidden_state(input_ids, attention_mask=attention_masks)
 
