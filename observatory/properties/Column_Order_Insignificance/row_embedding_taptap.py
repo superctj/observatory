@@ -207,7 +207,7 @@ def process_table_wrapper(
         
     tables, perms = shuffle_df_columns(truncated_table, args.num_shuffles)
     embedder = TableEmbedder(model, tokenizer, device)
-    all_embeddings = embedder.compute_embeddings(tables)
+    all_embeddings = embedder.compute_embeddings(tables, args.batch_size)
 
     if len(all_embeddings)<24:
         print("len(all_embeddings)<24")
