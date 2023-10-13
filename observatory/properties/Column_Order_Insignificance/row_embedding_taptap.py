@@ -131,6 +131,7 @@ def analyze_embeddings(all_embeddings):
         table_avg_cosine_similarity.item(),
         table_avg_mcv.item(),
     )
+    
 
 
 class TableEmbedder:
@@ -160,8 +161,30 @@ class TableEmbedder:
             batch_row_strings = all_row_strings[i:i+batch_size]
 
             tokenized_texts = [self.tokenizer(row) for row in batch_row_strings]
-            input_ids = torch.stack([torch.tensor(item['input_ids']) for item in tokenized_texts])
-            attention_masks = torch.stack([torch.tensor(item['attention_mask']) for item in tokenized_texts])
+            
+            # input_ids = torch.stack([torch.tensor(item['input_ids']) for item in tokenized_texts])
+            # attention_masks = torch.stack([torch.tensor(item['attention_mask']) for item in tokenized_texts])
+            # Determine the max length of the tokenized texts
+            max_length = max([len(item['input_ids']) for item in tokenized_texts])
+
+            # Pad the input IDs and create the extended attention masks
+            padded_input_ids = []
+            padded_attention_masks = []
+
+            for item in tokenized_texts:
+                # Calculate how many positions need padding
+                padding_length = max_length - len(item['input_ids'])
+                
+                # Pad the input_ids and create the corresponding attention masks
+                padded_input = item['input_ids'] + [self.tokenizer.pad_token_id] * padding_length
+                attention_mask = item['attention_mask'] + [0] * padding_length
+                
+                padded_input_ids.append(torch.tensor(padded_input))
+                padded_attention_masks.append(torch.tensor(attention_mask))
+
+            # Convert lists to tensors
+            input_ids = torch.stack(padded_input_ids)
+            attention_masks = torch.stack(padded_attention_masks)
 
             hidden_states = self.get_last_hidden_state(input_ids, attention_mask=attention_masks)
 
