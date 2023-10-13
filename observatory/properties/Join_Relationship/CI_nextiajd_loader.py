@@ -146,6 +146,8 @@ def get_average_embeddings(table, get_embedding, model_name, tokenizer, max_leng
         for col_range, embeddings in zip(all_embeddings, col_list):
             start_col = col_range[0]
             end_col = col_range[1]
+            start_col = start_col.item()
+            end_col = end_col.item()
             for col_index, embeding in zip(range(start_col, end_col), embeddings):
                 if all_sum_column_embeddings[col_index] is None:
                     all_sum_column_embeddings[col_index] = torch.zeros(embeding.size())
