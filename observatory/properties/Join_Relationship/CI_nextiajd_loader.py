@@ -1,8 +1,8 @@
 import os
 import argparse
 import torch
-from observatory.models.hugging_face_column_embeddings import (
-    get_hugging_face_column_embeddings_batched,
+from observatory.models.hugging_face_row_embeddings import (
+    get_hugging_face_row_embeddings_batched,
 )
 from typing import Dict, List
 from torch.linalg import inv, norm
@@ -132,29 +132,28 @@ def get_average_embeddings(table, get_embedding, model_name, tokenizer, max_leng
             max_row= max_row,
             max_token_per_cell= 20, 
         )
-
-    all_sum_column_embeddings = [None for col in table.columns]
-    all_column_count = [0 for col in table.columns]
+    all_sum_row_embeddings = [None for _ in range(table.shape[0])]
+    all_row_count = [0 for _ in range(table.shape[0])]
     # Use the batch_generator
     for batch_tables in batch_generator(chunks_generator, batch_size):
         # Extract the actual tables from the dictionaries
         tables_list = [chunk_dict["table"] for chunk_dict in batch_tables]
-        col_list = [chunk_dict["position"][0] for chunk_dict in batch_tables]
+        row_list = [chunk_dict["position"][1] for chunk_dict in batch_tables]
 
         all_embeddings = get_embedding(tables_list)
         
-        for embeddings, col_range in zip(all_embeddings, col_list):
-            start_col = col_range[0]
-            end_col = col_range[1]
+        for embeddings, row_range in zip(all_embeddings, row_list):
+            start_row = row_range[0]
+            end_row = row_range[1]
             # start_col = start_col.item()
             # end_col = end_col.item()
-            for col_index, embeding in zip(range(start_col, end_col), embeddings):
-                if all_sum_column_embeddings[col_index] is None:
-                    all_sum_column_embeddings[col_index] = torch.zeros(embeding.size())
-                all_sum_column_embeddings[col_index] += embeding
-                all_column_count[col_index] += 1
-    all_avg_column_embeddings = [sum_embeddings / num_embeddings for sum_embeddings, num_embeddings in zip(all_sum_column_embeddings, all_column_count)]
-    return all_avg_column_embeddings
+            for row_index, embeding in zip(range(start_row, end_row), embeddings):
+                if all_sum_row_embeddings[row_index] is None:
+                    all_sum_row_embeddings[row_index] = torch.zeros(embeding.size())
+                all_sum_row_embeddings[row_index] += embeding
+                all_row_count[row_index] += 1
+    all_avg_row_embeddings = [sum_embedding / num_embedding for sum_embedding, num_embedding in zip(all_sum_row_embeddings, all_row_count)]
+    return all_avg_row_embeddings
 
 def fisher_yates_shuffle(seq):
     for i in reversed(range(1, len(seq))):
@@ -295,7 +294,7 @@ if __name__ == "__main__":
     model = load_transformers_model(model_name, device)
     model = model.eval()
     get_embedding = functools.partial(
-        get_hugging_face_column_embeddings_batched,
+        get_hugging_face_row_embeddings_batched,
         model_name=model_name,
         tokenizer=tokenizer,
         max_length=max_length,
@@ -311,14 +310,14 @@ if __name__ == "__main__":
     data_loader = NextiaJDCSVDataLoader(dataset_dir, metadata_path, ground_truth_path)
     save_directory_results = os.path.join(
         args.save_dir,
-        "CI_Join_Relationship",
+        "CI_Row_Embdding_Join_Relationship",
         testbed,
         model_name,
         "results",
     )
     save_directory_embeddings = os.path.join(
         args.save_dir,
-        "CI_Join_Relationship",
+        "CI_Row_Embdding_Join_Relationship",
         testbed,
         model_name,
         "embeddings",

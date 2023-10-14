@@ -18,14 +18,11 @@ from torch.linalg import inv, norm
 from observatory.common_util.mcv import compute_mcv
 from observatory.models.hugging_face_column_embeddings import get_hugging_face_column_embeddings_batched
 
-
-
 def fisher_yates_shuffle(seq):
     for i in reversed(range(1, len(seq))):
         j = random.randint(0, i)
         seq[i], seq[j] = seq[j], seq[i]
     return seq
-
 
 def get_permutations(n, m):
     if n < 10:
