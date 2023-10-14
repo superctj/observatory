@@ -136,16 +136,16 @@ def analyze_embeddings(all_embeddings):
 
 class TableEmbedder:
     def __init__(self, model, tokenizer, device):
-        self.model = model.to(device)
+        self.model = model.to(device).eval()  # Ensure the model is in eval mode
         self.tokenizer = tokenizer
         self.device = device
 
     def get_last_hidden_state(self, input_ids, attention_mask=None):
-        outputs = self.model.transformer(input_ids=input_ids, attention_mask=attention_mask)
+        with torch.no_grad():  # Disable gradient computation
+            outputs = self.model.transformer(input_ids=input_ids, attention_mask=attention_mask)
         return outputs.last_hidden_state
 
     def compute_embeddings(self, tables, batch_size):
-        # Step 1: Flatten the row strings and keep track of indices
         all_row_strings = []
         table_row_indices = []
 
@@ -154,49 +154,33 @@ class TableEmbedder:
             all_row_strings.extend(row_strings)
             table_row_indices.extend([(table_idx, row_idx) for row_idx in range(len(row_strings))])
 
-        # Placeholder for all embeddings with pre-allocated space for each table
-        all_embeddings = [ [None]*len(table_to_row_strings(table)) for table in tables]
+        all_embeddings = [[None] * len(table_to_row_strings(table)) for table in tables]
 
-        # Step 2: Process the flattened list in chunks of batch_size
         for i in range(0, len(all_row_strings), batch_size):
-            batch_row_strings = all_row_strings[i:i+batch_size]
+            batch_row_strings = all_row_strings[i:i + batch_size]
 
-            tokenized_texts = [self.tokenizer(row) for row in batch_row_strings]
+            # Batch tokenization
+            tokenized_texts = self.tokenizer(batch_row_strings, padding='longest', return_tensors='pt', truncation=True)
             
-            # input_ids = torch.stack([torch.tensor(item['input_ids']) for item in tokenized_texts])
-            # attention_masks = torch.stack([torch.tensor(item['attention_mask']) for item in tokenized_texts])
-            # Determine the max length of the tokenized texts
-            max_length = max([len(item['input_ids']) for item in tokenized_texts])
-
-            # Pad the input IDs and create the extended attention masks
-            padded_input_ids = []
-            padded_attention_masks = []
-
-            for item in tokenized_texts:
-                # Calculate how many positions need padding
-                padding_length = max_length - len(item['input_ids'])
-                
-                # Pad the input_ids and create the corresponding attention masks
-                padded_input = item['input_ids'] + [self.tokenizer.pad_token_id] * padding_length
-                attention_mask = item['attention_mask'] + [0] * padding_length
-                
-                padded_input_ids.append(torch.tensor(padded_input))
-                padded_attention_masks.append(torch.tensor(attention_mask))
-
-            # Convert lists to tensors
-            input_ids = torch.stack(padded_input_ids).to(self.device)
-            attention_masks = torch.stack(padded_attention_masks).to(self.device)
+            input_ids = tokenized_texts['input_ids'].to(self.device)
+            attention_masks = tokenized_texts['attention_mask'].to(self.device)
 
             hidden_states = self.get_last_hidden_state(input_ids, attention_mask=attention_masks)
 
-            # Step 3: Use the indices list to reassemble the embeddings back into the per-table format
             for idx, mask in enumerate(attention_masks):
                 avg_embedding = hidden_states[idx][mask.bool()].mean(dim=0)
-                table_idx, row_idx = table_row_indices[i+idx]
+                table_idx, row_idx = table_row_indices[i + idx]
                 all_embeddings[table_idx][row_idx] = avg_embedding
 
+            # Release unnecessary tensors and clear GPU cache
+            del input_ids, attention_masks, hidden_states
+            torch.cuda.empty_cache()
 
         return all_embeddings
+
+
+
+
 
 
 def process_table_wrapper(
