@@ -258,6 +258,8 @@ def process_and_save_embeddings(model_name, args, tables):
     for table_index, table in enumerate(tables):
         if table_index < args.start_index:
             continue
+        if table_index >= args.start_index + args.num_tables:
+            break
         process_table_wrapper(
             table_index,
             table,
@@ -312,6 +314,12 @@ if __name__ == "__main__":
         type=int,
         default=0,
         help="Start table index",
+    )
+    parser.add_argument(
+        "--num_tables",
+        type=int,
+        default=1000,
+        help="Number of tables to process",
     )
     args = parser.parse_args()
 
