@@ -364,22 +364,12 @@ if __name__ == "__main__":
         tables, perms = shuffle_df_columns(table, args.num_shuffles)
         all_embeddings = []
         for table in tables:
-            column_embeddings = get_average_embeddings(table, get_embedding=get_embedding, \
+            row_embeddings = get_average_embeddings(table, get_embedding=get_embedding, \
                 model_name=model_name, tokenizer=tokenizer, max_length=max_length, \
                     max_row= args.max_row,  max_col= args.max_col, batch_size = batch_size)
             
-            all_embeddings.append(column_embeddings)
+            all_embeddings.append(row_embeddings)
             
-        all_ordered_embeddings = []
-        for perm ,embeddings in  zip(perms, all_embeddings):
-            
-            # Create a list of the same length as perm, filled with None
-            ordered_embeddings = [None] * len(perm)
-            # Assign each embedding to its original position
-            for i, p in enumerate(perm):
-                ordered_embeddings[p] = embeddings[i]
-            all_ordered_embeddings.append(ordered_embeddings)
-        all_embeddings = all_ordered_embeddings
         
         torch.save(
             all_embeddings,
