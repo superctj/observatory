@@ -1,5 +1,5 @@
 # Observatory
-Codebase of paper Observatory: Characterizing Embeddings of Relational Tables.
+Codebase of paper [Observatory: Characterizing Embeddings of Relational Tables](https://arxiv.org/abs/2310.07736).
 
 ## Environment Setup
 Assume using [Miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html) for Python package management on Linux machines. 
@@ -71,4 +71,4 @@ For other models: e.g.,
     ./observatory/properties/Sample_Fidelity/doduo.sh
 
 ## Side Notes
-To evaluate the doduo model on GPU, please substitute observatory/models/DODUO/doduo/doduo.py with observatory/models/doduo.py.
+To evaluate the DODUO model on GPU, please substitute ```observatory/models/DODUO/doduo/doduo.py``` with ```observatory/models/doduo.py```.
