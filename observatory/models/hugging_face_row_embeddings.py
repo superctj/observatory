@@ -1,24 +1,20 @@
 import os
-
-os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
-import argparse
+os.environ ['CUDA_LAUNCH_BLOCKING'] = "1"
 import pandas as pd
 import torch
+
 from observatory.models.tapex import tapex_inference
-from observatory.common_util.column_based_truncate import column_based_truncate
 
+from observatory.common_util.row_based_truncate import row_based_truncate
 
-def table2colList(table):
-    cols = []
-    for i in range(len(table.columns)):
-        string_values = " ".join(table.iloc[:, i].astype(str).tolist())
-        col_str = f"{table.columns[i]} {string_values}"
-        cols.append(col_str)
-    return cols
+def row2strList(table):
+    rows = []
+    for index, row in table.iterrows():
+        row_str = " ".join([f"{col} {str(val)}" for col, val in zip(table.columns, row)])
+        rows.append(row_str)
+    return rows
 
-
-def column_based_process_table(tokenizer, table, max_length, model_name):
-    cls_positions = []
+def row_based_process_table(tokenizer, table, max_length, model_name):
     table.columns = table.columns.astype(str)
     table = table.reset_index(drop=True)
     table = table.astype(str)
@@ -27,12 +23,12 @@ def column_based_process_table(tokenizer, table, max_length, model_name):
         result = [tokenizer.cls_token_id]
         cls_positions = [0]  # The first token is always cls_token_id
         
-        # Tokenize each column and append to result
-        for column in table.columns:
-            one_col_table = pd.DataFrame(table[column])
-            encoding = tokenizer(one_col_table, return_tensors="pt")
-            column_ids = encoding['input_ids'][0].tolist()[1:-1]  # Remove cls and sep tokens
-            result.extend(column_ids)
+        # Tokenize each row and append to result
+        for _, row in table.iterrows():
+            one_row_table = pd.DataFrame([row])
+            encoding = tokenizer(one_row_table, return_tensors="pt")
+            row_ids = encoding['input_ids'][0].tolist()[1:-1]  # Remove cls and sep tokens
+            result.extend(row_ids)
             result.append(tokenizer.cls_token_id)
             cls_positions.append(len(result) - 1)
             
@@ -44,79 +40,50 @@ def column_based_process_table(tokenizer, table, max_length, model_name):
         
         # Pad to maxlength
         result = result + [tokenizer.pad_token_id] * (max_length - len(result))
+        
         return result, cls_positions
     else:
-        result = []
-        cols = table2colList(table)
 
-        for idx, col in enumerate(cols):
-            col_tokens = tokenizer.tokenize(col)
+        rows = row2strList(table)
+        current_tokens = []
+        cls_positions = []
+
+        for idx, row in enumerate(rows):
+            row_tokens = tokenizer.tokenize(row)
+
             # Check model name and use appropriate special tokens
             if model_name.startswith("t5"):
                 # For T5, add <s> at the start and </s> at the end
-                col_tokens = ["<s>"] + col_tokens + ["</s>"]
+                row_tokens = ["<s>"] + row_tokens + ["</s>"]
             else:
-                # For other models (BERT, RoBERTa, TAPAS), add [CLS] at the start and [SEP] at the end
-                col_tokens = ["[CLS]"] + col_tokens + ["[SEP]"]
+                # For other models, add [CLS] at the start and [SEP] at the end
+                row_tokens = ["[CLS]"] + row_tokens + ["[SEP]"]
 
-            if len(result) + len(col_tokens) > max_length:
-                assert (
-                    False
-                ), "The length of the tokens exceeds the max length. Please run the truncate.py first."
+            if len(current_tokens) + len(row_tokens) > max_length:
+                assert False, "The length of the tokens exceeds the max length. Please run the truncate.py first."
                 break
             else:
-                if result:
-                    result = result[:-1]
-                result += col_tokens
-                cls_positions.append(
-                    len(result) - len(col_tokens)
-                )  # Store the position of [CLS]
+                if current_tokens:
+                    current_tokens = current_tokens[:-1]  # Remove previous [SEP]
+                current_tokens += row_tokens
+                cls_positions.append(len(current_tokens) - len(row_tokens))  # Store the position of [CLS]
 
-        if len(result) < max_length:
-            padding_length = max_length - len(result)
-            # Use appropriate padding token based on the model
+        if len(current_tokens) < max_length:
+            padding_length = max_length - len(current_tokens)
             padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
-            result += [padding_token] * padding_length
+            current_tokens += [padding_token] * padding_length
 
-        return result, cls_positions
-
-
-def get_tapas_column_embeddings(inputs, last_hidden_states):
-    # find the maximum column id
-    max_column_id = inputs["token_type_ids"][0][:, 1].max()
-
-    column_embeddings = []
-
-    # loop over all column ids
-    # try:
-    for column_id in range(1, max_column_id + 1):
-        # find all indices where the token_type_ids is equal to the column id
-        indices = torch.where(inputs["token_type_ids"][0][:, 1] == column_id)[0]
-
-        # get the embeddings at these indices
-        embeddings = last_hidden_states[0][indices]
-
-        # compute the average embedding
-        column_embedding = embeddings.mean(dim=0)
-
-        column_embeddings.append(column_embedding)
-    # except Exception as e:
-    #         print("Error message:", e)
-    #         print(max_column_id)
-    #         assert False, "Stop as expected"
-
-    return column_embeddings
+        return current_tokens, cls_positions
 
 
-
-def get_hugging_face_column_embeddings_batched(tables, model_name, tokenizer, max_length, model, batch_size=32):
+def get_hugging_face_row_embeddings_batched(tables, model_name, tokenizer, max_length, model, batch_size=32):
     model = model.eval()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
 
     truncated_tables = []
     for table_index, table in enumerate(tables):
-        max_rows_fit = column_based_truncate(table, tokenizer, max_length, model_name)
+        max_rows_fit = row_based_truncate(table, tokenizer, max_length, model_name)
         if max_rows_fit < 1:
             ##################
             ## for other properties, do something here
@@ -164,27 +131,27 @@ def get_hugging_face_column_embeddings_batched(tables, model_name, tokenizer, ma
 
                 # Extracting embeddings for rows
                 for batch_idx in range(last_hidden_states.shape[0]):
-                    column_embeddings = []
-                    for column_id in range(1, max(batched_inputs["token_type_ids"][batch_idx][:, 1]) + 1):
-                        indices = torch.where(batched_inputs["token_type_ids"][batch_idx][:, 1] == column_id)[0]
+                    row_embeddings = []
+                    for row_id in range(1, max(batched_inputs["token_type_ids"][batch_idx][:, 2]) + 1):
+                        indices = torch.where(batched_inputs["token_type_ids"][batch_idx][:, 2] == row_id)[0]
                         embeddings = last_hidden_states[batch_idx][indices]
-                        column_embedding = embeddings.mean(dim=0)
-                        column_embeddings.append(column_embedding)
-                    all_embeddings.append(column_embeddings)
+                        row_embedding = embeddings.mean(dim=0)
+                        row_embeddings.append(row_embedding)
+                    all_embeddings.append(row_embeddings)
 
                 # Clear the batch lists
                 batch_input_ids, batch_token_type_ids, batch_attention_masks = [], [], []
 
         else:
             if model_name.startswith("microsoft/tapex"):
-                input_ids, cls_positions = column_based_process_table(
+                input_ids, cls_positions = row_based_process_table(
                     tokenizer, processed_table, max_length, model.name_or_path
                 )
                 attention_mask = [
                     1 if id != tokenizer.pad_token_id else 0 for id in input_ids
                 ]
             else:
-                processed_tokens, cls_positions = column_based_process_table(
+                processed_tokens, cls_positions = row_based_process_table(
                     tokenizer, processed_table, max_length, model.name_or_path
                 )
                 input_ids = tokenizer.convert_tokens_to_ids(processed_tokens)

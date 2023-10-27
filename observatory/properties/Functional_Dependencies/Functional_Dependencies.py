@@ -91,6 +91,13 @@ if __name__ == "__main__":
         default=".",
         help="Path to load the doduo model",
     )
+    parser.add_argument(
+        "-b",
+        "--batch_size",
+        type=int,
+        default=32,
+        help="The batch size for parallel inference",
+    )
     args = parser.parse_args()
     root_dir = args.root_dir
     dataset_dir = os.path.join(root_dir, "datasets")

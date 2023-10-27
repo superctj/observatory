@@ -8,157 +8,13 @@ from observatory.models.huggingface_models import (
     load_transformers_model,
     load_transformers_tokenizer_and_max_length,
 )
+from observatory.models.hugging_face_column_embeddings import get_hugging_face_column_embeddings_batched
 from observatory.common_util.truncate import truncate_index
 from readCompare import compare_directories
 
 # from concurrent.futures import ThreadPoolExecutor
 from torch.linalg import inv, norm
 
-
-# def get_subsets(n, m, portion):
-#     portion_size = int(n * portion)
-#     max_possible_tables = math.comb(n, portion_size)
-
-#     if max_possible_tables <= 10 * m:
-#         # If the number of combinations is small, generate all combinations and randomly select from them
-#         all_subsets = list(itertools.combinations(range(n), portion_size))
-#         random.shuffle(all_subsets)
-#         return [list(subset) for subset in all_subsets[:m]]
-#     else:
-#         # If the number of combinations is large, use random sampling to generate distinct subsets
-#         subsets = set()
-#         while len(subsets) < min(m, max_possible_tables):
-#             new_subset = tuple(sorted(random.sample(range(n), portion_size)))
-#             subsets.add(new_subset)
-#         return [list(subset) for subset in subsets]
-
-# def shuffle_df(df, m, portion):
-#     subsets = get_subsets(len(df), m, portion)
-#     dfs = []
-#     for subset in subsets:
-#         dfs.append(df.iloc[subset])
-#     return dfs
-
-
-def table2colList(table):
-    cols = []
-    for column in table.columns:
-        # Convert column values to strings and join them with spaces
-        string_values = " ".join(table[column].astype(str).tolist())
-        col_str = f"{column} {string_values}"
-        cols.append(col_str)
-    return cols
-
-
-def process_table(tokenizer, cols, max_length, model_name):
-    current_tokens = []
-    cls_positions = []
-
-    for idx, col in enumerate(cols):
-        col_tokens = tokenizer.tokenize(col)
-        # Check model name and use appropriate special tokens
-        if model_name.startswith("t5"):
-            # For T5, add <s> at the start and </s> at the end
-            col_tokens = ["<s>"] + col_tokens + ["</s>"]
-        else:
-            # For other models (BERT, RoBERTa, TAPAS), add [CLS] at the start and [SEP] at the end
-            col_tokens = ["[CLS]"] + col_tokens + ["[SEP]"]
-
-        if len(current_tokens) + len(col_tokens) > max_length:
-            assert (
-                False
-            ), "The length of the tokens exceeds the max length. Please run the truncate.py first."
-            break
-        else:
-            if current_tokens:
-                current_tokens = current_tokens[:-1]
-            current_tokens += col_tokens
-            cls_positions.append(
-                len(current_tokens) - len(col_tokens)
-            )  # Store the position of [CLS]
-
-    if len(current_tokens) < max_length:
-        padding_length = max_length - len(current_tokens)
-        # Use appropriate padding token based on the model
-        padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
-        current_tokens += [padding_token] * padding_length
-
-    return current_tokens, cls_positions
-
-
-def tapas_column_embeddings(inputs, last_hidden_states):
-    # find the maximum column id
-    max_column_id = inputs["token_type_ids"][0][:, 1].max()
-
-    column_embeddings = []
-
-    # loop over all column ids
-    for column_id in range(1, max_column_id + 1):
-        # find all indices where the token_type_ids is equal to the column id
-        indices = torch.where(inputs["token_type_ids"][0][:, 1] == column_id)[0]
-
-        # get the embeddings at these indices
-        embeddings = last_hidden_states[0][indices]
-
-        # compute the average embedding
-        column_embedding = embeddings.mean(dim=0)
-
-        column_embeddings.append(column_embedding)
-
-    return column_embeddings
-
-
-def generate_p4_embeddings(tokenizer, model, device, max_length, padding_token, tables):
-    all_embeddings = []
-    # sampled_tables = shuffle_df(table,num_samples, percentage )
-
-    for processed_table in tables:
-        if model_name.startswith("google/tapas"):
-            processed_table = processed_table.reset_index(drop=True)
-            processed_table = processed_table.astype(str)
-
-            inputs = tokenizer(
-                table=processed_table, padding="max_length", return_tensors="pt"
-            )
-            inputs = inputs.to(device)
-            with torch.no_grad():  # Turn off gradients to save memory
-                outputs = model(**inputs)
-            last_hidden_states = outputs.last_hidden_state
-            embeddings = tapas_column_embeddings(inputs, last_hidden_states)
-        else:
-            col_list = table2colList(processed_table)
-            processed_tokens = process_table(
-                tokenizer, col_list, max_length, model.name_or_path
-            )
-            input_ids = tokenizer.convert_tokens_to_ids(processed_tokens[0])
-            attention_mask = [
-                1 if token != padding_token else 0 for token in processed_tokens[0]
-            ]
-            cls_positions = processed_tokens[1]
-
-            input_ids_tensor = torch.tensor([input_ids], device=device)
-            attention_mask_tensor = torch.tensor([attention_mask], device=device)
-
-            if model.name_or_path.startswith("t5"):
-                outputs = model(
-                    input_ids=input_ids_tensor,
-                    attention_mask=attention_mask_tensor,
-                    decoder_input_ids=input_ids_tensor,
-                )
-            else:
-                outputs = model(
-                    input_ids=input_ids_tensor, attention_mask=attention_mask_tensor
-                )
-            last_hidden_state = outputs.last_hidden_state
-
-            embeddings = []
-            for position in cls_positions:
-                cls_embedding = last_hidden_state[0, position, :].detach().cpu()
-                embeddings.append(cls_embedding)
-
-        all_embeddings.append(embeddings)
-
-    return all_embeddings
 
 
 def analyze_embeddings(all_embeddings, changed_column_lists):
@@ -206,15 +62,15 @@ def process_table_wrapper(
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
 
-    all_shuffled_embeddings = generate_p4_embeddings(
-        tokenizer, model, device, max_length, padding_token, truncated_tables
+    all_embeddings = get_hugging_face_column_embeddings_batched(
+        truncated_tables, model_name=model_name, tokenizer=tokenizer, max_length=max_length, model=model, batch_size=args.batch_size
     )
     torch.save(
-        all_shuffled_embeddings,
+        all_embeddings,
         os.path.join(save_directory_embeddings, f"{key}_embeddings.pt"),
     )
     cosine_similarities_dict = analyze_embeddings(
-        all_shuffled_embeddings, changed_column_list
+        all_embeddings, changed_column_list
     )
     for column_index, similarities in cosine_similarities_dict.items():
         print(f"Column {column_index}:")
@@ -288,6 +144,13 @@ if __name__ == "__main__":
         type=str,
         default="",
         help="Name of the Hugging Face model to use",
+    )
+    parser.add_argument(
+        "-b",
+        "--batch_size",
+        type=int,
+        default=32,
+        help="The batch size for parallel inference",
     )
     args = parser.parse_args()
 

@@ -82,25 +82,29 @@ def get_tabert_embeddings(tables, model):
     # )
     # model = model.to(device)
     all_embeddings = []
-
+    processed_tables=[]
+    contexts = []
+    context = ""
     for table in tables:
         table = table.reset_index(drop=True)
         table = table.astype(str)
         table.columns = table.columns.astype(str)
         table = convert_to_table(table, model.tokenizer)
-        context = ""
-        with torch.no_grad():
-            context_encoding, column_encoding, info_dict = model.encode(
-                contexts=[model.tokenizer.tokenize(context)], tables=[table]
-            )
-        embeddings = column_encoding[0]
-        all_embeddings.append(embeddings)
-        # Free up some memory by deleting column_encoding and info_dict variables
-        del column_encoding
-        del info_dict
-        del context_encoding
-        del embeddings
-        # Empty the cache
-        torch.cuda.empty_cache()
+        processed_tables.append(table)
+        contexts.append(model.tokenizer.tokenize(context))
+    
+    with torch.no_grad():
+        context_encoding, all_embeddings, info_dict = model.encode(
+            contexts=contexts, tables=processed_tables
+        )
+    # embeddings = column_encoding[0]
+    # all_embeddings.append(embeddings)
+    # Free up some memory by deleting column_encoding and info_dict variables
+    # del column_encoding
+    del info_dict
+    del context_encoding
+    # del embeddings
+    # Empty the cache
+    torch.cuda.empty_cache()
 
     return all_embeddings

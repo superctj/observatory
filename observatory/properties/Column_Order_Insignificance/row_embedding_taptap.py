@@ -1,8 +1,10 @@
 import os
+os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
+
 import argparse
 import itertools
 import random
-
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
 import pandas as pd
 import torch
 import numpy as np
@@ -10,58 +12,43 @@ from observatory.models.huggingface_models import (
     load_transformers_model,
     load_transformers_tokenizer_and_max_length,
 )
-from observatory.common_util.truncate import truncate_index
 from observatory.common_util.mcv import compute_mcv
 from torch.linalg import inv, norm
-from observatory.models.hugging_face_column_embeddings import (
-    get_hugging_face_column_embeddings_batched,
-)
 
+# align with the processing way in taptap_dataset.py
+def table_to_row_strings(df):
+    numerical_features = df.select_dtypes(include=np.number).columns.to_list()
+    row_strings = []
 
-def table2colList(table):
-    cols = []
-    for column in table.columns:
-        # Convert column values to strings and join them with spaces
-        string_values = " ".join(table[column].astype(str).tolist())
-        col_str = f"{column} {string_values}"
-        cols.append(col_str)
-    return cols
-
-
-def process_table(tokenizer, cols, max_length, model_name):
-    current_tokens = []
-    cls_positions = []
-
-    for idx, col in enumerate(cols):
-        col_tokens = tokenizer.tokenize(col)
-        # Check model name and use appropriate special tokens
-        if model_name.startswith("t5"):
-            # For T5, add <s> at the start and </s> at the end
-            col_tokens = ["<s>"] + col_tokens + ["</s>"]
-        else:
-            # For other models (BERT, RoBERTa, TAPAS), add [CLS] at the start and [SEP] at the end
-            col_tokens = ["[CLS]"] + col_tokens + ["[SEP]"]
-
-        if len(current_tokens) + len(col_tokens) > max_length:
-            assert (
-                False
-            ), "The length of the tokens exceeds the max length. Please run the truncate.py first."
-            break
-        else:
-            if current_tokens:
-                current_tokens = current_tokens[:-1]
-            current_tokens += col_tokens
-            cls_positions.append(
-                len(current_tokens) - len(col_tokens)
-            )  # Store the position of [CLS]
-
-    if len(current_tokens) < max_length:
-        padding_length = max_length - len(current_tokens)
-        # Use appropriate padding token based on the model
-        padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
-        current_tokens += [padding_token] * padding_length
-
-    return current_tokens, cls_positions
+    for _, row in df.iterrows():
+        formatted_values = []
+        
+        for i in range(len(df.columns)):
+            feature = df.columns[i]
+            value = str(row[i]).strip()
+            
+            if feature not in numerical_features or value == 'None':
+                formatted_value = "%s is %s" % (feature, value)
+            else:
+                if '.' not in value:
+                    formatted_value = "%s is %s" % (feature, value)
+                else:
+                    v = float(value)
+                    i = 0
+                    if abs(v) < 1e-10:
+                        v = 0
+                    else:
+                        while abs(v * (10 ** i)) < 1:
+                            i += 1
+                        v = round(v, max(3, i + 2))
+                    formatted_value = "%s is %s" % (feature, str(v))
+            
+            formatted_values.append(formatted_value)
+        
+        row_string = ", ".join(formatted_values)
+        row_strings.append(row_string)
+    
+    return row_strings
 
 
 def fisher_yates_shuffle(seq):
@@ -113,12 +100,12 @@ def analyze_embeddings(all_embeddings):
     avg_cosine_similarities = []
     mcvs = []
 
-    for i in range(len(all_embeddings[0])):
-        column_cosine_similarities = []
-        column_embeddings = []
+    for i in range(min([len(embeddings) for embeddings in all_embeddings])):
+        cosine_similarities = []
+        row_embeddings = []
 
         for j in range(len(all_embeddings)):
-            column_embeddings.append(all_embeddings[j][i])
+            row_embeddings.append(all_embeddings[j][i])
 
         for j in range(1, len(all_embeddings)):
             truncated_embedding = all_embeddings[0][i]
@@ -127,10 +114,10 @@ def analyze_embeddings(all_embeddings):
             cosine_similarity = torch.dot(truncated_embedding, shuffled_embedding) / (
                 norm(truncated_embedding) * norm(shuffled_embedding)
             )
-            column_cosine_similarities.append(cosine_similarity.item())
+            cosine_similarities.append(cosine_similarity.item())
 
-        avg_cosine_similarity = torch.mean(torch.tensor(column_cosine_similarities))
-        mcv = compute_mcv(torch.stack(column_embeddings))
+        avg_cosine_similarity = torch.mean(torch.tensor(cosine_similarities))
+        mcv = compute_mcv(torch.stack(row_embeddings))
 
         avg_cosine_similarities.append(avg_cosine_similarity.item())
         mcvs.append(mcv)
@@ -144,6 +131,56 @@ def analyze_embeddings(all_embeddings):
         table_avg_cosine_similarity.item(),
         table_avg_mcv.item(),
     )
+    
+
+
+class TableEmbedder:
+    def __init__(self, model, tokenizer, device):
+        self.model = model.to(device).eval()  # Ensure the model is in eval mode
+        self.tokenizer = tokenizer
+        self.device = device
+
+    def get_last_hidden_state(self, input_ids, attention_mask=None):
+        with torch.no_grad():  # Disable gradient computation
+            outputs = self.model.transformer(input_ids=input_ids, attention_mask=attention_mask)
+        return outputs.last_hidden_state
+
+    def compute_embeddings(self, tables, batch_size):
+        all_row_strings = []
+        table_row_indices = []
+
+        for table_idx, table in enumerate(tables):
+            row_strings = table_to_row_strings(table)
+            all_row_strings.extend(row_strings)
+            table_row_indices.extend([(table_idx, row_idx) for row_idx in range(len(row_strings))])
+
+        all_embeddings = [[None] * len(table_to_row_strings(table)) for table in tables]
+
+        for i in range(0, len(all_row_strings), batch_size):
+            batch_row_strings = all_row_strings[i:i + batch_size]
+
+            # Batch tokenization
+            tokenized_texts = self.tokenizer(batch_row_strings, padding='longest', return_tensors='pt', truncation=True)
+            
+            input_ids = tokenized_texts['input_ids'].to(self.device)
+            attention_masks = tokenized_texts['attention_mask'].to(self.device)
+
+            hidden_states = self.get_last_hidden_state(input_ids, attention_mask=attention_masks)
+
+            for idx, mask in enumerate(attention_masks):
+                avg_embedding = hidden_states[idx][mask.bool()].mean(dim=0)
+                table_idx, row_idx = table_row_indices[i + idx]
+                all_embeddings[table_idx][row_idx] = avg_embedding
+
+            # Release unnecessary tensors and clear GPU cache
+            del input_ids, attention_masks, hidden_states
+            torch.cuda.empty_cache()
+
+        return all_embeddings
+
+
+
+
 
 
 def process_table_wrapper(
@@ -155,17 +192,16 @@ def process_table_wrapper(
     tokenizer,
     device,
     max_length,
-    padding_token,
 ):
     save_directory_results = os.path.join(
         args.save_directory,
-        "Column_Order_Insignificance",
+        "Row_embedding_Column_Order_Insignificance",
         model_name,
         "results",
     )
     save_directory_embeddings = os.path.join(
         args.save_directory,
-        "Column_Order_Insignificance",
+        "Row_embedding_Column_Order_Insignificance",
         model_name,
         "embeddings",
     )
@@ -176,23 +212,14 @@ def process_table_wrapper(
         os.makedirs(save_directory_embeddings)
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
-    tables, perms = shuffle_df_columns(table, args.num_shuffles)
-    all_embeddings = get_hugging_face_column_embeddings_batched(
-        tables=tables, model_name=model_name,  tokenizer=tokenizer, max_length=max_length, model=model, batch_size=args.batch_size
-    )
-    
-    all_ordered_embeddings = []
-    for perm ,embeddings in  zip(perms, all_embeddings):
         
-        # Create a list of the same length as perm, filled with None
-        ordered_embeddings = [None] * len(perm)
-        # Assign each embedding to its original position
-        for i, p in enumerate(perm):
-            ordered_embeddings[p] = embeddings[i]
-        all_ordered_embeddings.append(ordered_embeddings)
-    all_embeddings = all_ordered_embeddings
-    
-    
+    tables, perms = shuffle_df_columns(truncated_table, args.num_shuffles)
+    embedder = TableEmbedder(model, tokenizer, device)
+    all_embeddings = embedder.compute_embeddings(tables, args.batch_size)
+
+    if len(all_embeddings)<24:
+        print("len(all_embeddings)<24")
+        return
     torch.save(
         all_embeddings,
         os.path.join(save_directory_embeddings, f"table_{table_index}_embeddings.pt"),
@@ -220,28 +247,28 @@ def process_table_wrapper(
 
 
 def process_and_save_embeddings(model_name, args, tables):
-    tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
+    model_name = "ztphs980/taptap-distill"
+    tokenizer = AutoTokenizer.from_pretrained("ztphs980/taptap-distill")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
-    model = load_transformers_model(model_name, device)
+    model = AutoModelForSequenceClassification.from_pretrained("ztphs980/taptap-distill")
     model.eval()
-    padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
+    # padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
 
     for table_index, table in enumerate(tables):
         if table_index < args.start_index:
             continue
-        max_rows_fit = truncate_index(table, tokenizer, max_length, model_name)
-        truncated_table = table.iloc[:max_rows_fit, :]
+        if table_index >= args.start_index + args.num_tables:
+            break
         process_table_wrapper(
             table_index,
-            truncated_table,
+            table,
             args,
             model_name,
             model,
             tokenizer,
             device,
-            max_length,
-            padding_token,
+            tokenizer.model_max_length,
         )
 
 
@@ -272,7 +299,7 @@ if __name__ == "__main__":
         "-m",
         "--model_name",
         type=str,
-        default="",
+        default="ztphs980/taptap-distill",
         help="Name of the Hugging Face model to use",
     )
     parser.add_argument(
@@ -287,6 +314,12 @@ if __name__ == "__main__":
         type=int,
         default=0,
         help="Start table index",
+    )
+    parser.add_argument(
+        "--num_tables",
+        type=int,
+        default=1000,
+        help="Number of tables to process",
     )
     args = parser.parse_args()
 

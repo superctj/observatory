@@ -12,30 +12,32 @@
 #SBATCH --array=1
 source ~/miniconda3/bin/activate
 conda init
-conda activate observatory
+conda activate tabeval
 # specify number of iterations
-n=4
+n=1
 # specify starting number
 start=0
 # specify testbed and root_dir
 testbed="testbedXS"
 root_dir="/nfs/turbo/coe-jag/zjsun/data/nextiajd_datasets"
 model_name="t5-base"
-save_dir="/home/zjsun/Join_Relationship_hug"
+save_dir="/nfs/turbo/coe-jag/zjsun/revision"
+batch_size=256
+num_pair=90000
 # loop n times
 for (( i=0; i<$n; i++ ))
 do
   # calculate the current start number
-  current_start=$((start + (i * 10000)))
+  current_start=$((start + (i * $num_pair)))
 
   python3 nextiajd_loader.py \
   --testbed $testbed \
   --root_dir $root_dir \
   --model_name $model_name \
-  --n 1000 --start \
+  --nearby_column 1 --start \
   $current_start \
-  --num_tables 10000 \
-  --value 1000 \
+  --num_tables $num_pair \
+  --value 10000 \
   --save_dir $save_dir
 
   echo "Completed iteration $((i+1)) out of $n"

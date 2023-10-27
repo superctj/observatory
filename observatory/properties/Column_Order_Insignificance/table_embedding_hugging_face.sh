@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=CI
+#SBATCH --job-name=table_CI
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:1
 #SBATCH --nodes=1
@@ -15,10 +15,12 @@ conda init
 conda activate tabeval
 results_dir="/nfs/turbo/coe-jag/zjsun/revision" 
 num_shuffle=1000
+batch_size=32
 model_name="t5-base" 
 csv_dir="/nfs/turbo/coe-jag/zjsun/data/normal_TD"
-python3 evaluate_col_shuffle.py \
+python3 table_embedding_evaluate_col_shuffle.py \
 -r $csv_dir  \
 -s $results_dir  \
 -n $num_shuffle \
--m $model_name
+-m $model_name \
+-b $batch_size

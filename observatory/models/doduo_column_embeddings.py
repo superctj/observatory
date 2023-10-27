@@ -7,7 +7,7 @@ from observatory.models.huggingface_models import (
     load_transformers_model,
     load_transformers_tokenizer_and_max_length,
 )
-from observatory.common_util.column_based_truncate import truncate_index
+from observatory.common_util.column_based_truncate import column_based_truncate
 
 # model_args = argparse.Namespace
 # model_args.model = "wikitable"  # two models available "wikitable" and "viznet"
@@ -24,7 +24,7 @@ def get_doduo_embeddings(tables, model, tokenizer, max_length):
     model_name = "bert-base-uncased"
     truncated_tables = []
     for table_index, table in enumerate(tables):
-        max_rows_fit = truncate_index(table, tokenizer, max_length, model_name)
+        max_rows_fit = column_based_truncate(table, tokenizer, max_length, model_name)
         truncated_table = table.iloc[:max_rows_fit, :]
         truncated_tables.append(truncated_table)
     try:

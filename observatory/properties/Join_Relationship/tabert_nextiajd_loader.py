@@ -5,9 +5,60 @@ from typing import Dict, List
 from torch.nn.functional import cosine_similarity
 import functools
 from observatory.models.tabert_column_embeddings import get_tabert_embeddings
-
+import itertools
 import pandas as pd
 from collections import Counter
+
+def batch_generator(generator, batch_size):
+    batch = []
+    for item in generator:
+        batch.append(item)
+        if len(batch) == batch_size:
+            yield batch
+            batch = []
+    if batch:
+        yield batch
+        
+def chunk_neighbor_tables_tabert(tables, column_name, n, max_length, max_row=None, max_token_per_cell=20):
+    """
+    Chunk tables based on a central column and its neighbors.
+    """
+
+    for table_index, df in enumerate(tables):
+        
+        if column_name not in df.columns:
+            print(f"Column '{column_name}' not found in table {table_index}. Skipping...")
+            continue
+        
+        # Find the index of the specified column
+        col_index = df.columns.get_loc(column_name)
+        
+        # Determine the range of columns to select based on n
+        start_col_idx = max(0, col_index - n)
+        end_col_idx = min(df.shape[1], col_index + n + 1)
+        
+        # Extract the central and neighboring columns
+        chunk = df.iloc[:, start_col_idx:end_col_idx]
+        
+        # Integrate the chunking mechanism from the previous function
+        start_row = 0
+        while start_row < chunk.shape[0]:
+            optimal_rows = max_length // chunk.shape[1]
+            if max_token_per_cell:
+                optimal_rows = max_length // (chunk.shape[1] * max_token_per_cell)
+            if max_row:
+                optimal_rows = min(max_row, optimal_rows)
+            end_row = min(start_row + optimal_rows, chunk.shape[0])
+            truncated_chunk = chunk.iloc[start_row:end_row, :]
+            
+            # Yield the chunk with its start and end row indices and other relevant information
+            yield {
+                "table": truncated_chunk,
+                "position": ((start_col_idx, end_col_idx), (start_row, start_row + optimal_rows)),
+                "index": table_index
+            }
+
+            start_row = start_row + optimal_rows
 
 
 def jaccard_similarity(df1, df2, col1, col2):
@@ -138,17 +189,30 @@ def split_table(table: pd.DataFrame, n: int, m: int):
         yield [table.iloc[j : j + m] for j in range(i, min(i + m * n, total_rows), m)]
 
 
-def get_average_embedding(table, index, n, get_embedding):
-    m = max(min(100 // len(table.columns.tolist()), 3), 1)
+def get_average_embedding(table, column_name, get_embedding, n=1, batch_size=10):
+    # m = max(min(100 // len(table.columns.tolist()), 3), 1)
     sum_embeddings = None
     num_embeddings = 0
-    chunks_generator = split_table(table, n=n, m=m)
-    for tables in chunks_generator:
-        embeddings = get_embedding(tables)
-        if sum_embeddings is None:
-            sum_embeddings = torch.zeros(embeddings[0][index].size())
+    # chunks_generator = split_table(table, n=n, m=m)
+    chunks_generator = chunk_neighbor_tables_tabert(tables = [table,], \
+        column_name = column_name, n = n , \
+        max_length = 512, \
+        max_token_per_cell=20)
+    # Find the index of the column in the chunk table headers
+    first_chunk = next(chunks_generator)
+    col_index = first_chunk["table"].columns.get_loc(column_name)
+
+    # Use the batch_generator
+    for batch_tables in batch_generator(itertools.chain([first_chunk], chunks_generator), batch_size):
+        # Extract the actual tables from the dictionaries
+        tables_list = [chunk_dict["table"] for chunk_dict in batch_tables]
+
+        # Assuming your get_embedding function can handle a batch of tables
+        embeddings = get_embedding(tables_list)
         for embedding in embeddings:
-            sum_embeddings += embedding[index].to(device)
+            if sum_embeddings is None:
+                sum_embeddings = torch.zeros(embedding[col_index].size()).to(device)
+            sum_embeddings += embedding[col_index].to(device)
             num_embeddings += 1
     avg_embedding = sum_embeddings / num_embeddings
     return avg_embedding
@@ -160,7 +224,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--testbed", type=str, required=True)
     parser.add_argument("--root_dir", type=str, required=True)
-    parser.add_argument("--n", type=int, required=True)
     parser.add_argument(
         "-m",
         "--model_name",
@@ -185,7 +248,18 @@ if __name__ == "__main__":
         default=".",
         help="Path to load the tabert model",
     )
-
+    parser.add_argument(
+        "--nearby_column",
+        type=int,
+        default=1,
+        help="The number of nearby columns",
+    )
+    parser.add_argument(
+        "--batch_size",
+        type=int,
+        default=10,
+        help="The btach size for inference",
+    )
     args = parser.parse_args()
     model_name = args.model_name
 
@@ -193,6 +267,8 @@ if __name__ == "__main__":
     from observatory.models.TaBERT.table_bert import TableBertModel
 
     model_path = args.tabert_bin
+    batch_size = args.batch_size
+    n = args.nearby_column 
     model = TableBertModel.from_pretrained(
         model_path,
     )
@@ -202,7 +278,7 @@ if __name__ == "__main__":
 
     get_embedding = functools.partial(get_tabert_embeddings, model=model)
 
-    n = args.n
+    # n = args.n
     testbed = args.testbed
     root_dir = os.path.join(args.root_dir, testbed)
     dataset_dir = os.path.join(root_dir, "datasets")
@@ -210,7 +286,7 @@ if __name__ == "__main__":
     ground_truth_path = os.path.join(root_dir, f"groundTruth_{testbed}.csv")
     data_loader = NextiaJDCSVDataLoader(dataset_dir, metadata_path, ground_truth_path)
     save_directory_results = os.path.join(
-        args.save_dir, "Join_Relationship", "p5", testbed, model_name
+        args.save_dir, "Join_Relationship", testbed, model_name
     )
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
@@ -230,8 +306,14 @@ if __name__ == "__main__":
             t1_name, t2_name = row["ds_name"], row["ds_name_2"]
             c1_name, c2_name = row["att_name"], row["att_name_2"]
             containment = row["trueContainment"]
-            t1 = data_loader.read_table(t1_name, drop_nan=False, nrows=args.value)
-            t2 = data_loader.read_table(t2_name, drop_nan=False, nrows=args.value)
+            try:
+                t1 = data_loader.read_table(t1_name, drop_nan=False, nrows=args.value)
+                t2 = data_loader.read_table(t2_name, drop_nan=False, nrows=args.value)
+            except Exception as e:
+                print("Error: ")
+                print(e)
+                print("Skip The pair")
+                
             # print("t1_name: ", t1_name)
             # print("c1_name: ", c1_name)
             # print("t2_name: ", t2_name)
@@ -250,7 +332,7 @@ if __name__ == "__main__":
                 print("Error message:", e)
                 continue
             try:
-                c1_avg_embedding = get_average_embedding(t1, c1_idx, n, get_embedding)
+                c1_avg_embedding = get_average_embedding(t1, c1_name, get_embedding, n, batch_size)
             except AssertionError:
                 continue
             except Exception as e:
@@ -274,7 +356,7 @@ if __name__ == "__main__":
                 # c1_avg_embedding = get_average_embedding(t1, c1_idx, n,  get_embedding)
                 continue
             try:
-                c2_avg_embedding = get_average_embedding(t2, c2_idx, n, get_embedding)
+                c2_avg_embedding = get_average_embedding(t2, c2_name, get_embedding, n, batch_size)
             except AssertionError:
                 continue
             except Exception as e:

@@ -4,7 +4,7 @@ os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 import argparse
 import pandas as pd
 import torch
-from observatory.common_util.cellbased_truncate import truncate_index
+from observatory.common_util.cellbased_truncate import cellbased_truncate
 
 
 def table2colList(table):
@@ -102,7 +102,7 @@ def get_hugging_face_cell_embeddings(table, model_name, model, tokenizer, max_le
     padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
     # truncated_tables =[]
     # for table_index, table in enumerate(tables):
-    max_rows_fit = truncate_index(table, tokenizer, max_length, model_name)
+    max_rows_fit = cellbased_truncate(table, tokenizer, max_length, model_name)
     if max_rows_fit < 1:
         assert False, "Headers too long!"
     truncated_table = table.iloc[:max_rows_fit, :]

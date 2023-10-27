@@ -1,0 +1,23 @@
+BartForConditionalGeneration(
+  (shared_parameters): ModuleDict()
+  (model): BartModel(
+    (shared_parameters): ModuleDict()
+    (shared): Embedding(50265, 1024, padding_idx=1)
+    (encoder): BartEncoder(
+      (invertible_adapters): ModuleDict()
+      (embed_tokens): Embedding(50265, 1024, padding_idx=1)
+      (embed_positions): BartLearnedPositionalEmbedding(1026, 1024)
+      (layers): ModuleList(
+        (0): BartEncoderLayer(
+        )
+        (8): BartDecoderLayer(
+        )
+      )
+      (layernorm_embedding): LayerNorm((1024,), eps=1e-05, elementwise_affine=True)
+    )
+    (prefix_tuning): PrefixTuningPool(
+      (prefix_tunings): ModuleDict()
+    )
+  )
+  (lm_head): Linear(in_features=1024, out_features=50265, bias=False)
+)
