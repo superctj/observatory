@@ -1,6 +1,37 @@
 # Observatory
 Codebase of paper [Observatory: Characterizing Embeddings of Relational Tables](https://arxiv.org/abs/2310.07736).
 
+## Citing This Repository
+If you find this repository useful for your work, please cite:
+
+```bibtex
+@article{cong2023observatory,
+  author  = {Tianji Cong and
+             Madelon Hulsebos and
+             Zhenjie Sun and
+             Paul Groth and
+             H. V. Jagadish},
+  title   = {Observatory: Characterizing Embeddings of Relational Tables},
+  journal = {CoRR},
+  volume  = {abs/2310.07736},
+  year    = {2023}
+}
+```
+
+```bibtex
+@inproceedings{cong2023observatorylibrary,
+  author    = {Cong, Tianji and
+               Sun, Zhenjie and
+               Groth, Paul and
+               Jagadish, H. V. and
+               Hulsebos, Madelon},
+  title     = {Introducing the Observatory Library for End-to-End Table Embedding Inference},
+  booktitle = {2nd Table Representation Learning Workshop at NeurIPS 2023},
+  publisher = {https://table-representation-learning.github.io},
+  year      = {2023}
+}
+```
+ 
 ## Environment Setup
 Assume using [Miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html) for Python package management on Linux machines. 
 
