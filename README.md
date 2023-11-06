@@ -2,7 +2,7 @@
 Codebase of paper [Observatory: Characterizing Embeddings of Relational Tables](https://arxiv.org/abs/2310.07736).
 
 ## Citing This Repository
-If you find this repository useful for your work, please cite:
+If you find this repository useful for your work, please cite the following BibTeX:
 
 ```bibtex
 @article{cong2023observatory,
