@@ -33,7 +33,7 @@ If you find this repository useful for your work, please cite the following BibT
 ```
  
 ## Environment Setup
-Assume using [Miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html) for Python package management on Linux machines. 
+Assume using [Miniconda](https://docs.conda.io/projects/miniconda/en/latest/) for Python package management on Linux machines. 
 
 1. Clone this repo in your working directory (the ```--recursive``` flag is necessary to pull a dependent repo like [TURL](https://github.com/sunlab-osu/TURL) as a submodule):
 
