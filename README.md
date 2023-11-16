@@ -13,7 +13,6 @@ If you find this repository useful for your work, please cite the following BibT
              H. V. Jagadish},
   title   = {Observatory: Characterizing Embeddings of Relational Tables},
   journal = {Proc. {VLDB} Endow.},
-  volume  = {abs/2310.07736},
   year    = {2024}
 }
 ```
@@ -26,7 +25,7 @@ If you find this repository useful for your work, please cite the following BibT
                Jagadish, H. V. and
                Hulsebos, Madelon},
   title     = {Introducing the Observatory Library for End-to-End Table Embedding Inference},
-  booktitle = {2nd Table Representation Learning Workshop at NeurIPS 2023},
+  booktitle = {The 2nd Table Representation Learning Workshop at NeurIPS 2023},
   publisher = {https://table-representation-learning.github.io},
   year      = {2023}
 }
