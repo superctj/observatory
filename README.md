@@ -12,9 +12,9 @@ If you find this repository useful for your work, please cite the following BibT
              Paul Groth and
              H. V. Jagadish},
   title   = {Observatory: Characterizing Embeddings of Relational Tables},
-  journal = {CoRR},
+  journal = {Proc. {VLDB} Endow.},
   volume  = {abs/2310.07736},
-  year    = {2023}
+  year    = {2024}
 }
 ```
 
