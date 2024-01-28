@@ -1,72 +1,67 @@
 # Observatory
 Codebase of paper [Observatory: Characterizing Embeddings of Relational Tables](https://arxiv.org/abs/2310.07736).
-
-## Citing This Repository
-If you find this repository useful for your work, please cite the following BibTeX:
-
-```bibtex
-@article{cong2023observatory,
-  author  = {Tianji Cong and
-             Madelon Hulsebos and
-             Zhenjie Sun and
-             Paul Groth and
-             H. V. Jagadish},
-  title   = {Observatory: Characterizing Embeddings of Relational Tables},
-  journal = {Proc. {VLDB} Endow.},
-  year    = {2024}
-}
-```
-
-```bibtex
-@inproceedings{cong2023observatorylibrary,
-  author    = {Cong, Tianji and
-               Sun, Zhenjie and
-               Groth, Paul and
-               Jagadish, H. V. and
-               Hulsebos, Madelon},
-  title     = {Introducing the Observatory Library for End-to-End Table Embedding Inference},
-  booktitle = {The 2nd Table Representation Learning Workshop at NeurIPS 2023},
-  publisher = {https://table-representation-learning.github.io},
-  year      = {2023}
-}
-```
  
 ## Environment Setup
 Assume using [Miniconda](https://docs.conda.io/projects/miniconda/en/latest/) for Python package management on Linux machines. 
 
 1. Clone this repo in your working directory (the ```--recursive``` flag is necessary to pull a dependent repo like [TURL](https://github.com/sunlab-osu/TURL) as a submodule):
 
-    ```git clone <Observatory repo url> --recursive```
-
-    ```cd observatory```
+    ```
+    git clone <Observatory repo url> --recursive
+    ```
+    
+    ```
+    cd observatory
+    ```
 
 2. Create and activate the development environment:
 
-    ```conda env create -f environment.yml ```
+    ```
+    conda env create -f environment.yml
+    ```
 
-    ```conda activate observatory```
+    ```
+    conda activate observatory
+    ```
 
     Note that TaBERT was developed earlier and has many dependencies that are not compatible with other models. We create a separate environment for running TaBERT.
 
-    ```conda env create -f tabert.yml```
+    ```
+    conda env create -f tabert.yml
+    ```
 
-    ```conda activate tabert```
+    ```
+    conda activate tabert
+    ```
 
 3. Import Observatory and other dependencies as editable packages to the conda environment
 
-    ```conda develop <path to Observatory>```
+    ```
+    conda develop <path to Observatory>
+    ```
 
-    ```conda develop <path to DODUO>```
+    ```
+    conda develop <path to DODUO>
+    ```
+
     
-    ```conda develop <path to TURL>```
+    ```
+    conda develop <path to TURL>
+    ```
 
-    ```conda develop <path to TaBERT>```
+    ```
+    conda develop <path to TaBERT>
+    ```
 
     e.g.,
     
-    ```conda develop /home/congtj/observatory```
+    ```
+    conda develop /home/congtj/observatory
+    ```
 
-    ```conda develop /home/congtj/observatory/observatory/models/TURL```
+    ```
+    conda develop /home/congtj/observatory/observatory/models/TURL
+    ```
 
 ## Models and Data
 |  Model  	|           Checkpoint Identifier           	|                               Link                              	|
@@ -95,10 +90,44 @@ All property experiments are under `observatory/properties`. To evaluate a model
 For models from HuggingFace (specify the model identifier in the script): e.g.,
 
     ./observatory/properties/Row_Order_Insignificance/hugging_face.sh
-    
+
 For other models: e.g.,
 
     ./observatory/properties/Sample_Fidelity/doduo.sh
 
+
 ## Side Notes
 To evaluate the DODUO model on GPU, please substitute ```observatory/models/DODUO/doduo/doduo.py``` with ```observatory/models/doduo.py```.
+
+## Citing This Repository
+If you find this repository useful for your work, please cite the following BibTeX:
+
+```bibtex
+@article{cong2023observatory,
+  author  = {Tianji Cong and
+             Madelon Hulsebos and
+             Zhenjie Sun and
+             Paul Groth and
+             H. V. Jagadish},
+  title   = {Observatory: Characterizing Embeddings of Relational Tables},
+  journal = {Proc. {VLDB} Endow.},
+  volume  = {17},
+  number  = {4},
+  pages   = {849--862},
+  year    = {2023},
+}
+```
+
+```bibtex
+@inproceedings{cong2023observatorylibrary,
+  author    = {Cong, Tianji and
+               Sun, Zhenjie and
+               Groth, Paul and
+               Jagadish, H. V. and
+               Hulsebos, Madelon},
+  title     = {Introducing the Observatory Library for End-to-End Table Embedding Inference},
+  booktitle = {The 2nd Table Representation Learning Workshop at NeurIPS 2023},
+  publisher = {https://table-representation-learning.github.io},
+  year      = {2023}
+}
+```
