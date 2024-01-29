@@ -1,7 +1,0 @@
-[INFO] Namespace(dataset_dir='/ssd/congtj/observatory/nextiajd_datasets/testbedXS/datasets/', ground_truth_path='/ssd/congtj/observatory/nextiajd_datasets/testbedXS/groundTruth_testbedXS.csv', index_dir='/ssd/congtj/observatory/experiments/join_discovery/t5-base/indexes/testbedXS/', lsh_threshold=0.7, metadata_path='/ssd/congtj/observatory/nextiajd_datasets/testbedXS/datasetInformation_testbedXS.csv', model_name='t5-base', num_samples=10, output_dir='./outputs/testbedXS/', top_k=10)
-[INFO] ==================================================
-[INFO] Top-10 search
-[INFO]   Number of queries: 35
-[INFO]   Precision:  0.17
-[INFO]   Recall:  0.84
-[INFO]   Lookup time:  0.18 s/query

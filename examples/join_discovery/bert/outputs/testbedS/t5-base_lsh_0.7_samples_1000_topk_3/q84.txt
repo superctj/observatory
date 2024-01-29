@@ -1,6 +1,0 @@
-[INFO] Query table: Accidental_Drug_Related_Deaths_2012-2018.csv
-[INFO] Query attribute: InjuryState
-[INFO] --------------------------------------------------
-[INFO] Query answer table: eo1.csv
-[INFO] Query answer attribute: STATE
-[INFO] ================================================================================

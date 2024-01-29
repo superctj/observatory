@@ -1,7 +1,0 @@
-[INFO] Namespace(dataset_dir='/ssd/congtj/observatory/nextiajd_datasets/testbedXS/datasets/', ground_truth_path='/ssd/congtj/observatory/nextiajd_datasets/testbedXS/groundTruth_testbedXS.csv', index_dir='/ssd/congtj/observatory/experiments/join_discovery/bert-base-uncased/indexes/testbedXS/', lsh_threshold=0.7, metadata_path='/ssd/congtj/observatory/nextiajd_datasets/testbedXS/datasetInformation_testbedXS.csv', model_name='bert-base-uncased', num_samples=-1, output_dir='./outputs/testbedXS/', top_k=3)
-[INFO] ==================================================
-[INFO] Top-3 search
-[INFO]   Number of queries: 35
-[INFO]   Precision:  0.48
-[INFO]   Recall:  0.82
-[INFO]   Lookup time:  0.29 s/query

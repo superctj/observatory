@@ -1,6 +1,0 @@
-[INFO] Query table: IPODataFull.csv
-[INFO] Query attribute: PresidentGender
-[INFO] --------------------------------------------------
-[INFO] Query answer table: Accidental_Drug_Related_Deaths_2012-2018.csv
-[INFO] Query answer attribute: Sex
-[INFO] ================================================================================
