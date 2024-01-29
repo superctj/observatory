@@ -1,5 +1,5 @@
 # Observatory
-Codebase of paper [Observatory: Characterizing Embeddings of Relational Tables](https://arxiv.org/abs/2310.07736).
+Codebase of paper [Observatory: Characterizing Embeddings of Relational Tables](https://www.vldb.org/pvldb/vol17/p849-cong.pdf) (VLDB 2024).
  
 ## Environment Setup
 Assume using [Miniconda](https://docs.conda.io/projects/miniconda/en/latest/) for Python package management on Linux machines. 
@@ -95,9 +95,31 @@ For other models: e.g.,
 
     ./observatory/properties/Sample_Fidelity/doduo.sh
 
+Side notes: To evaluate the DODUO model on GPU, please substitute ```observatory/models/DODUO/doduo/doduo.py``` with ```observatory/models/doduo.py```.
 
-## Side Notes
-To evaluate the DODUO model on GPU, please substitute ```observatory/models/DODUO/doduo/doduo.py``` with ```observatory/models/doduo.py```.
+## Use Cases
+Besides reproducing the experiments in the paper, we provide a few use cases of Observatory. We are working on cleaning up the codebase and plan to release Observatory as a Python library for easy use. Stay tuned!
+
+### 1. Embedding Inference
+To infer row/column/table embeddings with Hugging Face models for a set of tables, check out `get_hugging_face_<row/column/table>_embeddings_batched()` in `observatory/models/hugging_face_<row/column/table>_embeddings.py`.
+
+### 2. Table Structure Robustness Analysis
+To analyze the robustness of a Hugging Face model to table structure changes, e.g., variance of row/column/table embeddings under column order permutations, check out `row_embedding_evaluate_col_shuffle.py`/`evaluate_col_shuffle.py`/`table_embedding_evaluate_col_shuffle.py` in `observatory/properties/Column_Order_Insignificance`.
+
+### 3. Join Discovery
+For a more extended use case, check out `examples/join_discovery/bert/topk_search_nextiaJD.py` for join discovery using column embeddings inferred from BERT.
+
+To run the example,
+    
+a. Install [D3L](https://github.com/alex-bogatu/d3l) by running
+
+    pip install git+https://github.com/alex-bogatu/d3l
+
+b. Change path in line 9 of `examples/join_discovery/bert/topk_search_nextiaJD.py` and paths in `examples/join_discovery/bert/run_nextiaJD.sh` to local ones.
+
+c. Run `run_nextiaJD.sh` under directory `examples/join_discovery/bert/`
+
+    ./run_nextiaJD.sh
 
 ## Citing This Repository
 If you find this repository useful for your work, please cite the following BibTeX:
