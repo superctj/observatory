@@ -1,0 +1,46 @@
+[INFO] Query table: eo_xx.csv
+[INFO] Query attribute: STATE
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: STATE
+[INFO] ================================================================================
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.935546875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.9306640625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.927734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: rental-standards-current-issues.csv
+[INFO] Candidate attribute: Street
+[INFO] Candidate score: 0.9267578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: CITY
+[INFO] Candidate score: 0.92578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: gvrd-sewer-trunk-mains.csv
+[INFO] Candidate attribute: MATERIAL
+[INFO] Candidate score: 0.92578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: currency_exchange.csv
+[INFO] Candidate attribute: Code
+[INFO] Candidate score: 0.923828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: CITY
+[INFO] Candidate score: 0.9228515625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: STREET
+[INFO] Candidate score: 0.9091796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: STREET
+[INFO] Candidate score: 0.9033203125
+[INFO] --------------------------------------------------

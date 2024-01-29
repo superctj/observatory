@@ -1,0 +1,46 @@
+[INFO] Query table: statewise-census-data-in-india-1901-2011.csv
+[INFO] Query attribute: FREQUENCY
+[INFO] --------------------------------------------------
+[INFO] Query answer table: population-census-of-botswana-2011.csv
+[INFO] Query answer attribute: FREQUENCY
+[INFO] ================================================================================
+[INFO] Candidate table: population-census-of-botswana-2011.csv
+[INFO] Candidate attribute: FREQUENCY
+[INFO] Candidate score: 1.0
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: Ownership
+[INFO] Candidate score: 0.9140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: PrimaryMaterial
+[INFO] Candidate score: 0.8916015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: cultural-spaces.csv
+[INFO] Candidate attribute: ADDRESS
+[INFO] Candidate score: 0.8876953125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: cultural-spaces.csv
+[INFO] Candidate attribute: OWNERSHIP
+[INFO] Candidate score: 0.8857421875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: community-centres.csv
+[INFO] Candidate attribute: ADDRESS
+[INFO] Candidate score: 0.884765625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: SCS_Staff_Salaries_data_30th_June 2010.csv
+[INFO] Candidate attribute: Job title
+[INFO] Candidate score: 0.8837890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: SCS_Staff_Salaries_data_30th_June 2010.csv
+[INFO] Candidate attribute: Grade
+[INFO] Candidate score: 0.8818359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: schools.csv
+[INFO] Candidate attribute: ADDRESS
+[INFO] Candidate score: 0.8798828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: SORT_NAME
+[INFO] Candidate score: 0.8759765625
+[INFO] --------------------------------------------------

@@ -1,0 +1,58 @@
+[INFO] Query table: listings_detailed.csv
+[INFO] Query attribute: host_since
+[INFO] --------------------------------------------------
+[INFO] Query answer table: episodes.csv
+[INFO] Query answer attribute: program
+[INFO] --------------------------------------------------
+[INFO] Query answer table: episodes.csv
+[INFO] Query answer attribute: episode_date
+[INFO] --------------------------------------------------
+[INFO] Query answer table: animal-control-inventory-register.csv
+[INFO] Query answer attribute: DateImpounded
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_summary.csv
+[INFO] Query answer attribute: host_since
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_summary.csv
+[INFO] Query answer attribute: first_review
+[INFO] ================================================================================
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: first_review
+[INFO] Candidate score: 0.9755859375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: first_review
+[INFO] Candidate score: 0.9755859375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: host_since
+[INFO] Candidate score: 0.9658203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-register.csv
+[INFO] Candidate attribute: DateImpounded
+[INFO] Candidate score: 0.958984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-register.csv
+[INFO] Candidate attribute: ShotsDate
+[INFO] Candidate score: 0.9580078125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Candidate attribute: DATE
+[INFO] Candidate score: 0.95703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-hydrants.csv
+[INFO] Candidate attribute: OOCDATE
+[INFO] Candidate score: 0.9560546875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: episodes.csv
+[INFO] Candidate attribute: episode_date
+[INFO] Candidate score: 0.9560546875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: posts.csv
+[INFO] Candidate attribute: date
+[INFO] Candidate score: 0.9521484375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: date_of_birth
+[INFO] Candidate score: 0.951171875
+[INFO] --------------------------------------------------

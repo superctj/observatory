@@ -1,0 +1,21 @@
+[INFO] Query table: Accidental_Drug_Related_Deaths_2012-2018.csv
+[INFO] Query attribute: AnyOpioid
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-control-valves.csv
+[INFO] Query answer attribute: X_OFFSET_DIRECTION
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-control-valves.csv
+[INFO] Query answer attribute: Y_OFFSET_DIRECTION
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-hydrants.csv
+[INFO] Query answer attribute: SUBSYSTEM
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-hydrants.csv
+[INFO] Query answer attribute: CODE
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-hydrants.csv
+[INFO] Query answer attribute: FIREUSEONLY
+[INFO] --------------------------------------------------
+[INFO] Query answer table: provisional-2016-bi-annual-aquatic-and-terrestrial-monitoring-results-26062017-raw-results.csv
+[INFO] Query answer attribute: LOD
+[INFO] ================================================================================

@@ -1,0 +1,35 @@
+[INFO] Query table: players.csv
+[INFO] Query attribute: flag
+[INFO] --------------------------------------------------
+[INFO] Query answer table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Query answer attribute: LOCATION_ID
+[INFO] --------------------------------------------------
+[INFO] Query answer table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Query answer attribute: LOCATION_REGIONID
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-innovation-index-2015.csv
+[INFO] Query answer attribute: COUNTRY_ID
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-innovation-index-2015.csv
+[INFO] Query answer attribute: COUNTRY_REGIONID
+[INFO] ================================================================================
+[INFO] Candidate table: global-greenhouse-gas-emissions0.csv
+[INFO] Candidate attribute: ISO_A3
+[INFO] Candidate score: 0.955078125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: ISO_A3
+[INFO] Candidate score: 0.953125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: chat.csv
+[INFO] Candidate attribute: unit
+[INFO] Candidate score: 0.943359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: AboutIsis.csv
+[INFO] Candidate attribute: username
+[INFO] Candidate score: 0.9345703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: IsisFanboy.csv
+[INFO] Candidate attribute: name
+[INFO] Candidate score: 0.9296875
+[INFO] --------------------------------------------------

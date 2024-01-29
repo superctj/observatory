@@ -1,0 +1,46 @@
+[INFO] Query table: eo_pr.csv
+[INFO] Query attribute: ZIP
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: ZIP
+[INFO] ================================================================================
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: ZIP
+[INFO] Candidate score: 0.9697265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: ZIP
+[INFO] Candidate score: 0.9462890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: road-ahead-projects-under-construction.csv
+[INFO] Candidate attribute: URL_LINK
+[INFO] Candidate score: 0.81982421875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: cultural-spaces.csv
+[INFO] Candidate attribute: ADDRESS
+[INFO] Candidate score: 0.81298828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: PhotoURL
+[INFO] Candidate score: 0.81005859375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: population-census-of-botswana-2011.csv
+[INFO] Candidate attribute: REGION_REGIONID
+[INFO] Candidate score: 0.80419921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: community-centres.csv
+[INFO] Candidate attribute: URLLINK
+[INFO] Candidate score: 0.80224609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: statewise-census-data-in-india-1901-2011.csv
+[INFO] Candidate attribute: LOCATION_ID
+[INFO] Candidate score: 0.79833984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: rental-standards-current-issues.csv
+[INFO] Candidate attribute: BUSINESSOPERATOR
+[INFO] Candidate score: 0.79443359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: libraries.csv
+[INFO] Candidate attribute: URLLINK
+[INFO] Candidate score: 0.78955078125
+[INFO] --------------------------------------------------

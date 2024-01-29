@@ -1,0 +1,20 @@
+[INFO] Query table: aac_intakes.csv
+[INFO] Query attribute: animal_id
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes_outcomes.csv
+[INFO] Query answer attribute: animal_id_outcome
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes_outcomes.csv
+[INFO] Query answer attribute: animal_id_intake
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_outcomes.csv
+[INFO] Query answer attribute: animal_id
+[INFO] ================================================================================
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: animal_id_outcome
+[INFO] Candidate score: 0.984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: animal_id_intake
+[INFO] Candidate score: 0.9814453125
+[INFO] --------------------------------------------------

@@ -1,0 +1,46 @@
+[INFO] Query table: abandoned-water-mains.csv
+[INFO] Query attribute: MATERIAL
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-distribution-mains.csv
+[INFO] Query answer attribute: MATERIAL
+[INFO] ================================================================================
+[INFO] Candidate table: water-distribution-mains.csv
+[INFO] Candidate attribute: MATERIAL
+[INFO] Candidate score: 0.9375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: emissions_agriculture_energy_e_all_data_norm.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.880859375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions0.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.8798828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.8798828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: agri-environmental-indicators-emissions-by-sector.csv
+[INFO] Candidate attribute: Area
+[INFO] Candidate score: 0.87890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: neighbourhood_cleansed
+[INFO] Candidate score: 0.8759765625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: oxford-covid-19-government-response-tracker.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.87158203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: posts.csv
+[INFO] Candidate attribute: bloggername
+[INFO] Candidate score: 0.86962890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-innovation-index-2015.csv
+[INFO] Candidate attribute: COUNTRY_NAME
+[INFO] Candidate score: 0.86962890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Candidate attribute: VARIABLE_NOTES
+[INFO] Candidate score: 0.86669921875
+[INFO] --------------------------------------------------

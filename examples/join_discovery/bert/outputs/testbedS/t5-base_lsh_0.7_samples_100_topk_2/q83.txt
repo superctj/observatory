@@ -1,0 +1,14 @@
+[INFO] Query table: eo1.csv
+[INFO] Query attribute: STATE
+[INFO] --------------------------------------------------
+[INFO] Query answer table: Accidental_Drug_Related_Deaths_2012-2018.csv
+[INFO] Query answer attribute: ResidenceState
+[INFO] ================================================================================
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.94140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions0.csv
+[INFO] Candidate attribute: ISO_A3
+[INFO] Candidate score: 0.939453125
+[INFO] --------------------------------------------------

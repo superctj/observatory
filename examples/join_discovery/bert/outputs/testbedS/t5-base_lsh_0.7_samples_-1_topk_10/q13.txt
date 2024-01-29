@@ -1,0 +1,49 @@
+[INFO] Query table: aac_intakes_outcomes.csv
+[INFO] Query attribute: animal_type
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_outcomes.csv
+[INFO] Query answer attribute: animal_type
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes.csv
+[INFO] Query answer attribute: animal_type
+[INFO] ================================================================================
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: animal_type
+[INFO] Candidate score: 0.9677734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: animal_type
+[INFO] Candidate score: 0.951171875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: room_type
+[INFO] Candidate score: 0.916015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: color
+[INFO] Candidate score: 0.9140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: color
+[INFO] Candidate score: 0.912109375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: room_type
+[INFO] Candidate score: 0.9111328125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: color
+[INFO] Candidate score: 0.91015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: IPCC_description
+[INFO] Candidate score: 0.9072265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-register.csv
+[INFO] Candidate attribute: Color
+[INFO] Candidate score: 0.8984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: property_type
+[INFO] Candidate score: 0.8935546875
+[INFO] --------------------------------------------------

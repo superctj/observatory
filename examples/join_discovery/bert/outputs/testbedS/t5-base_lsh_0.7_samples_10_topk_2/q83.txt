@@ -1,0 +1,18 @@
+[INFO] Query table: eo1.csv
+[INFO] Query attribute: STATE
+[INFO] --------------------------------------------------
+[INFO] Query answer table: Accidental_Drug_Related_Deaths_2012-2018.csv
+[INFO] Query answer attribute: ResidenceState
+[INFO] ================================================================================
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.947265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: players.csv
+[INFO] Candidate attribute: flag
+[INFO] Candidate score: 0.943359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: JEOPARDY_CSV.csv
+[INFO] Candidate attribute: Answer
+[INFO] Candidate score: 0.93359375
+[INFO] --------------------------------------------------

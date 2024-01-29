@@ -1,0 +1,26 @@
+[INFO] Query table: global-greenhouse-gas-emissions.csv
+[INFO] Query attribute: ISO_A3
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-greenhouse-gas-emissions0.csv
+[INFO] Query answer attribute: ISO_A3
+[INFO] ================================================================================
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: name
+[INFO] Candidate score: 0.9345703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: agri-environmental-indicators-emissions-by-sector.csv
+[INFO] Candidate attribute: Element
+[INFO] Candidate score: 0.92578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions0.csv
+[INFO] Candidate attribute: ISO_A3
+[INFO] Candidate score: 0.923828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: name
+[INFO] Candidate score: 0.923828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: transit
+[INFO] Candidate score: 0.9228515625
+[INFO] --------------------------------------------------

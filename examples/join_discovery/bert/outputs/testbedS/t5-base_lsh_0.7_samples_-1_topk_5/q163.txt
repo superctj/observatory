@@ -1,0 +1,26 @@
+[INFO] Query table: animal-control-inventory-register.csv
+[INFO] Query attribute: DateImpounded
+[INFO] --------------------------------------------------
+[INFO] Query answer table: episodes.csv
+[INFO] Query answer attribute: episode_date
+[INFO] ================================================================================
+[INFO] Candidate table: animal-control-inventory-register.csv
+[INFO] Candidate attribute: ShotsDate
+[INFO] Candidate score: 0.9794921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-hydrants.csv
+[INFO] Candidate attribute: OOCDATE
+[INFO] Candidate score: 0.9755859375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: first_review
+[INFO] Candidate score: 0.9716796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: first_review
+[INFO] Candidate score: 0.9677734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: host_since
+[INFO] Candidate score: 0.9599609375
+[INFO] --------------------------------------------------

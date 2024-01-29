@@ -1,0 +1,26 @@
+[INFO] Query table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Query attribute: INDIAN_STATES_NAME
+[INFO] --------------------------------------------------
+[INFO] Query answer table: makemytrip_com-travel_sample.csv
+[INFO] Query answer attribute: state
+[INFO] ================================================================================
+[INFO] Candidate table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Candidate attribute: DISTRICTS_NAME
+[INFO] Candidate score: 0.9609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: india-census-data-2011-census-primary-abstract.csv
+[INFO] Candidate attribute: LOCATION_NAME
+[INFO] Candidate score: 0.95703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-control-valves.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.953125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: sewer-manholes.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.9521484375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: posts.csv
+[INFO] Candidate attribute: title
+[INFO] Candidate score: 0.9501953125
+[INFO] --------------------------------------------------

@@ -1,0 +1,46 @@
+[INFO] Query table: animal-control-inventory-register.csv
+[INFO] Query attribute: DispositionDate
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes_outcomes.csv
+[INFO] Query answer attribute: date_of_birth
+[INFO] ================================================================================
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: date_of_birth
+[INFO] Candidate score: 0.95703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: intake_datetime
+[INFO] Candidate score: 0.953125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: outcome_datetime
+[INFO] Candidate score: 0.951171875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-hydrants.csv
+[INFO] Candidate attribute: OOCDATE
+[INFO] Candidate score: 0.9384765625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: date_of_birth
+[INFO] Candidate score: 0.9375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-register.csv
+[INFO] Candidate attribute: DateImpounded
+[INFO] Candidate score: 0.9375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: datetime
+[INFO] Candidate score: 0.9365234375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: first_review
+[INFO] Candidate score: 0.9345703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: monthyear
+[INFO] Candidate score: 0.93359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: host_since
+[INFO] Candidate score: 0.9267578125
+[INFO] --------------------------------------------------

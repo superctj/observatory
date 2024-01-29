@@ -1,0 +1,26 @@
+[INFO] Query table: eo4.csv
+[INFO] Query attribute: STATE
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo_xx.csv
+[INFO] Query answer attribute: STATE
+[INFO] ================================================================================
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: STATE
+[INFO] Candidate score: 0.970703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: STATE
+[INFO] Candidate score: 0.966796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: gvrd-sewer-trunk-mains.csv
+[INFO] Candidate attribute: EFFLUENT_TYPE
+[INFO] Candidate score: 0.9404296875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: libraries.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.9296875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: population-by-governorate-citizenship-and-gender.csv
+[INFO] Candidate attribute: Governorate
+[INFO] Candidate score: 0.9208984375
+[INFO] --------------------------------------------------

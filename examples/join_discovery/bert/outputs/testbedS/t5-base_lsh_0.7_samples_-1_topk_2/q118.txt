@@ -1,0 +1,29 @@
+[INFO] Query table: listings_summary.csv
+[INFO] Query attribute: last_review
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_detailed.csv
+[INFO] Query answer attribute: host_since
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_detailed.csv
+[INFO] Query answer attribute: first_review
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_detailed.csv
+[INFO] Query answer attribute: last_review
+[INFO] --------------------------------------------------
+[INFO] Query answer table: episodes.csv
+[INFO] Query answer attribute: program
+[INFO] --------------------------------------------------
+[INFO] Query answer table: episodes.csv
+[INFO] Query answer attribute: episode_date
+[INFO] --------------------------------------------------
+[INFO] Query answer table: animal-control-inventory-register.csv
+[INFO] Query answer attribute: DateImpounded
+[INFO] ================================================================================
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: last_scraped
+[INFO] Candidate score: 0.9775390625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: calendar_last_scraped
+[INFO] Candidate score: 0.9775390625
+[INFO] --------------------------------------------------

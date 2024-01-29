@@ -1,0 +1,32 @@
+[INFO] Query table: aac_intakes.csv
+[INFO] Query attribute: age_upon_intake
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes_outcomes.csv
+[INFO] Query answer attribute: age_upon_outcome
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes_outcomes.csv
+[INFO] Query answer attribute: age_upon_intake
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_outcomes.csv
+[INFO] Query answer attribute: age_upon_outcome
+[INFO] ================================================================================
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: age_upon_intake
+[INFO] Candidate score: 0.984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: age_upon_outcome
+[INFO] Candidate score: 0.9677734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: age_upon_outcome
+[INFO] Candidate score: 0.9638671875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: IPCC
+[INFO] Candidate score: 0.9560546875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: issued-building-permits.csv
+[INFO] Candidate attribute: BuildingContractorAddress
+[INFO] Candidate score: 0.9462890625
+[INFO] --------------------------------------------------

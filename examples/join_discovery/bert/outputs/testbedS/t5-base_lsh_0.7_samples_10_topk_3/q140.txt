@@ -1,0 +1,24 @@
+[INFO] Query table: listings_summary.csv
+[INFO] Query attribute: cleaning_fee
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_detailed.csv
+[INFO] Query answer attribute: price
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_detailed.csv
+[INFO] Query answer attribute: cleaning_fee
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_detailed.csv
+[INFO] Query answer attribute: extra_people
+[INFO] ================================================================================
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: cleaning_fee
+[INFO] Candidate score: 0.9853515625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: weekly_price
+[INFO] Candidate score: 0.9833984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: extra_people
+[INFO] Candidate score: 0.9794921875
+[INFO] --------------------------------------------------

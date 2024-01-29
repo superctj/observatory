@@ -1,0 +1,46 @@
+[INFO] Query table: listings_detailed.csv
+[INFO] Query attribute: host_verifications
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_summary.csv
+[INFO] Query answer attribute: host_verifications
+[INFO] ================================================================================
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: host_verifications
+[INFO] Candidate score: 0.994140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: age_upon_outcome_age_group
+[INFO] Candidate score: 0.9072265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: age_upon_intake_age_group
+[INFO] Candidate score: 0.9052734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: Red_Light_Camera_Violations.csv
+[INFO] Candidate attribute: LOCATION
+[INFO] Candidate score: 0.904296875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: datetime
+[INFO] Candidate score: 0.890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: Red_Light_Camera_Violations.csv
+[INFO] Candidate attribute: VIOLATION DATE
+[INFO] Candidate score: 0.890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: IsisFanboy.csv
+[INFO] Candidate attribute: time
+[INFO] Candidate score: 0.8876953125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: energy-usage-2010.csv
+[INFO] Candidate attribute: GAS ACCOUNTS
+[INFO] Candidate score: 0.8828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: energy-usage-2010.csv
+[INFO] Candidate attribute: OCCUPIED HOUSING UNITS
+[INFO] Candidate score: 0.8828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-hydrants.csv
+[INFO] Candidate attribute: REMARKS
+[INFO] Candidate score: 0.86474609375
+[INFO] --------------------------------------------------

@@ -1,0 +1,46 @@
+[INFO] Query table: aac_intakes.csv
+[INFO] Query attribute: found_location
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes_outcomes.csv
+[INFO] Query answer attribute: found_location
+[INFO] ================================================================================
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: found_location
+[INFO] Candidate score: 0.982421875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: AboutIsis.csv
+[INFO] Candidate attribute: name
+[INFO] Candidate score: 0.9638671875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: JEOPARDY_CSV.csv
+[INFO] Candidate attribute: Answer
+[INFO] Candidate score: 0.9609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: chat.csv
+[INFO] Candidate attribute: unit
+[INFO] Candidate score: 0.9599609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: issued-building-permits.csv
+[INFO] Candidate attribute: BuildingContractorAddress
+[INFO] Candidate score: 0.9580078125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-register.csv
+[INFO] Candidate attribute: ReceiptNumber
+[INFO] Candidate score: 0.9580078125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: medium_data.csv
+[INFO] Candidate attribute: image
+[INFO] Candidate score: 0.9560546875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: IsisFanboy.csv
+[INFO] Candidate attribute: name
+[INFO] Candidate score: 0.9541015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: posts.csv
+[INFO] Candidate attribute: bloggername
+[INFO] Candidate score: 0.9482421875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: name
+[INFO] Candidate score: 0.9453125
+[INFO] --------------------------------------------------

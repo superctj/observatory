@@ -1,0 +1,27 @@
+[INFO] Query table: water-control-valves.csv
+[INFO] Query attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-hydrants.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: sewer-catch-basins.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: property-addresses.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: sewer-manholes.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] ================================================================================
+[INFO] Candidate table: property-addresses.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.951171875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: sewer-manholes.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.9482421875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: energy-usage-2010.csv
+[INFO] Candidate attribute: BUILDING_SUBTYPE
+[INFO] Candidate score: 0.931640625
+[INFO] --------------------------------------------------

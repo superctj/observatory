@@ -1,0 +1,49 @@
+[INFO] Query table: aac_intakes_outcomes.csv
+[INFO] Query attribute: breed
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_outcomes.csv
+[INFO] Query answer attribute: breed
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes.csv
+[INFO] Query answer attribute: breed
+[INFO] ================================================================================
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: breed
+[INFO] Candidate score: 0.962890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: breed
+[INFO] Candidate score: 0.9521484375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: IPCC_description
+[INFO] Candidate score: 0.93359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: episodes.csv
+[INFO] Candidate attribute: program
+[INFO] Candidate score: 0.9326171875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: intake_type
+[INFO] Candidate score: 0.9306640625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: color
+[INFO] Candidate score: 0.9306640625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: medium_data.csv
+[INFO] Candidate attribute: publication
+[INFO] Candidate score: 0.927734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: animal_type
+[INFO] Candidate score: 0.92578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: sewer-catch-basins.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.91796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-register.csv
+[INFO] Candidate attribute: Color
+[INFO] Candidate score: 0.9091796875
+[INFO] --------------------------------------------------

@@ -1,0 +1,18 @@
+[INFO] Query table: aac_intakes_outcomes.csv
+[INFO] Query attribute: found_location
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes.csv
+[INFO] Query answer attribute: found_location
+[INFO] ================================================================================
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: found_location
+[INFO] Candidate score: 0.9814453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: issued-building-permits.csv
+[INFO] Candidate attribute: BuildingContractorAddress
+[INFO] Candidate score: 0.9755859375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: issued-building-permits.csv
+[INFO] Candidate attribute: ApplicantAddress
+[INFO] Candidate score: 0.9658203125
+[INFO] --------------------------------------------------

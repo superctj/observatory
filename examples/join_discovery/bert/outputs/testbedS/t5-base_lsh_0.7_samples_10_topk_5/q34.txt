@@ -1,0 +1,12 @@
+[INFO] Query table: IPODataFull.csv
+[INFO] Query attribute: Fiscal_year_ends_in_December_USDYearBeforeIPO
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes_outcomes.csv
+[INFO] Query answer attribute: outcome_monthyear
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes_outcomes.csv
+[INFO] Query answer attribute: dob_monthyear
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes_outcomes.csv
+[INFO] Query answer attribute: intake_monthyear
+[INFO] ================================================================================

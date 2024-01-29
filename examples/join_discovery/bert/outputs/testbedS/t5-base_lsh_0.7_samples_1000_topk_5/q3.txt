@@ -1,0 +1,29 @@
+[INFO] Query table: aac_intakes_outcomes.csv
+[INFO] Query attribute: animal_id_outcome
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_outcomes.csv
+[INFO] Query answer attribute: animal_id
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes.csv
+[INFO] Query answer attribute: animal_id
+[INFO] ================================================================================
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: animal_id
+[INFO] Candidate score: 0.998046875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: animal_id
+[INFO] Candidate score: 0.9970703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: animal_id_intake
+[INFO] Candidate score: 0.9970703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: NTEE_CD
+[INFO] Candidate score: 0.927734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: ISO_A3
+[INFO] Candidate score: 0.9189453125
+[INFO] --------------------------------------------------

@@ -1,0 +1,26 @@
+[INFO] Query table: eo_pr.csv
+[INFO] Query attribute: ICO
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: ICO
+[INFO] ================================================================================
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: ICO
+[INFO] Candidate score: 0.99609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: ICO
+[INFO] Candidate score: 0.98828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: property-tie-lines.csv
+[INFO] Candidate attribute: P_ANNOTATION_LBL_ID
+[INFO] Candidate score: 0.9755859375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: road-ahead-projects-under-construction.csv
+[INFO] Candidate attribute: Geom
+[INFO] Candidate score: 0.96484375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: road-ahead-current-road-closures.csv
+[INFO] Candidate attribute: Geom
+[INFO] Candidate score: 0.962890625
+[INFO] --------------------------------------------------

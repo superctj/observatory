@@ -1,0 +1,64 @@
+[INFO] Query table: population-estimates-and-projections-1960-2050.csv
+[INFO] Query attribute: COUNTRY
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-greenhouse-gas-emissions0.csv
+[INFO] Query answer attribute: Country
+[INFO] --------------------------------------------------
+[INFO] Query answer table: world-power-plants-list.csv
+[INFO] Query answer attribute: PLANT_COUNTRY
+[INFO] --------------------------------------------------
+[INFO] Query answer table: oxford-covid-19-government-response-tracker.csv
+[INFO] Query answer attribute: Country
+[INFO] --------------------------------------------------
+[INFO] Query answer table: agri-environmental-indicators-emissions-by-sector.csv
+[INFO] Query answer attribute: Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-greenhouse-gas-emissions.csv
+[INFO] Query answer attribute: Country
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-innovation-index-2015.csv
+[INFO] Query answer attribute: COUNTRY_NAME
+[INFO] --------------------------------------------------
+[INFO] Query answer table: emissions_agriculture_energy_e_all_data_norm.csv
+[INFO] Query answer attribute: Country
+[INFO] ================================================================================
+[INFO] Candidate table: agri-environmental-indicators-emissions-by-sector.csv
+[INFO] Candidate attribute: Area
+[INFO] Candidate score: 0.97265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions0.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.9697265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.96875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: emissions_agriculture_energy_e_all_data_norm.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.9677734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: oxford-covid-19-government-response-tracker.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.9638671875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-innovation-index-2015.csv
+[INFO] Candidate attribute: COUNTRY_NAME
+[INFO] Candidate score: 0.9609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Candidate attribute: LOCATION_NAME
+[INFO] Candidate score: 0.95703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: name
+[INFO] Candidate score: 0.939453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: host_name
+[INFO] Candidate score: 0.9375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: house_rules
+[INFO] Candidate score: 0.93359375
+[INFO] --------------------------------------------------

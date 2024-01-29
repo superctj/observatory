@@ -1,0 +1,18 @@
+[INFO] Query table: eo_xx.csv
+[INFO] Query attribute: STREET
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: STREET
+[INFO] ================================================================================
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: STREET
+[INFO] Candidate score: 0.9619140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: STREET
+[INFO] Candidate score: 0.953125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art-artists.csv
+[INFO] Candidate attribute: FirstName
+[INFO] Candidate score: 0.904296875
+[INFO] --------------------------------------------------

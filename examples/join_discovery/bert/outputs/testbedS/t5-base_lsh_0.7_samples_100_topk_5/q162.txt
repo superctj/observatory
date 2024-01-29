@@ -1,0 +1,29 @@
+[INFO] Query table: episodes.csv
+[INFO] Query attribute: episode_date
+[INFO] --------------------------------------------------
+[INFO] Query answer table: animal-control-inventory-register.csv
+[INFO] Query answer attribute: DateImpounded
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_summary.csv
+[INFO] Query answer attribute: host_since
+[INFO] ================================================================================
+[INFO] Candidate table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Candidate attribute: DATE
+[INFO] Candidate score: 0.98046875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: first_review
+[INFO] Candidate score: 0.9755859375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: posts.csv
+[INFO] Candidate attribute: date
+[INFO] Candidate score: 0.9736328125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: JEOPARDY_CSV.csv
+[INFO] Candidate attribute: Air Date
+[INFO] Candidate score: 0.9736328125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: host_since
+[INFO] Candidate score: 0.9716796875
+[INFO] --------------------------------------------------

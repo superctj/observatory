@@ -1,0 +1,52 @@
+[INFO] Query table: aac_outcomes.csv
+[INFO] Query attribute: sex_upon_outcome
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes_outcomes.csv
+[INFO] Query answer attribute: sex_upon_outcome
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes_outcomes.csv
+[INFO] Query answer attribute: sex_upon_intake
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes.csv
+[INFO] Query answer attribute: sex_upon_intake
+[INFO] ================================================================================
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: sex_upon_outcome
+[INFO] Candidate score: 0.9609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: sex_upon_intake
+[INFO] Candidate score: 0.958984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: host_name
+[INFO] Candidate score: 0.9375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: sex_upon_intake
+[INFO] Candidate score: 0.9365234375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: intake_type
+[INFO] Candidate score: 0.9365234375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: intake_type
+[INFO] Candidate score: 0.93359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: neighbourhood
+[INFO] Candidate score: 0.9306640625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: neighbourhood_group_cleansed
+[INFO] Candidate score: 0.927734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-control-valves.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.91796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: sewer-manholes.csv
+[INFO] Candidate attribute: TYPE
+[INFO] Candidate score: 0.9130859375
+[INFO] --------------------------------------------------

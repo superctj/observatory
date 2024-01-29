@@ -1,0 +1,24 @@
+[INFO] Query table: water-hydrants.csv
+[INFO] Query attribute: INSTDATE1
+[INFO] --------------------------------------------------
+[INFO] Query answer table: posts.csv
+[INFO] Query answer attribute: date
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-distribution-mains.csv
+[INFO] Query answer attribute: INSTALLATION_DATE
+[INFO] --------------------------------------------------
+[INFO] Query answer table: JEOPARDY_CSV.csv
+[INFO] Query answer attribute: Air Date
+[INFO] ================================================================================
+[INFO] Candidate table: water-distribution-mains.csv
+[INFO] Candidate attribute: INSTALLATION_DATE
+[INFO] Candidate score: 0.9638671875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: JEOPARDY_CSV.csv
+[INFO] Candidate attribute: Air Date
+[INFO] Candidate score: 0.9619140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Candidate attribute: DATE
+[INFO] Candidate score: 0.9501953125
+[INFO] --------------------------------------------------

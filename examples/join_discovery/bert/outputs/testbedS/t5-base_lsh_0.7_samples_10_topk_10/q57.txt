@@ -1,0 +1,55 @@
+[INFO] Query table: sewer-manholes.csv
+[INFO] Query attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-control-valves.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-hydrants.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: sewer-catch-basins.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: property-addresses.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] ================================================================================
+[INFO] Candidate table: sewer-catch-basins.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.966796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-control-valves.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.958984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: property-addresses.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.9541015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: energy-usage-2010.csv
+[INFO] Candidate attribute: COMMUNITY AREA NAME
+[INFO] Candidate score: 0.943359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Candidate attribute: LOCATION_NAME
+[INFO] Candidate score: 0.9375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-register.csv
+[INFO] Candidate attribute: Name
+[INFO] Candidate score: 0.93359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: name
+[INFO] Candidate score: 0.9326171875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: description
+[INFO] Candidate score: 0.9326171875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: IPCC_description
+[INFO] Candidate score: 0.931640625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: energy-usage-2010.csv
+[INFO] Candidate attribute: BUILDING_SUBTYPE
+[INFO] Candidate score: 0.9306640625
+[INFO] --------------------------------------------------

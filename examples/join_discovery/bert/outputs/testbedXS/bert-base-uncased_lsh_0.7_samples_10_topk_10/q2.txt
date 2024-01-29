@@ -1,0 +1,49 @@
+[INFO] Query table: eo_pr.csv
+[INFO] Query attribute: NTEE_CD
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo_xx.csv
+[INFO] Query answer attribute: NTEE_CD
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: NTEE_CD
+[INFO] ================================================================================
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: NTEE_CD
+[INFO] Candidate score: 0.9580078125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: NTEE_CD
+[INFO] Candidate score: 0.9423828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: community-centres.csv
+[INFO] Candidate attribute: ADDRESS
+[INFO] Candidate score: 0.8955078125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: statewise-census-data-in-india-1901-2011.csv
+[INFO] Candidate attribute: VARIABLE_ID
+[INFO] Candidate score: 0.8935546875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: schools.csv
+[INFO] Candidate attribute: ADDRESS
+[INFO] Candidate score: 0.892578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: libraries.csv
+[INFO] Candidate attribute: ADDRESS
+[INFO] Candidate score: 0.890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: population-census-of-botswana-2011.csv
+[INFO] Candidate attribute: SEX_ID
+[INFO] Candidate score: 0.8837890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: STREET
+[INFO] Candidate score: 0.8759765625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: SiteName
+[INFO] Candidate score: 0.8759765625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: gvrd-sewer-trunk-mains.csv
+[INFO] Candidate attribute: MATERIAL
+[INFO] Candidate score: 0.86572265625
+[INFO] --------------------------------------------------

@@ -1,0 +1,46 @@
+[INFO] Query table: aac_intakes.csv
+[INFO] Query attribute: name
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_outcomes.csv
+[INFO] Query answer attribute: name
+[INFO] ================================================================================
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: name
+[INFO] Candidate score: 0.9560546875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: oxford-covid-19-government-response-tracker.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.9228515625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: agri-environmental-indicators-emissions-by-sector.csv
+[INFO] Candidate attribute: Item
+[INFO] Candidate score: 0.9189453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-innovation-index-2015.csv
+[INFO] Candidate attribute: INDICATOR_DESCRIPTION
+[INFO] Candidate score: 0.91796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: IPCC_description
+[INFO] Candidate score: 0.9150390625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-distribution-mains.csv
+[INFO] Candidate attribute: LINING_MATERIAL
+[INFO] Candidate score: 0.9150390625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Candidate attribute: LOCATION_NAME
+[INFO] Candidate score: 0.9091796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.9091796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: population-estimates-and-projections-1960-2050.csv
+[INFO] Candidate attribute: SERIES
+[INFO] Candidate score: 0.9072265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: breed
+[INFO] Candidate score: 0.9033203125
+[INFO] --------------------------------------------------

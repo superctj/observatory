@@ -1,0 +1,18 @@
+[INFO] Query table: road-ahead-current-road-closures.csv
+[INFO] Query attribute: COMP_DATE
+[INFO] --------------------------------------------------
+[INFO] Query answer table: road-ahead-upcoming-projects.csv
+[INFO] Query answer attribute: COMP_DATE
+[INFO] ================================================================================
+[INFO] Candidate table: road-ahead-upcoming-projects.csv
+[INFO] Candidate attribute: COMP_DATE
+[INFO] Candidate score: 0.982421875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: road-ahead-projects-under-construction.csv
+[INFO] Candidate attribute: COMP_DATE
+[INFO] Candidate score: 0.9697265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-lost-and-found.csv
+[INFO] Candidate attribute: Date
+[INFO] Candidate score: 0.86083984375
+[INFO] --------------------------------------------------

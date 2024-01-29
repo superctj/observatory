@@ -1,0 +1,26 @@
+[INFO] Query table: eo4.csv
+[INFO] Query attribute: ICO
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo_xx.csv
+[INFO] Query answer attribute: ICO
+[INFO] ================================================================================
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: ICO
+[INFO] Candidate score: 0.9814453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: ICO
+[INFO] Candidate score: 0.9619140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: population-by-governorate-citizenship-and-gender.csv
+[INFO] Candidate attribute: Governorate
+[INFO] Candidate score: 0.86669921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: cultural-spaces.csv
+[INFO] Candidate attribute: CULTURAL_SPACE_NAME
+[INFO] Candidate score: 0.86572265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art-artists.csv
+[INFO] Candidate attribute: LastName
+[INFO] Candidate score: 0.85107421875
+[INFO] --------------------------------------------------

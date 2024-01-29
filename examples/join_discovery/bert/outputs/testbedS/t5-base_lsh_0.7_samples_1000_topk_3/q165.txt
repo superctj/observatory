@@ -1,0 +1,18 @@
+[INFO] Query table: JEOPARDY_CSV.csv
+[INFO] Query attribute: Air Date
+[INFO] --------------------------------------------------
+[INFO] Query answer table: animal-control-inventory-register.csv
+[INFO] Query answer attribute: DateImpounded
+[INFO] ================================================================================
+[INFO] Candidate table: episodes.csv
+[INFO] Candidate attribute: episode_date
+[INFO] Candidate score: 0.9755859375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: host_since
+[INFO] Candidate score: 0.96875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-hydrants.csv
+[INFO] Candidate attribute: INSTDATE1
+[INFO] Candidate score: 0.9599609375
+[INFO] --------------------------------------------------

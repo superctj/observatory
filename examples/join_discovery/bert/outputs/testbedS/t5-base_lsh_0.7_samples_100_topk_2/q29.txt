@@ -1,0 +1,14 @@
+[INFO] Query table: aac_intakes_outcomes.csv
+[INFO] Query attribute: intake_condition
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes.csv
+[INFO] Query answer attribute: intake_condition
+[INFO] ================================================================================
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: intake_condition
+[INFO] Candidate score: 0.9755859375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: breed
+[INFO] Candidate score: 0.923828125
+[INFO] --------------------------------------------------

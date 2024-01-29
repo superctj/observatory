@@ -1,0 +1,26 @@
+[INFO] Query table: listings_summary.csv
+[INFO] Query attribute: cancellation_policy
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_detailed.csv
+[INFO] Query answer attribute: cancellation_policy
+[INFO] ================================================================================
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: cancellation_policy
+[INFO] Candidate score: 0.978515625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: AguaH.csv
+[INFO] Candidate attribute: f.1_DIC_15
+[INFO] Candidate score: 0.91015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-hydrants.csv
+[INFO] Candidate attribute: REMARKS
+[INFO] Candidate score: 0.90234375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-register.csv
+[INFO] Candidate attribute: ApproxWeight
+[INFO] Candidate score: 0.8935546875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: Red_Light_Camera_Violations.csv
+[INFO] Candidate attribute: VIOLATION DATE
+[INFO] Candidate score: 0.890625
+[INFO] --------------------------------------------------

@@ -1,0 +1,26 @@
+[INFO] Query table: global-greenhouse-gas-emissions.csv
+[INFO] Query attribute: Compound
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-greenhouse-gas-emissions0.csv
+[INFO] Query answer attribute: Compound
+[INFO] ================================================================================
+[INFO] Candidate table: global-greenhouse-gas-emissions0.csv
+[INFO] Candidate attribute: Compound
+[INFO] Candidate score: 0.9853515625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: agri-environmental-indicators-emissions-by-sector.csv
+[INFO] Candidate attribute: Element
+[INFO] Candidate score: 0.94140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: NTEE_CD
+[INFO] Candidate score: 0.9287109375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.916015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: JEOPARDY_CSV.csv
+[INFO] Candidate attribute: Answer
+[INFO] Candidate score: 0.896484375
+[INFO] --------------------------------------------------

@@ -1,0 +1,46 @@
+[INFO] Query table: aac_intakes_outcomes.csv
+[INFO] Query attribute: found_location
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes.csv
+[INFO] Query answer attribute: found_location
+[INFO] ================================================================================
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: found_location
+[INFO] Candidate score: 0.9873046875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: issued-building-permits.csv
+[INFO] Candidate attribute: BuildingContractorAddress
+[INFO] Candidate score: 0.9716796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-register.csv
+[INFO] Candidate attribute: ReceiptNumber
+[INFO] Candidate score: 0.96875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: Red_Light_Camera_Violations.csv
+[INFO] Candidate attribute: ADDRESS
+[INFO] Candidate score: 0.966796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: players.csv
+[INFO] Candidate attribute: name
+[INFO] Candidate score: 0.9638671875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: chat.csv
+[INFO] Candidate attribute: unit
+[INFO] Candidate score: 0.962890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: ZIP
+[INFO] Candidate score: 0.9599609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: saudi-arabia-population-by-administrative-region-nationality-and-sex.csv
+[INFO] Candidate attribute: geo_point_2d
+[INFO] Candidate score: 0.958984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: issued-building-permits.csv
+[INFO] Candidate attribute: ApplicantAddress
+[INFO] Candidate score: 0.9580078125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: AboutIsis.csv
+[INFO] Candidate attribute: name
+[INFO] Candidate score: 0.95703125
+[INFO] --------------------------------------------------

@@ -1,0 +1,27 @@
+[INFO] Query table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Query attribute: VARIABLE_UNIT
+[INFO] --------------------------------------------------
+[INFO] Query answer table: agri-environmental-indicators-emissions-by-sector.csv
+[INFO] Query answer attribute: Unit
+[INFO] --------------------------------------------------
+[INFO] Query answer table: population-estimates-and-projections-1960-2050.csv
+[INFO] Query answer attribute: UNIT_MEASURE
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-innovation-index-2015.csv
+[INFO] Query answer attribute: INDICATOR_UNIT
+[INFO] --------------------------------------------------
+[INFO] Query answer table: saudi-arabia-world-development-indicators-1960-2014.csv
+[INFO] Query answer attribute: Unit of measure
+[INFO] ================================================================================
+[INFO] Candidate table: chat.csv
+[INFO] Candidate attribute: key
+[INFO] Candidate score: 0.9501953125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: ZIP
+[INFO] Candidate score: 0.9453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: issued-building-permits.csv
+[INFO] Candidate attribute: Address
+[INFO] Candidate score: 0.935546875
+[INFO] --------------------------------------------------

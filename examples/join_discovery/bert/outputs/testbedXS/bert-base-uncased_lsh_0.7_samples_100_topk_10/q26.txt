@@ -1,0 +1,46 @@
+[INFO] Query table: eo_xx.csv
+[INFO] Query attribute: STREET
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: STREET
+[INFO] ================================================================================
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: STREET
+[INFO] Candidate score: 0.96875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: STREET
+[INFO] Candidate score: 0.9619140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: community-centres.csv
+[INFO] Candidate attribute: ADDRESS
+[INFO] Candidate score: 0.9267578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: schools.csv
+[INFO] Candidate attribute: ADDRESS
+[INFO] Candidate score: 0.92578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art-artists.csv
+[INFO] Candidate attribute: LastName
+[INFO] Candidate score: 0.9140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: PhotoCredits
+[INFO] Candidate score: 0.9091796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-lost-and-found.csv
+[INFO] Candidate attribute: Name
+[INFO] Candidate score: 0.9072265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art-artists.csv
+[INFO] Candidate attribute: FirstName
+[INFO] Candidate score: 0.9033203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: cultural-spaces.csv
+[INFO] Candidate attribute: PRIMARY_USE
+[INFO] Candidate score: 0.8984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: datasets_579296_1047868_authors.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.89453125
+[INFO] --------------------------------------------------

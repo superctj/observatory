@@ -1,0 +1,18 @@
+[INFO] Query table: IPODataFull.csv
+[INFO] Query attribute: USACompany
+[INFO] --------------------------------------------------
+[INFO] Query answer table: world-power-plants-list.csv
+[INFO] Query answer attribute: PLANT_MERCURY_CONTROL_DEVICE
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-hydrants.csv
+[INFO] Query answer attribute: COVWATERHYDRANTUNITTYPE
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-hydrants.csv
+[INFO] Query answer attribute: INCOMM
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-hydrants.csv
+[INFO] Query answer attribute: COMPRESSION
+[INFO] --------------------------------------------------
+[INFO] Query answer table: makemytrip_com-travel_sample.csv
+[INFO] Query answer attribute: is_value_plus
+[INFO] ================================================================================

@@ -1,0 +1,46 @@
+[INFO] Query table: listings_summary.csv
+[INFO] Query attribute: property_type
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_detailed.csv
+[INFO] Query answer attribute: property_type
+[INFO] ================================================================================
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: property_type
+[INFO] Candidate score: 0.9833984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: color
+[INFO] Candidate score: 0.9111328125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: color
+[INFO] Candidate score: 0.9111328125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: color
+[INFO] Candidate score: 0.91015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: breed
+[INFO] Candidate score: 0.9052734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: intake_type
+[INFO] Candidate score: 0.90234375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-hydrants.csv
+[INFO] Candidate attribute: COMPRESSION
+[INFO] Candidate score: 0.9013671875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: breed
+[INFO] Candidate score: 0.8974609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: episodes.csv
+[INFO] Candidate attribute: program
+[INFO] Candidate score: 0.89453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: AboutIsis.csv
+[INFO] Candidate attribute: time
+[INFO] Candidate score: 0.88671875
+[INFO] --------------------------------------------------

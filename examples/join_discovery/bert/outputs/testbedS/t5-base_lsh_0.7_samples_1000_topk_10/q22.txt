@@ -1,0 +1,52 @@
+[INFO] Query table: aac_intakes.csv
+[INFO] Query attribute: animal_id
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes_outcomes.csv
+[INFO] Query answer attribute: animal_id_outcome
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes_outcomes.csv
+[INFO] Query answer attribute: animal_id_intake
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_outcomes.csv
+[INFO] Query answer attribute: animal_id
+[INFO] ================================================================================
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: animal_id
+[INFO] Candidate score: 0.998046875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: animal_id_intake
+[INFO] Candidate score: 0.9931640625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: animal_id_outcome
+[INFO] Candidate score: 0.9921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: NTEE_CD
+[INFO] Candidate score: 0.927734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: ISO_A3
+[INFO] Candidate score: 0.9189453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions0.csv
+[INFO] Candidate attribute: ISO_A3
+[INFO] Candidate score: 0.91796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: agri-environmental-indicators-emissions-by-sector.csv
+[INFO] Candidate attribute: Element
+[INFO] Candidate score: 0.9111328125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: AguaH.csv
+[INFO] Candidate attribute: M
+[INFO] Candidate score: 0.9111328125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: posts.csv
+[INFO] Candidate attribute: content
+[INFO] Candidate score: 0.9033203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Candidate attribute: INDIAN_STATES_REGIONID
+[INFO] Candidate score: 0.888671875
+[INFO] --------------------------------------------------

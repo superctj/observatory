@@ -1,0 +1,64 @@
+[INFO] Query table: public-art.csv
+[INFO] Query attribute: GeoLocalArea
+[INFO] --------------------------------------------------
+[INFO] Query answer table: cultural-spaces.csv
+[INFO] Query answer attribute: LOCAL_AREA
+[INFO] --------------------------------------------------
+[INFO] Query answer table: street-intersections.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: rental-standards-current-issues.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: schools.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: community-gardens-and-food-trees.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: libraries.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: community-centres.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] ================================================================================
+[INFO] Candidate table: cultural-spaces.csv
+[INFO] Candidate attribute: LOCAL_AREA
+[INFO] Candidate score: 0.9580078125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: SiteName
+[INFO] Candidate score: 0.9248046875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: street-intersections.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.919921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: schools.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.912109375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: schools.csv
+[INFO] Candidate attribute: SCHOOL_NAME
+[INFO] Candidate score: 0.91015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: rental-standards-current-issues.csv
+[INFO] Candidate attribute: Street
+[INFO] Candidate score: 0.9072265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: SiteAddress
+[INFO] Candidate score: 0.9052734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: SCS_Staff_Salaries_data_30th_June 2010.csv
+[INFO] Candidate attribute: Job title
+[INFO] Candidate score: 0.8994140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.8984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: SCS_Staff_Salaries_data_30th_June 2010.csv
+[INFO] Candidate attribute: Name
+[INFO] Candidate score: 0.8984375
+[INFO] --------------------------------------------------

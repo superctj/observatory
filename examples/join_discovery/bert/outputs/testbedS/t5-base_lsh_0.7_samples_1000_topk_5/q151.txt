@@ -1,0 +1,26 @@
+[INFO] Query table: listings_summary.csv
+[INFO] Query attribute: cancellation_policy
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_detailed.csv
+[INFO] Query answer attribute: cancellation_policy
+[INFO] ================================================================================
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: cancellation_policy
+[INFO] Candidate score: 0.9755859375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-hydrants.csv
+[INFO] Candidate attribute: REMARKS
+[INFO] Candidate score: 0.9091796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: IsisFanboy.csv
+[INFO] Candidate attribute: time
+[INFO] Candidate score: 0.908203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: Red_Light_Camera_Violations.csv
+[INFO] Candidate attribute: VIOLATION DATE
+[INFO] Candidate score: 0.9013671875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: ZIP
+[INFO] Candidate score: 0.8935546875
+[INFO] --------------------------------------------------

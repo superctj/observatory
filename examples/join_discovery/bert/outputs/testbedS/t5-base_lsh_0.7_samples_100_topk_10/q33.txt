@@ -1,0 +1,18 @@
+[INFO] Query table: IPODataFull.csv
+[INFO] Query attribute: yearDifferenceGrouped
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes_outcomes.csv
+[INFO] Query answer attribute: sex_upon_outcome
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes_outcomes.csv
+[INFO] Query answer attribute: sex_upon_intake
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_outcomes.csv
+[INFO] Query answer attribute: sex_upon_outcome
+[INFO] --------------------------------------------------
+[INFO] Query answer table: Accidental_Drug_Related_Deaths_2012-2018.csv
+[INFO] Query answer attribute: Sex
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes.csv
+[INFO] Query answer attribute: sex_upon_intake
+[INFO] ================================================================================

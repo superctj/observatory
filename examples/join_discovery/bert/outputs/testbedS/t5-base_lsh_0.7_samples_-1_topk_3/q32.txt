@@ -1,0 +1,18 @@
+[INFO] Query table: aac_intakes.csv
+[INFO] Query attribute: intake_type
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes_outcomes.csv
+[INFO] Query answer attribute: intake_type
+[INFO] ================================================================================
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: intake_type
+[INFO] Candidate score: 0.984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: IPCC_description
+[INFO] Candidate score: 0.9375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: breed
+[INFO] Candidate score: 0.9296875
+[INFO] --------------------------------------------------

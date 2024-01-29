@@ -1,0 +1,18 @@
+[INFO] Query table: statewise-census-data-in-india-1901-2011.csv
+[INFO] Query attribute: FREQUENCY
+[INFO] --------------------------------------------------
+[INFO] Query answer table: population-census-of-botswana-2011.csv
+[INFO] Query answer attribute: FREQUENCY
+[INFO] ================================================================================
+[INFO] Candidate table: population-census-of-botswana-2011.csv
+[INFO] Candidate attribute: FREQUENCY
+[INFO] Candidate score: 1.0
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: SiteName
+[INFO] Candidate score: 0.890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: cultural-spaces.csv
+[INFO] Candidate attribute: TYPE
+[INFO] Candidate score: 0.87890625
+[INFO] --------------------------------------------------

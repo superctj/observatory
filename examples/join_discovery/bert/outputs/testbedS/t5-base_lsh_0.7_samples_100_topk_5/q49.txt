@@ -1,0 +1,44 @@
+[INFO] Query table: global-innovation-index-2015.csv
+[INFO] Query attribute: COUNTRY_NAME
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-greenhouse-gas-emissions0.csv
+[INFO] Query answer attribute: Country
+[INFO] --------------------------------------------------
+[INFO] Query answer table: world-power-plants-list.csv
+[INFO] Query answer attribute: PLANT_COUNTRY
+[INFO] --------------------------------------------------
+[INFO] Query answer table: oxford-covid-19-government-response-tracker.csv
+[INFO] Query answer attribute: Country
+[INFO] --------------------------------------------------
+[INFO] Query answer table: agri-environmental-indicators-emissions-by-sector.csv
+[INFO] Query answer attribute: Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-greenhouse-gas-emissions.csv
+[INFO] Query answer attribute: Country
+[INFO] --------------------------------------------------
+[INFO] Query answer table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Query answer attribute: LOCATION_NAME
+[INFO] --------------------------------------------------
+[INFO] Query answer table: emissions_agriculture_energy_e_all_data_norm.csv
+[INFO] Query answer attribute: Country
+[INFO] ================================================================================
+[INFO] Candidate table: oxford-covid-19-government-response-tracker.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.982421875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: emissions_agriculture_energy_e_all_data_norm.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.97265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: agri-environmental-indicators-emissions-by-sector.csv
+[INFO] Candidate attribute: Area
+[INFO] Candidate score: 0.9697265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Candidate attribute: LOCATION_NAME
+[INFO] Candidate score: 0.966796875
+[INFO] --------------------------------------------------

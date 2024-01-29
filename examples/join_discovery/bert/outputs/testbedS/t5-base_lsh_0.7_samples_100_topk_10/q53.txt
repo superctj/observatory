@@ -1,0 +1,55 @@
+[INFO] Query table: water-hydrants.csv
+[INFO] Query attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-control-valves.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: sewer-catch-basins.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: property-addresses.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: sewer-manholes.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] ================================================================================
+[INFO] Candidate table: sewer-manholes.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.9267578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: color
+[INFO] Candidate score: 0.9248046875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: color
+[INFO] Candidate score: 0.921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: color
+[INFO] Candidate score: 0.919921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: sex_upon_outcome
+[INFO] Candidate score: 0.9189453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: host_name
+[INFO] Candidate score: 0.91796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-control-valves.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.916015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: summary
+[INFO] Candidate score: 0.9140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: description
+[INFO] Candidate score: 0.912109375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: breed
+[INFO] Candidate score: 0.908203125
+[INFO] --------------------------------------------------

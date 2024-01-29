@@ -1,0 +1,46 @@
+[INFO] Query table: abandoned-water-mains.csv
+[INFO] Query attribute: MATERIAL
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-distribution-mains.csv
+[INFO] Query answer attribute: MATERIAL
+[INFO] ================================================================================
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.86767578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: energy-usage-2010.csv
+[INFO] Candidate attribute: COMMUNITY AREA NAME
+[INFO] Candidate score: 0.86669921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: neighbourhood
+[INFO] Candidate score: 0.86279296875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: saudi-arabia-world-development-indicators-1960-2014.csv
+[INFO] Candidate attribute: Indicator
+[INFO] Candidate score: 0.86279296875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: host_location
+[INFO] Candidate score: 0.86083984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: issued-building-permits.csv
+[INFO] Candidate attribute: BuildingContractor
+[INFO] Candidate score: 0.85986328125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: found_location
+[INFO] Candidate score: 0.85791015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Candidate attribute: VARIABLE_NOTES
+[INFO] Candidate score: 0.85107421875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: street
+[INFO] Candidate score: 0.84912109375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: 0401230100_BCN_Nomenclator.csv
+[INFO] Candidate attribute: ALTRES_NOMS
+[INFO] Candidate score: 0.84130859375
+[INFO] --------------------------------------------------

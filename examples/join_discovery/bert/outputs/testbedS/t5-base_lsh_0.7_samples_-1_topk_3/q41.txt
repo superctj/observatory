@@ -1,0 +1,18 @@
+[INFO] Query table: global-greenhouse-gas-emissions.csv
+[INFO] Query attribute: ISO_A3
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-greenhouse-gas-emissions0.csv
+[INFO] Query answer attribute: ISO_A3
+[INFO] ================================================================================
+[INFO] Candidate table: global-greenhouse-gas-emissions0.csv
+[INFO] Candidate attribute: ISO_A3
+[INFO] Candidate score: 0.998046875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: players.csv
+[INFO] Candidate attribute: flag
+[INFO] Candidate score: 0.953125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.9521484375
+[INFO] --------------------------------------------------

@@ -1,0 +1,46 @@
+[INFO] Query table: aac_intakes_outcomes.csv
+[INFO] Query attribute: outcome_subtype
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_outcomes.csv
+[INFO] Query answer attribute: outcome_subtype
+[INFO] ================================================================================
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: outcome_subtype
+[INFO] Candidate score: 0.9736328125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: agri-environmental-indicators-emissions-by-sector.csv
+[INFO] Candidate attribute: Item
+[INFO] Candidate score: 0.9248046875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: saudi-arabia-world-development-indicators-1960-2014.csv
+[INFO] Candidate attribute: Indicator
+[INFO] Candidate score: 0.9228515625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: saudi-arabia-world-development-indicators-1960-2014.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.9228515625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: india-census-data-2011-census-primary-abstract.csv
+[INFO] Candidate attribute: RESIDENCE_NAME
+[INFO] Candidate score: 0.919921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: emissions_agriculture_energy_e_all_data_norm.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.9189453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: agri-environmental-indicators-emissions-by-sector.csv
+[INFO] Candidate attribute: Area
+[INFO] Candidate score: 0.916015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.9111328125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: population-estimates-and-projections-1960-2050.csv
+[INFO] Candidate attribute: UNIT_MEASURE
+[INFO] Candidate score: 0.91015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: IsisFanboy.csv
+[INFO] Candidate attribute: username
+[INFO] Candidate score: 0.90234375
+[INFO] --------------------------------------------------

@@ -1,0 +1,14 @@
+[INFO] Query table: eo_pr.csv
+[INFO] Query attribute: ICO
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: ICO
+[INFO] ================================================================================
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: ICO
+[INFO] Candidate score: 0.9853515625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: ICO
+[INFO] Candidate score: 0.951171875
+[INFO] --------------------------------------------------

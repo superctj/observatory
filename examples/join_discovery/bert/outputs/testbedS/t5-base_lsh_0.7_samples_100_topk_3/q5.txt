@@ -1,0 +1,18 @@
+[INFO] Query table: aac_intakes_outcomes.csv
+[INFO] Query attribute: outcome_subtype
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_outcomes.csv
+[INFO] Query answer attribute: outcome_subtype
+[INFO] ================================================================================
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: outcome_subtype
+[INFO] Candidate score: 0.986328125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: saudi-arabia-world-development-indicators-1960-2014.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.931640625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: agri-environmental-indicators-emissions-by-sector.csv
+[INFO] Candidate attribute: Area
+[INFO] Candidate score: 0.9248046875
+[INFO] --------------------------------------------------

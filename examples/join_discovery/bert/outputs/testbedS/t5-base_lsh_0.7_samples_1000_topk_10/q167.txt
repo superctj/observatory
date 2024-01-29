@@ -1,0 +1,49 @@
+[INFO] Query table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Query attribute: DISTRICTS_REGIONID
+[INFO] --------------------------------------------------
+[INFO] Query answer table: india-census-data-2011-census-primary-abstract.csv
+[INFO] Query answer attribute: LOCATION_ID
+[INFO] --------------------------------------------------
+[INFO] Query answer table: india-census-data-2011-census-primary-abstract.csv
+[INFO] Query answer attribute: LOCATION_REGIONID
+[INFO] ================================================================================
+[INFO] Candidate table: india-census-data-2011-census-primary-abstract.csv
+[INFO] Candidate attribute: LOCATION_ID
+[INFO] Candidate score: 0.998046875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: india-census-data-2011-census-primary-abstract.csv
+[INFO] Candidate attribute: LOCATION_REGIONID
+[INFO] Candidate score: 0.9970703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Candidate attribute: INDIAN_STATES_REGIONID
+[INFO] Candidate score: 0.970703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: CITY
+[INFO] Candidate score: 0.9326171875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: JEOPARDY_CSV.csv
+[INFO] Candidate attribute: Category
+[INFO] Candidate score: 0.9287109375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: property-addresses.csv
+[INFO] Candidate attribute: STD_STREET
+[INFO] Candidate score: 0.927734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.927734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-hydrants.csv
+[INFO] Candidate attribute: STATUS
+[INFO] Candidate score: 0.9248046875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-hydrants.csv
+[INFO] Candidate attribute: DIR
+[INFO] Candidate score: 0.921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: Compound
+[INFO] Candidate score: 0.9130859375
+[INFO] --------------------------------------------------

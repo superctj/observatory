@@ -1,0 +1,30 @@
+[INFO] Query table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Query attribute: FREQUENCY
+[INFO] --------------------------------------------------
+[INFO] Query answer table: population-estimates-and-projections-1960-2050.csv
+[INFO] Query answer attribute: FREQ
+[INFO] --------------------------------------------------
+[INFO] Query answer table: population-estimates-and-projections-1960-2050.csv
+[INFO] Query answer attribute: TIME_FORMAT
+[INFO] --------------------------------------------------
+[INFO] Query answer table: india-census-data-2011-census-primary-abstract.csv
+[INFO] Query answer attribute: FREQUENCY
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-innovation-index-2015.csv
+[INFO] Query answer attribute: FREQUENCY
+[INFO] --------------------------------------------------
+[INFO] Query answer table: saudi-arabia-world-development-indicators-1960-2014.csv
+[INFO] Query answer attribute: Periodicity
+[INFO] ================================================================================
+[INFO] Candidate table: india-census-data-2011-census-primary-abstract.csv
+[INFO] Candidate attribute: FREQUENCY
+[INFO] Candidate score: 1.0
+[INFO] --------------------------------------------------
+[INFO] Candidate table: population-estimates-and-projections-1960-2050.csv
+[INFO] Candidate attribute: FREQ
+[INFO] Candidate score: 1.0
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-innovation-index-2015.csv
+[INFO] Candidate attribute: FREQUENCY
+[INFO] Candidate score: 1.0
+[INFO] --------------------------------------------------

@@ -1,0 +1,46 @@
+[INFO] Query table: india-census-data-2011-census-primary-abstract.csv
+[INFO] Query attribute: LOCATION_REGIONID
+[INFO] --------------------------------------------------
+[INFO] Query answer table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Query answer attribute: DISTRICTS_REGIONID
+[INFO] ================================================================================
+[INFO] Candidate table: india-census-data-2011-census-primary-abstract.csv
+[INFO] Candidate attribute: LOCATION_ID
+[INFO] Candidate score: 1.0
+[INFO] --------------------------------------------------
+[INFO] Candidate table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Candidate attribute: DISTRICTS_REGIONID
+[INFO] Candidate score: 0.9970703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Candidate attribute: INDIAN_STATES_REGIONID
+[INFO] Candidate score: 0.9697265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: property-addresses.csv
+[INFO] Candidate attribute: STD_STREET
+[INFO] Candidate score: 0.9296875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.9296875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: CITY
+[INFO] Candidate score: 0.9296875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: JEOPARDY_CSV.csv
+[INFO] Candidate attribute: Category
+[INFO] Candidate score: 0.9267578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-hydrants.csv
+[INFO] Candidate attribute: STATUS
+[INFO] Candidate score: 0.923828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions0.csv
+[INFO] Candidate attribute: ISO_A3
+[INFO] Candidate score: 0.9130859375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: Compound
+[INFO] Candidate score: 0.9091796875
+[INFO] --------------------------------------------------

@@ -1,0 +1,46 @@
+[INFO] Query table: listings_summary.csv
+[INFO] Query attribute: room_type
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_detailed.csv
+[INFO] Query answer attribute: room_type
+[INFO] ================================================================================
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: room_type
+[INFO] Candidate score: 0.982421875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: animal_type
+[INFO] Candidate score: 0.9111328125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: animal_type
+[INFO] Candidate score: 0.9091796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: intake_type
+[INFO] Candidate score: 0.9072265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: episodes.csv
+[INFO] Candidate attribute: program
+[INFO] Candidate score: 0.9052734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-register.csv
+[INFO] Candidate attribute: Age category
+[INFO] Candidate score: 0.90234375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: saudi-arabia-population-by-administrative-region-nationality-and-sex.csv
+[INFO] Candidate attribute: gender
+[INFO] Candidate score: 0.900390625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: property_type
+[INFO] Candidate score: 0.8896484375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: oxford-covid-19-government-response-tracker.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.88671875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: india-census-data-2011-census-primary-abstract.csv
+[INFO] Candidate attribute: RESIDENCE_NAME
+[INFO] Candidate score: 0.880859375
+[INFO] --------------------------------------------------

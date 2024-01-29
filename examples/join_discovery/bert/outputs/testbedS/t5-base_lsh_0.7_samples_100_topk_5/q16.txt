@@ -1,0 +1,29 @@
+[INFO] Query table: aac_outcomes.csv
+[INFO] Query attribute: breed
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes_outcomes.csv
+[INFO] Query answer attribute: breed
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes.csv
+[INFO] Query answer attribute: breed
+[INFO] ================================================================================
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: breed
+[INFO] Candidate score: 0.9873046875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: breed
+[INFO] Candidate score: 0.9658203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: IPCC_description
+[INFO] Candidate score: 0.947265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: medium_data.csv
+[INFO] Candidate attribute: title
+[INFO] Candidate score: 0.9462890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-register.csv
+[INFO] Candidate attribute: Breed
+[INFO] Candidate score: 0.939453125
+[INFO] --------------------------------------------------

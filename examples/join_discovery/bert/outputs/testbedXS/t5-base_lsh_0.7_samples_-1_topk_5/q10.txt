@@ -1,0 +1,26 @@
+[INFO] Query table: eo_pr.csv
+[INFO] Query attribute: SORT_NAME
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: SORT_NAME
+[INFO] ================================================================================
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: SORT_NAME
+[INFO] Candidate score: 0.998046875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: SORT_NAME
+[INFO] Candidate score: 0.9970703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: SCS_Staff_Salaries_data_30th_June 2010.csv
+[INFO] Candidate attribute: Notes
+[INFO] Candidate score: 0.994140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: Artists
+[INFO] Candidate score: 0.9169921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art-artists.csv
+[INFO] Candidate attribute: Website
+[INFO] Candidate score: 0.91015625
+[INFO] --------------------------------------------------

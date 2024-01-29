@@ -1,0 +1,26 @@
+[INFO] Query table: eo_pr.csv
+[INFO] Query attribute: CITY
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: CITY
+[INFO] ================================================================================
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: CITY
+[INFO] Candidate score: 0.9697265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.9619140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.9501953125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.9462890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: STREET
+[INFO] Candidate score: 0.9326171875
+[INFO] --------------------------------------------------

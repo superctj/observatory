@@ -1,0 +1,26 @@
+[INFO] Query table: eo_xx.csv
+[INFO] Query attribute: STATE
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: STATE
+[INFO] ================================================================================
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.943359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.943359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.9404296875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: rental-standards-current-issues.csv
+[INFO] Candidate attribute: Street
+[INFO] Candidate score: 0.9345703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: CITY
+[INFO] Candidate score: 0.93359375
+[INFO] --------------------------------------------------

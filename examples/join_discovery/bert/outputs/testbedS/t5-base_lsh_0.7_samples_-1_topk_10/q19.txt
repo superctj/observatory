@@ -1,0 +1,49 @@
+[INFO] Query table: aac_intakes_outcomes.csv
+[INFO] Query attribute: sex_upon_intake
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_outcomes.csv
+[INFO] Query answer attribute: sex_upon_outcome
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes.csv
+[INFO] Query answer attribute: sex_upon_intake
+[INFO] ================================================================================
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: sex_upon_intake
+[INFO] Candidate score: 0.9775390625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: sex_upon_outcome
+[INFO] Candidate score: 0.9658203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: sex_upon_outcome
+[INFO] Candidate score: 0.9384765625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: intake_type
+[INFO] Candidate score: 0.912109375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: breed
+[INFO] Candidate score: 0.91015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: breed
+[INFO] Candidate score: 0.908203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: breed
+[INFO] Candidate score: 0.8994140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: sewer-catch-basins.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.8955078125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: 0401230100_BCN_Nomenclator.csv
+[INFO] Candidate attribute: DESCRIPCIO1
+[INFO] Candidate score: 0.8935546875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Candidate attribute: INDIAN_STATES_NAME
+[INFO] Candidate score: 0.8935546875
+[INFO] --------------------------------------------------

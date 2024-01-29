@@ -1,0 +1,26 @@
+[INFO] Query table: aac_intakes_outcomes.csv
+[INFO] Query attribute: intake_condition
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes.csv
+[INFO] Query answer attribute: intake_condition
+[INFO] ================================================================================
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: intake_condition
+[INFO] Candidate score: 0.9716796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: IPCC_description
+[INFO] Candidate score: 0.9208984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: issued-building-permits.csv
+[INFO] Candidate attribute: ProjectDescription
+[INFO] Candidate score: 0.9189453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: breed
+[INFO] Candidate score: 0.91796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: medium_data.csv
+[INFO] Candidate attribute: publication
+[INFO] Candidate score: 0.9033203125
+[INFO] --------------------------------------------------

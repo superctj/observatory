@@ -1,0 +1,14 @@
+[INFO] Query table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Query attribute: DISTRICTS_NAME
+[INFO] --------------------------------------------------
+[INFO] Query answer table: india-census-data-2011-census-primary-abstract.csv
+[INFO] Query answer attribute: LOCATION_NAME
+[INFO] ================================================================================
+[INFO] Candidate table: india-census-data-2011-census-primary-abstract.csv
+[INFO] Candidate attribute: LOCATION_NAME
+[INFO] Candidate score: 0.9970703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: issued-building-permits.csv
+[INFO] Candidate attribute: BuildingContractor
+[INFO] Candidate score: 0.970703125
+[INFO] --------------------------------------------------

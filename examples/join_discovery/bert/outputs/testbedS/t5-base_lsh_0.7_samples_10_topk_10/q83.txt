@@ -1,0 +1,46 @@
+[INFO] Query table: eo1.csv
+[INFO] Query attribute: STATE
+[INFO] --------------------------------------------------
+[INFO] Query answer table: Accidental_Drug_Related_Deaths_2012-2018.csv
+[INFO] Query answer attribute: ResidenceState
+[INFO] ================================================================================
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.953125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-innovation-index-2015.csv
+[INFO] Candidate attribute: COUNTRY_ID
+[INFO] Candidate score: 0.9521484375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: Red_Light_Camera_Violations.csv
+[INFO] Candidate attribute: INTERSECTION
+[INFO] Candidate score: 0.94921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: players.csv
+[INFO] Candidate attribute: flag
+[INFO] Candidate score: 0.947265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-innovation-index-2015.csv
+[INFO] Candidate attribute: COUNTRY_REGIONID
+[INFO] Candidate score: 0.94140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: CITY
+[INFO] Candidate score: 0.9326171875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-control-valves.csv
+[INFO] Candidate attribute: X_OFFSET_DIRECTION
+[INFO] Candidate score: 0.927734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Candidate attribute: LOCATION_REGIONID
+[INFO] Candidate score: 0.927734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Candidate attribute: LOCATION_ID
+[INFO] Candidate score: 0.91796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: property-addresses.csv
+[INFO] Candidate attribute: SITE_ID
+[INFO] Candidate score: 0.916015625
+[INFO] --------------------------------------------------

@@ -1,0 +1,27 @@
+[INFO] Query table: makemytrip_com-travel_sample.csv
+[INFO] Query attribute: is_value_plus
+[INFO] --------------------------------------------------
+[INFO] Query answer table: world-power-plants-list.csv
+[INFO] Query answer attribute: PLANT_MERCURY_CONTROL_DEVICE
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-hydrants.csv
+[INFO] Query answer attribute: COVWATERHYDRANTUNITTYPE
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-hydrants.csv
+[INFO] Query answer attribute: INCOMM
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-hydrants.csv
+[INFO] Query answer attribute: COMPRESSION
+[INFO] --------------------------------------------------
+[INFO] Query answer table: Accidental_Drug_Related_Deaths_2012-2018.csv
+[INFO] Query answer attribute: Morphine_NotHeroin
+[INFO] --------------------------------------------------
+[INFO] Query answer table: IPODataFull.csv
+[INFO] Query answer attribute: CEOInChargeDuringIPO
+[INFO] --------------------------------------------------
+[INFO] Query answer table: IPODataFull.csv
+[INFO] Query answer attribute: presidentInChargeDuringIPO
+[INFO] --------------------------------------------------
+[INFO] Query answer table: IPODataFull.csv
+[INFO] Query answer attribute: USACompany
+[INFO] ================================================================================

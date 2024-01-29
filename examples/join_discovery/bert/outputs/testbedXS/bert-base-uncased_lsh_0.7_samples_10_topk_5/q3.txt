@@ -1,0 +1,26 @@
+[INFO] Query table: eo_pr.csv
+[INFO] Query attribute: NAME
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: NAME
+[INFO] ================================================================================
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.9462890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.9150390625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: SiteName
+[INFO] Candidate score: 0.8828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: GeoLocalArea
+[INFO] Candidate score: 0.87255859375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: street-intersections.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.87158203125
+[INFO] --------------------------------------------------

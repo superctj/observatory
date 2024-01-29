@@ -1,0 +1,15 @@
+[INFO] Query table: provisional-2016-bi-annual-aquatic-and-terrestrial-monitoring-results-26062017-raw-results.csv
+[INFO] Query attribute: LOD
+[INFO] --------------------------------------------------
+[INFO] Query answer table: animal-control-inventory-register.csv
+[INFO] Query answer attribute: KennelNumber
+[INFO] --------------------------------------------------
+[INFO] Query answer table: medium_data.csv
+[INFO] Query answer attribute: responses
+[INFO] --------------------------------------------------
+[INFO] Query answer table: makemytrip_com-travel_sample.csv
+[INFO] Query answer attribute: hotel_star_rating
+[INFO] --------------------------------------------------
+[INFO] Query answer table: makemytrip_com-travel_sample.csv
+[INFO] Query answer attribute: site_review_count
+[INFO] ================================================================================

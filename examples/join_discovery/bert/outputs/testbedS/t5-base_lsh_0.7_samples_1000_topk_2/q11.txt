@@ -1,0 +1,17 @@
+[INFO] Query table: aac_intakes_outcomes.csv
+[INFO] Query attribute: age_upon_intake
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_outcomes.csv
+[INFO] Query answer attribute: age_upon_outcome
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes.csv
+[INFO] Query answer attribute: age_upon_intake
+[INFO] ================================================================================
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: age_upon_outcome
+[INFO] Candidate score: 0.998046875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: age_upon_outcome
+[INFO] Candidate score: 0.9931640625
+[INFO] --------------------------------------------------

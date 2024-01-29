@@ -1,0 +1,26 @@
+[INFO] Query table: eo_xx.csv
+[INFO] Query attribute: STATE
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: STATE
+[INFO] ================================================================================
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: STATE
+[INFO] Candidate score: 0.9521484375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: STATE
+[INFO] Candidate score: 0.931640625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: gvrd-sewer-trunk-mains.csv
+[INFO] Candidate attribute: EFFLUENT_TYPE
+[INFO] Candidate score: 0.9287109375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art-artists.csv
+[INFO] Candidate attribute: FirstName
+[INFO] Candidate score: 0.927734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-lost-and-found.csv
+[INFO] Candidate attribute: Name
+[INFO] Candidate score: 0.919921875
+[INFO] --------------------------------------------------

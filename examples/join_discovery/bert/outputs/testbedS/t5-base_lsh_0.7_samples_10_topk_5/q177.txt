@@ -1,0 +1,26 @@
+[INFO] Query table: abandoned-water-mains.csv
+[INFO] Query attribute: MATERIAL
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-distribution-mains.csv
+[INFO] Query answer attribute: MATERIAL
+[INFO] ================================================================================
+[INFO] Candidate table: water-distribution-mains.csv
+[INFO] Candidate attribute: MATERIAL
+[INFO] Candidate score: 0.8837890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.86962890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: energy-usage-2010.csv
+[INFO] Candidate attribute: COMMUNITY AREA NAME
+[INFO] Candidate score: 0.86865234375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: issued-building-permits.csv
+[INFO] Candidate attribute: BuildingContractor
+[INFO] Candidate score: 0.86572265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: found_location
+[INFO] Candidate score: 0.85400390625
+[INFO] --------------------------------------------------

@@ -1,0 +1,14 @@
+[INFO] Query table: abandoned-water-mains.csv
+[INFO] Query attribute: MATERIAL
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-distribution-mains.csv
+[INFO] Query answer attribute: MATERIAL
+[INFO] ================================================================================
+[INFO] Candidate table: water-distribution-mains.csv
+[INFO] Candidate attribute: MATERIAL
+[INFO] Candidate score: 0.9345703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: issued-building-permits.csv
+[INFO] Candidate attribute: TypeOfWork
+[INFO] Candidate score: 0.8857421875
+[INFO] --------------------------------------------------

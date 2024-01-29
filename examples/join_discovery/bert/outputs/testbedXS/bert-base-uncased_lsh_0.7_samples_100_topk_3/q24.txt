@@ -1,0 +1,18 @@
+[INFO] Query table: eo_xx.csv
+[INFO] Query attribute: ICO
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: ICO
+[INFO] ================================================================================
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: ICO
+[INFO] Candidate score: 0.9599609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: ICO
+[INFO] Candidate score: 0.947265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art-artists.csv
+[INFO] Candidate attribute: PhotoCredit
+[INFO] Candidate score: 0.890625
+[INFO] --------------------------------------------------

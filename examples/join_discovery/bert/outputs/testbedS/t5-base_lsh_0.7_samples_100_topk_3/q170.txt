@@ -1,0 +1,18 @@
+[INFO] Query table: india-census-data-2011-census-primary-abstract.csv
+[INFO] Query attribute: LOCATION_REGIONID
+[INFO] --------------------------------------------------
+[INFO] Query answer table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Query answer attribute: DISTRICTS_REGIONID
+[INFO] ================================================================================
+[INFO] Candidate table: india-census-data-2011-census-primary-abstract.csv
+[INFO] Candidate attribute: LOCATION_ID
+[INFO] Candidate score: 0.99609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Candidate attribute: DISTRICTS_REGIONID
+[INFO] Candidate score: 0.994140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Candidate attribute: INDIAN_STATES_REGIONID
+[INFO] Candidate score: 0.9697265625
+[INFO] --------------------------------------------------

@@ -1,0 +1,26 @@
+[INFO] Query table: listings_detailed.csv
+[INFO] Query attribute: host_response_time
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_summary.csv
+[INFO] Query answer attribute: host_response_time
+[INFO] ================================================================================
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: host_response_time
+[INFO] Candidate score: 0.998046875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: calendar_updated
+[INFO] Candidate score: 0.919921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: IPCC
+[INFO] Candidate score: 0.9033203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: age_upon_outcome
+[INFO] Candidate score: 0.8974609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: age_upon_outcome
+[INFO] Candidate score: 0.8974609375
+[INFO] --------------------------------------------------

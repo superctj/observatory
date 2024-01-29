@@ -1,0 +1,29 @@
+[INFO] Query table: eo4.csv
+[INFO] Query attribute: NTEE_CD
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo_pr.csv
+[INFO] Query answer attribute: NTEE_CD
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo_xx.csv
+[INFO] Query answer attribute: NTEE_CD
+[INFO] ================================================================================
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: NTEE_CD
+[INFO] Candidate score: 0.9677734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: NTEE_CD
+[INFO] Candidate score: 0.96484375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: CITY
+[INFO] Candidate score: 0.9306640625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: CITY
+[INFO] Candidate score: 0.912109375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: ArtistProjectStatement
+[INFO] Candidate score: 0.900390625
+[INFO] --------------------------------------------------

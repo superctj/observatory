@@ -1,0 +1,18 @@
+[INFO] Query table: listings_summary.csv
+[INFO] Query attribute: calendar_updated
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_detailed.csv
+[INFO] Query answer attribute: calendar_updated
+[INFO] ================================================================================
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: IPCC
+[INFO] Candidate score: 0.947265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: age_upon_outcome
+[INFO] Candidate score: 0.943359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-register.csv
+[INFO] Candidate attribute: ApproxWeight
+[INFO] Candidate score: 0.9345703125
+[INFO] --------------------------------------------------

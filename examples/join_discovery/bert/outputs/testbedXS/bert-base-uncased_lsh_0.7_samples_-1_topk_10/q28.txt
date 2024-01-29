@@ -1,0 +1,46 @@
+[INFO] Query table: eo_xx.csv
+[INFO] Query attribute: CITY
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: CITY
+[INFO] ================================================================================
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: CITY
+[INFO] Candidate score: 0.958984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art-artists.csv
+[INFO] Candidate attribute: LastName
+[INFO] Candidate score: 0.935546875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: libraries.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.935546875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: CITY
+[INFO] Candidate score: 0.9345703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: community-centres.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.93359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: population-by-governorate-citizenship-and-gender.csv
+[INFO] Candidate attribute: Governorate
+[INFO] Candidate score: 0.9306640625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: PhotoCredits
+[INFO] Candidate score: 0.9287109375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: datasets_579296_1047868_authors.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.92578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: SCS_Staff_Salaries_data_30th_June 2010.csv
+[INFO] Candidate attribute: Name
+[INFO] Candidate score: 0.9208984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: currency_exchange.csv
+[INFO] Candidate attribute: Currency
+[INFO] Candidate score: 0.9189453125
+[INFO] --------------------------------------------------

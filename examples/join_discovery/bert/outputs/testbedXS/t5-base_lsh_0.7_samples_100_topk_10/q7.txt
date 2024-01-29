@@ -1,0 +1,46 @@
+[INFO] Query table: eo_pr.csv
+[INFO] Query attribute: ZIP
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: ZIP
+[INFO] ================================================================================
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: ZIP
+[INFO] Candidate score: 0.9892578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: ZIP
+[INFO] Candidate score: 0.9677734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: property-tie-lines.csv
+[INFO] Candidate attribute: P_ANNOTATION_LBL_ID
+[INFO] Candidate score: 0.9619140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: ICO
+[INFO] Candidate score: 0.9560546875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: schools.csv
+[INFO] Candidate attribute: Geom
+[INFO] Candidate score: 0.9560546875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: road-ahead-projects-under-construction.csv
+[INFO] Candidate attribute: Geom
+[INFO] Candidate score: 0.9560546875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: road-ahead-current-road-closures.csv
+[INFO] Candidate attribute: Geom
+[INFO] Candidate score: 0.9560546875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: ICO
+[INFO] Candidate score: 0.955078125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: street-intersections.csv
+[INFO] Candidate attribute: Geom
+[INFO] Candidate score: 0.955078125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: ICO
+[INFO] Candidate score: 0.953125
+[INFO] --------------------------------------------------

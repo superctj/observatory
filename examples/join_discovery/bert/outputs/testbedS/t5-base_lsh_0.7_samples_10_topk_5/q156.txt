@@ -1,0 +1,6 @@
+[INFO] Query table: provisional-2016-bi-annual-aquatic-and-terrestrial-monitoring-results-26062017-raw-results.csv
+[INFO] Query attribute: DATE_COLLECTED
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_summary.csv
+[INFO] Query answer attribute: last_review
+[INFO] ================================================================================

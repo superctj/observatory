@@ -1,0 +1,46 @@
+[INFO] Query table: statewise-census-data-in-india-1901-2011.csv
+[INFO] Query attribute: FREQUENCY
+[INFO] --------------------------------------------------
+[INFO] Query answer table: population-census-of-botswana-2011.csv
+[INFO] Query answer attribute: FREQUENCY
+[INFO] ================================================================================
+[INFO] Candidate table: population-census-of-botswana-2011.csv
+[INFO] Candidate attribute: FREQUENCY
+[INFO] Candidate score: 1.0
+[INFO] --------------------------------------------------
+[INFO] Candidate table: statewise-census-data-in-india-1901-2011.csv
+[INFO] Candidate attribute: VARIABLE_NAME
+[INFO] Candidate score: 0.90625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: Ownership
+[INFO] Candidate score: 0.90234375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: cultural-spaces.csv
+[INFO] Candidate attribute: OWNERSHIP
+[INFO] Candidate score: 0.8974609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: cultural-spaces.csv
+[INFO] Candidate attribute: PRIMARY_USE
+[INFO] Candidate score: 0.8955078125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: libraries.csv
+[INFO] Candidate attribute: ADDRESS
+[INFO] Candidate score: 0.884765625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: SCS_Staff_Salaries_data_30th_June 2010.csv
+[INFO] Candidate attribute: Job title
+[INFO] Candidate score: 0.880859375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: Type
+[INFO] Candidate score: 0.880859375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: SiteAddress
+[INFO] Candidate score: 0.880859375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: SCS_Staff_Salaries_data_30th_June 2010.csv
+[INFO] Candidate attribute: Grade
+[INFO] Candidate score: 0.87890625
+[INFO] --------------------------------------------------

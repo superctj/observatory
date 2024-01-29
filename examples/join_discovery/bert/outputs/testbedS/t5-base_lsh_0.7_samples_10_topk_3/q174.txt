@@ -1,0 +1,21 @@
+[INFO] Query table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Query attribute: LOCATION_REGIONID
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-innovation-index-2015.csv
+[INFO] Query answer attribute: COUNTRY_ID
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-innovation-index-2015.csv
+[INFO] Query answer attribute: COUNTRY_REGIONID
+[INFO] ================================================================================
+[INFO] Candidate table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Candidate attribute: LOCATION_ID
+[INFO] Candidate score: 0.966796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: issued-building-permits.csv
+[INFO] Candidate attribute: ApplicantAddress
+[INFO] Candidate score: 0.9423828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: STATE
+[INFO] Candidate score: 0.94140625
+[INFO] --------------------------------------------------

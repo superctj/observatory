@@ -1,0 +1,20 @@
+[INFO] Query table: listings_summary.csv
+[INFO] Query attribute: security_deposit
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_detailed.csv
+[INFO] Query answer attribute: price
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_detailed.csv
+[INFO] Query answer attribute: weekly_price
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_detailed.csv
+[INFO] Query answer attribute: security_deposit
+[INFO] ================================================================================
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: security_deposit
+[INFO] Candidate score: 0.982421875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: weekly_price
+[INFO] Candidate score: 0.9609375
+[INFO] --------------------------------------------------

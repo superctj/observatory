@@ -1,0 +1,26 @@
+[INFO] Query table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Query attribute: DISTRICTS_NAME
+[INFO] --------------------------------------------------
+[INFO] Query answer table: india-census-data-2011-census-primary-abstract.csv
+[INFO] Query answer attribute: LOCATION_NAME
+[INFO] ================================================================================
+[INFO] Candidate table: india-census-data-2011-census-primary-abstract.csv
+[INFO] Candidate attribute: LOCATION_NAME
+[INFO] Candidate score: 0.9892578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Candidate attribute: INDIAN_STATES_NAME
+[INFO] Candidate score: 0.9599609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-control-valves.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.9560546875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: saudi-arabia-population-by-administrative-region-nationality-and-sex.csv
+[INFO] Candidate attribute: Administrative Region
+[INFO] Candidate score: 0.9560546875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: sewer-manholes.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.951171875
+[INFO] --------------------------------------------------

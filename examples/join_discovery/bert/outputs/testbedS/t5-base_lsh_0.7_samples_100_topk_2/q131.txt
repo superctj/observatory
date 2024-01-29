@@ -1,0 +1,14 @@
+[INFO] Query table: listings_summary.csv
+[INFO] Query attribute: property_type
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_detailed.csv
+[INFO] Query answer attribute: property_type
+[INFO] ================================================================================
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: property_type
+[INFO] Candidate score: 0.9833984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: breed
+[INFO] Candidate score: 0.9072265625
+[INFO] --------------------------------------------------

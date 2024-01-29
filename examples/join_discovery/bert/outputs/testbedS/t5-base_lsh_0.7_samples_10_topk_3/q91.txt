@@ -1,0 +1,18 @@
+[INFO] Query table: energy-usage-2010.csv
+[INFO] Query attribute: GAS ACCOUNTS
+[INFO] --------------------------------------------------
+[INFO] Query answer table: IPODataFull.csv
+[INFO] Query answer attribute: employees
+[INFO] ================================================================================
+[INFO] Candidate table: animal-control-inventory-register.csv
+[INFO] Candidate attribute: ACO
+[INFO] Candidate score: 0.9658203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: AguaH.csv
+[INFO] Candidate attribute: f.1_DIC_15
+[INFO] Candidate score: 0.962890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: energy-usage-2010.csv
+[INFO] Candidate attribute: OCCUPIED HOUSING UNITS
+[INFO] Candidate score: 0.958984375
+[INFO] --------------------------------------------------

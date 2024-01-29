@@ -1,0 +1,14 @@
+[INFO] Query table: listings_detailed.csv
+[INFO] Query attribute: calendar_updated
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_summary.csv
+[INFO] Query answer attribute: calendar_updated
+[INFO] ================================================================================
+[INFO] Candidate table: agri-environmental-indicators-emissions-by-sector.csv
+[INFO] Candidate attribute: Unit
+[INFO] Candidate score: 0.9443359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: emissions_agriculture_energy_e_all_data_norm.csv
+[INFO] Candidate attribute: Unit
+[INFO] Candidate score: 0.943359375
+[INFO] --------------------------------------------------

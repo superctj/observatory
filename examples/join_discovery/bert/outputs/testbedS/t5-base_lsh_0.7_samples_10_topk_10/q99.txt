@@ -1,0 +1,52 @@
+[INFO] Query table: posts.csv
+[INFO] Query attribute: date
+[INFO] --------------------------------------------------
+[INFO] Query answer table: episodes.csv
+[INFO] Query answer attribute: episode_date
+[INFO] --------------------------------------------------
+[INFO] Query answer table: animal-control-inventory-register.csv
+[INFO] Query answer attribute: DateImpounded
+[INFO] --------------------------------------------------
+[INFO] Query answer table: JEOPARDY_CSV.csv
+[INFO] Query answer attribute: Air Date
+[INFO] ================================================================================
+[INFO] Candidate table: episodes.csv
+[INFO] Candidate attribute: episode_date
+[INFO] Candidate score: 0.97265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: JEOPARDY_CSV.csv
+[INFO] Candidate attribute: Air Date
+[INFO] Candidate score: 0.95703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: medium_data.csv
+[INFO] Candidate attribute: image
+[INFO] Candidate score: 0.953125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: first_review
+[INFO] Candidate score: 0.9521484375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: issued-building-permits.csv
+[INFO] Candidate attribute: BuildingContractorAddress
+[INFO] Candidate score: 0.9462890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: found_location
+[INFO] Candidate score: 0.9453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: monthyear
+[INFO] Candidate score: 0.9453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: host_since
+[INFO] Candidate score: 0.9443359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: first_review
+[INFO] Candidate score: 0.943359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-register.csv
+[INFO] Candidate attribute: ReceiptNumber
+[INFO] Candidate score: 0.9404296875
+[INFO] --------------------------------------------------

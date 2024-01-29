@@ -1,0 +1,49 @@
+[INFO] Query table: aac_intakes_outcomes.csv
+[INFO] Query attribute: sex_upon_outcome
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_outcomes.csv
+[INFO] Query answer attribute: sex_upon_outcome
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes.csv
+[INFO] Query answer attribute: sex_upon_intake
+[INFO] ================================================================================
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: sex_upon_intake
+[INFO] Candidate score: 0.962890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: sex_upon_outcome
+[INFO] Candidate score: 0.9599609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: sex_upon_intake
+[INFO] Candidate score: 0.9580078125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: intake_type
+[INFO] Candidate score: 0.9365234375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: breed
+[INFO] Candidate score: 0.9296875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: intake_type
+[INFO] Candidate score: 0.9296875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: outcome_type
+[INFO] Candidate score: 0.919921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: episodes.csv
+[INFO] Candidate attribute: program
+[INFO] Candidate score: 0.9189453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: property-addresses.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.9140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: saudi-arabia-population-by-administrative-region-nationality-and-sex.csv
+[INFO] Candidate attribute: Administrative Region
+[INFO] Candidate score: 0.912109375
+[INFO] --------------------------------------------------

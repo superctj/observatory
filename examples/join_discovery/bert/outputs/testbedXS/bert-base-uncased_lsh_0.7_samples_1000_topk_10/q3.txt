@@ -1,0 +1,46 @@
+[INFO] Query table: eo_pr.csv
+[INFO] Query attribute: NAME
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: NAME
+[INFO] ================================================================================
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.96875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.9326171875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: rental-standards-current-issues.csv
+[INFO] Candidate attribute: BUSINESSOPERATOR
+[INFO] Candidate score: 0.91796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: SCS_Staff_Salaries_data_30th_June 2010.csv
+[INFO] Candidate attribute: Unit
+[INFO] Candidate score: 0.8955078125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-lost-and-found.csv
+[INFO] Candidate attribute: Breed
+[INFO] Candidate score: 0.8955078125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: SiteName
+[INFO] Candidate score: 0.890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: schools.csv
+[INFO] Candidate attribute: SCHOOL_NAME
+[INFO] Candidate score: 0.8896484375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: glassdoor_wwfu_val_captions.csv
+[INFO] Candidate attribute: captions
+[INFO] Candidate score: 0.8798828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: street-intersections.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.876953125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: ability_ids.csv
+[INFO] Candidate attribute: ability_name
+[INFO] Candidate score: 0.86865234375
+[INFO] --------------------------------------------------

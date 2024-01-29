@@ -1,0 +1,49 @@
+[INFO] Query table: global-innovation-index-2015.csv
+[INFO] Query attribute: COUNTRY_REGIONID
+[INFO] --------------------------------------------------
+[INFO] Query answer table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Query answer attribute: LOCATION_ID
+[INFO] --------------------------------------------------
+[INFO] Query answer table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Query answer attribute: LOCATION_REGIONID
+[INFO] ================================================================================
+[INFO] Candidate table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Candidate attribute: LOCATION_REGIONID
+[INFO] Candidate score: 0.9599609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: STATE
+[INFO] Candidate score: 0.9482421875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Candidate attribute: LOCATION_ID
+[INFO] Candidate score: 0.9443359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: players.csv
+[INFO] Candidate attribute: flag
+[INFO] Candidate score: 0.9443359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-innovation-index-2015.csv
+[INFO] Candidate attribute: COUNTRY_ID
+[INFO] Candidate score: 0.939453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: property-addresses.csv
+[INFO] Candidate attribute: SITE_ID
+[INFO] Candidate score: 0.9326171875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.9326171875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-hydrants.csv
+[INFO] Candidate attribute: OLDHYDNUM
+[INFO] Candidate score: 0.9296875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-hydrants.csv
+[INFO] Candidate attribute: ORACLEID
+[INFO] Candidate score: 0.9296875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: AguaH.csv
+[INFO] Candidate attribute: M
+[INFO] Candidate score: 0.9287109375
+[INFO] --------------------------------------------------

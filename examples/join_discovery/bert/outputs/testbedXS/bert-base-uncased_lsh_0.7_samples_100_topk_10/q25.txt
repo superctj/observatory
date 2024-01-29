@@ -1,0 +1,46 @@
+[INFO] Query table: eo4.csv
+[INFO] Query attribute: ICO
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo_xx.csv
+[INFO] Query answer attribute: ICO
+[INFO] ================================================================================
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: ICO
+[INFO] Candidate score: 0.974609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: ICO
+[INFO] Candidate score: 0.962890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: population-by-governorate-citizenship-and-gender.csv
+[INFO] Candidate attribute: Governorate
+[INFO] Candidate score: 0.87353515625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: CITY
+[INFO] Candidate score: 0.87158203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: statewise-census-data-in-india-1901-2011.csv
+[INFO] Candidate attribute: VARIABLE_NAME
+[INFO] Candidate score: 0.86865234375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: libraries.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.86767578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: survey_results_schema.csv
+[INFO] Candidate attribute: Column
+[INFO] Candidate score: 0.86767578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: CITY
+[INFO] Candidate score: 0.86572265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: community-centres.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.86376953125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art-artists.csv
+[INFO] Candidate attribute: LastName
+[INFO] Candidate score: 0.85791015625
+[INFO] --------------------------------------------------

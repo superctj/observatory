@@ -1,0 +1,18 @@
+[INFO] Query table: listings_detailed.csv
+[INFO] Query attribute: bed_type
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_summary.csv
+[INFO] Query answer attribute: bed_type
+[INFO] ================================================================================
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: bed_type
+[INFO] Candidate score: 0.994140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: 0401230100_BCN_Nomenclator.csv
+[INFO] Candidate attribute: NOM
+[INFO] Candidate score: 0.9091796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: 0401230100_BCN_Nomenclator.csv
+[INFO] Candidate attribute: ALTRES_NOMS
+[INFO] Candidate score: 0.9052734375
+[INFO] --------------------------------------------------

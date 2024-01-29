@@ -1,0 +1,14 @@
+[INFO] Query table: listings_summary.csv
+[INFO] Query attribute: property_type
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_detailed.csv
+[INFO] Query answer attribute: property_type
+[INFO] ================================================================================
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: property_type
+[INFO] Candidate score: 0.98828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: medium_data.csv
+[INFO] Candidate attribute: publication
+[INFO] Candidate score: 0.9033203125
+[INFO] --------------------------------------------------

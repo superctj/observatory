@@ -1,0 +1,49 @@
+[INFO] Query table: listings_detailed.csv
+[INFO] Query attribute: experiences_offered
+[INFO] --------------------------------------------------
+[INFO] Query answer table: world-power-plants-list.csv
+[INFO] Query answer attribute: PLANT_MERCURY_CONTROL_DEVICE
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_summary.csv
+[INFO] Query answer attribute: experiences_offered
+[INFO] ================================================================================
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: experiences_offered
+[INFO] Candidate score: 1.0
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: calendar_updated
+[INFO] Candidate score: 0.84521484375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-distribution-mains.csv
+[INFO] Candidate attribute: INSTALLATION_DATE
+[INFO] Candidate score: 0.84423828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: monthly_price
+[INFO] Candidate score: 0.84228515625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: chat.csv
+[INFO] Candidate attribute: key
+[INFO] Candidate score: 0.84033203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: security_deposit
+[INFO] Candidate score: 0.84033203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: security_deposit
+[INFO] Candidate score: 0.83837890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Candidate attribute: VARIABLE_UNIT
+[INFO] Candidate score: 0.83544921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: abandoned-water-mains.csv
+[INFO] Candidate attribute: INSTALLATION_DATE
+[INFO] Candidate score: 0.83349609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-innovation-index-2015.csv
+[INFO] Candidate attribute: COUNTRY_NAME
+[INFO] Candidate score: 0.81884765625
+[INFO] --------------------------------------------------

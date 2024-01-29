@@ -1,0 +1,18 @@
+[INFO] Query table: eo_xx.csv
+[INFO] Query attribute: ICO
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: ICO
+[INFO] ================================================================================
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: ICO
+[INFO] Candidate score: 0.9921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: ICO
+[INFO] Candidate score: 0.98828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: property-tie-lines.csv
+[INFO] Candidate attribute: P_ANNOTATION_LBL_ID
+[INFO] Candidate score: 0.9814453125
+[INFO] --------------------------------------------------

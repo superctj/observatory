@@ -1,0 +1,49 @@
+[INFO] Query table: aac_intakes_outcomes.csv
+[INFO] Query attribute: sex_upon_intake
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_outcomes.csv
+[INFO] Query answer attribute: sex_upon_outcome
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_intakes.csv
+[INFO] Query answer attribute: sex_upon_intake
+[INFO] ================================================================================
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: sex_upon_intake
+[INFO] Candidate score: 0.974609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: sex_upon_outcome
+[INFO] Candidate score: 0.970703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: sex_upon_outcome
+[INFO] Candidate score: 0.9365234375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: intake_type
+[INFO] Candidate score: 0.9169921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: room_type
+[INFO] Candidate score: 0.9140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: intake_type
+[INFO] Candidate score: 0.912109375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: breed
+[INFO] Candidate score: 0.908203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: outcome_type
+[INFO] Candidate score: 0.908203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: saudi-arabia-population-by-administrative-region-nationality-and-sex.csv
+[INFO] Candidate attribute: Administrative Region
+[INFO] Candidate score: 0.90625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: 0401230100_BCN_Nomenclator.csv
+[INFO] Candidate attribute: DESCRIPCIO1
+[INFO] Candidate score: 0.896484375
+[INFO] --------------------------------------------------

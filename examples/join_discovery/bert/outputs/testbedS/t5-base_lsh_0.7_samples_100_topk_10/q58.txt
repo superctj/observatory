@@ -1,0 +1,61 @@
+[INFO] Query table: water-hydrants.csv
+[INFO] Query attribute: COMPRESSION
+[INFO] --------------------------------------------------
+[INFO] Query answer table: world-power-plants-list.csv
+[INFO] Query answer attribute: PLANT_MERCURY_CONTROL_DEVICE
+[INFO] --------------------------------------------------
+[INFO] Query answer table: Accidental_Drug_Related_Deaths_2012-2018.csv
+[INFO] Query answer attribute: Morphine_NotHeroin
+[INFO] --------------------------------------------------
+[INFO] Query answer table: IPODataFull.csv
+[INFO] Query answer attribute: CEOInChargeDuringIPO
+[INFO] --------------------------------------------------
+[INFO] Query answer table: IPODataFull.csv
+[INFO] Query answer attribute: presidentInChargeDuringIPO
+[INFO] --------------------------------------------------
+[INFO] Query answer table: IPODataFull.csv
+[INFO] Query answer attribute: USACompany
+[INFO] --------------------------------------------------
+[INFO] Query answer table: makemytrip_com-travel_sample.csv
+[INFO] Query answer attribute: is_value_plus
+[INFO] ================================================================================
+[INFO] Candidate table: animal-control-inventory-register.csv
+[INFO] Candidate attribute: Age category
+[INFO] Candidate score: 0.9189453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: saudi-arabia-world-development-indicators-1960-2014.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.9189453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: saudi-arabia-population-by-administrative-region-nationality-and-sex.csv
+[INFO] Candidate attribute: gender
+[INFO] Candidate score: 0.91796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: color
+[INFO] Candidate score: 0.916015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: IPCC_description
+[INFO] Candidate score: 0.9150390625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: population-estimates-and-projections-1960-2050.csv
+[INFO] Candidate attribute: SERIES
+[INFO] Candidate score: 0.9091796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: issued-building-permits.csv
+[INFO] Candidate attribute: ProjectDescription
+[INFO] Candidate score: 0.9091796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: breed
+[INFO] Candidate score: 0.908203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: oxford-covid-19-government-response-tracker.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.9072265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-innovation-index-2015.csv
+[INFO] Candidate attribute: COUNTRY_NAME
+[INFO] Candidate score: 0.90234375
+[INFO] --------------------------------------------------

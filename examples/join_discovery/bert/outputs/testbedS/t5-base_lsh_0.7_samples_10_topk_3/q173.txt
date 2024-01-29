@@ -1,0 +1,21 @@
+[INFO] Query table: global-innovation-index-2015.csv
+[INFO] Query attribute: COUNTRY_REGIONID
+[INFO] --------------------------------------------------
+[INFO] Query answer table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Query answer attribute: LOCATION_ID
+[INFO] --------------------------------------------------
+[INFO] Query answer table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Query answer attribute: LOCATION_REGIONID
+[INFO] ================================================================================
+[INFO] Candidate table: water-hydrants.csv
+[INFO] Candidate attribute: STREET
+[INFO] Candidate score: 0.9521484375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.9482421875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: STATE
+[INFO] Candidate score: 0.9443359375
+[INFO] --------------------------------------------------

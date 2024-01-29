@@ -1,0 +1,46 @@
+[INFO] Query table: eo_xx.csv
+[INFO] Query attribute: SORT_NAME
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: SORT_NAME
+[INFO] ================================================================================
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: SORT_NAME
+[INFO] Candidate score: 1.0
+[INFO] --------------------------------------------------
+[INFO] Candidate table: SCS_Staff_Salaries_data_30th_June 2010.csv
+[INFO] Candidate attribute: Notes
+[INFO] Candidate score: 0.9736328125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: SORT_NAME
+[INFO] Candidate score: 0.935546875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art-artists.csv
+[INFO] Candidate attribute: Website
+[INFO] Candidate score: 0.78173828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-lost-and-found.csv
+[INFO] Candidate attribute: DateCreated
+[INFO] Candidate score: 0.64404296875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: ZIP
+[INFO] Candidate score: 0.64306640625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: ZIP
+[INFO] Candidate score: 0.64306640625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: ZIP
+[INFO] Candidate score: 0.63916015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: road-ahead-upcoming-projects.csv
+[INFO] Candidate attribute: PROJECT
+[INFO] Candidate score: 0.63134765625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: currency_exchange.csv
+[INFO] Candidate attribute: Code
+[INFO] Candidate score: 0.60546875
+[INFO] --------------------------------------------------

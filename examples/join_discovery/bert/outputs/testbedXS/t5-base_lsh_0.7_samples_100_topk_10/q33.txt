@@ -1,0 +1,46 @@
+[INFO] Query table: eo_xx.csv
+[INFO] Query attribute: NTEE_CD
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: NTEE_CD
+[INFO] ================================================================================
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: NTEE_CD
+[INFO] Candidate score: 0.9873046875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: NTEE_CD
+[INFO] Candidate score: 0.9736328125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: currency_exchange.csv
+[INFO] Candidate attribute: Code
+[INFO] Candidate score: 0.9375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: survey_results_schema.csv
+[INFO] Candidate attribute: Column
+[INFO] Candidate score: 0.9287109375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-lost-and-found.csv
+[INFO] Candidate attribute: Breed
+[INFO] Candidate score: 0.923828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: glassdoor_wwfu_val_captions.csv
+[INFO] Candidate attribute: captions
+[INFO] Candidate score: 0.923828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-lost-and-found.csv
+[INFO] Candidate attribute: Sex
+[INFO] Candidate score: 0.9228515625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: population-census-of-botswana-2011.csv
+[INFO] Candidate attribute: SEX_ID
+[INFO] Candidate score: 0.9208984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: DescriptionOfwork
+[INFO] Candidate score: 0.916015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.9150390625
+[INFO] --------------------------------------------------

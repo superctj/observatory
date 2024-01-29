@@ -1,0 +1,26 @@
+[INFO] Query table: global-greenhouse-gas-emissions0.csv
+[INFO] Query attribute: World Region
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-greenhouse-gas-emissions.csv
+[INFO] Query answer attribute: World Region
+[INFO] ================================================================================
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: World Region
+[INFO] Candidate score: 0.9609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: issued-building-permits.csv
+[INFO] Candidate attribute: SpecificUseCategory
+[INFO] Candidate score: 0.9287109375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: energy-usage-2010.csv
+[INFO] Candidate attribute: COMMUNITY AREA NAME
+[INFO] Candidate score: 0.9267578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: saudi-arabia-world-development-indicators-1960-2014.csv
+[INFO] Candidate attribute: Indicator
+[INFO] Candidate score: 0.9228515625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: india-census-data-2011-census-primary-abstract.csv
+[INFO] Candidate attribute: VARIABLE_NAME
+[INFO] Candidate score: 0.916015625
+[INFO] --------------------------------------------------

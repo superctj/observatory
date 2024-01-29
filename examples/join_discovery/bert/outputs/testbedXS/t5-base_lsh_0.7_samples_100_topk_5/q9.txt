@@ -1,0 +1,29 @@
+[INFO] Query table: eo4.csv
+[INFO] Query attribute: NTEE_CD
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo_pr.csv
+[INFO] Query answer attribute: NTEE_CD
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo_xx.csv
+[INFO] Query answer attribute: NTEE_CD
+[INFO] ================================================================================
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: NTEE_CD
+[INFO] Candidate score: 0.984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: NTEE_CD
+[INFO] Candidate score: 0.9814453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: currency_exchange.csv
+[INFO] Candidate attribute: Code
+[INFO] Candidate score: 0.9287109375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: survey_results_schema.csv
+[INFO] Candidate attribute: Column
+[INFO] Candidate score: 0.92578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: population-census-of-botswana-2011.csv
+[INFO] Candidate attribute: SEX_ID
+[INFO] Candidate score: 0.921875
+[INFO] --------------------------------------------------

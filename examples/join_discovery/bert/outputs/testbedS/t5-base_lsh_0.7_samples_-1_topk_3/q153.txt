@@ -1,0 +1,12 @@
+[INFO] Query table: makemytrip_com-travel_sample.csv
+[INFO] Query attribute: country
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_detailed.csv
+[INFO] Query answer attribute: medium_url
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_detailed.csv
+[INFO] Query answer attribute: xl_picture_url
+[INFO] --------------------------------------------------
+[INFO] Query answer table: saudi-arabia-world-development-indicators-1960-2014.csv
+[INFO] Query answer attribute: Country
+[INFO] ================================================================================

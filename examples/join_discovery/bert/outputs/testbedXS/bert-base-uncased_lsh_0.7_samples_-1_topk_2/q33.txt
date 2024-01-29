@@ -1,0 +1,14 @@
+[INFO] Query table: eo_xx.csv
+[INFO] Query attribute: NTEE_CD
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: NTEE_CD
+[INFO] ================================================================================
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: NTEE_CD
+[INFO] Candidate score: 0.990234375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: NTEE_CD
+[INFO] Candidate score: 0.98828125
+[INFO] --------------------------------------------------

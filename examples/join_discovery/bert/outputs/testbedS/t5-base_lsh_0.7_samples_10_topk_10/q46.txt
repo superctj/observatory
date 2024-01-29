@@ -1,0 +1,46 @@
+[INFO] Query table: global-greenhouse-gas-emissions0.csv
+[INFO] Query attribute: Compound
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-greenhouse-gas-emissions.csv
+[INFO] Query answer attribute: Compound
+[INFO] ================================================================================
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: Compound
+[INFO] Candidate score: 0.9638671875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: agri-environmental-indicators-emissions-by-sector.csv
+[INFO] Candidate attribute: Element
+[INFO] Candidate score: 0.923828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-hydrants.csv
+[INFO] Candidate attribute: CASTSUB
+[INFO] Candidate score: 0.9140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.908203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: NTEE_CD
+[INFO] Candidate score: 0.9052734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Candidate attribute: DISTRICTS_REGIONID
+[INFO] Candidate score: 0.9033203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-control-valves.csv
+[INFO] Candidate attribute: X_OFFSET_DIRECTION
+[INFO] Candidate score: 0.90234375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-innovation-index-2015.csv
+[INFO] Candidate attribute: COUNTRY_ID
+[INFO] Candidate score: 0.9013671875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: Red_Light_Camera_Violations.csv
+[INFO] Candidate attribute: INTERSECTION
+[INFO] Candidate score: 0.89453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: STATE
+[INFO] Candidate score: 0.892578125
+[INFO] --------------------------------------------------

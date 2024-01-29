@@ -1,0 +1,49 @@
+[INFO] Query table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Query attribute: LOCATION_ID
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-innovation-index-2015.csv
+[INFO] Query answer attribute: COUNTRY_ID
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-innovation-index-2015.csv
+[INFO] Query answer attribute: COUNTRY_REGIONID
+[INFO] ================================================================================
+[INFO] Candidate table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Candidate attribute: LOCATION_REGIONID
+[INFO] Candidate score: 0.990234375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-innovation-index-2015.csv
+[INFO] Candidate attribute: COUNTRY_ID
+[INFO] Candidate score: 0.962890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-innovation-index-2015.csv
+[INFO] Candidate attribute: COUNTRY_REGIONID
+[INFO] Candidate score: 0.9599609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-hydrants.csv
+[INFO] Candidate attribute: ORACLEID
+[INFO] Candidate score: 0.9541015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-control-valves.csv
+[INFO] Candidate attribute: SIZE
+[INFO] Candidate score: 0.94921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: emissions_agriculture_energy_e_all_data_norm.csv
+[INFO] Candidate attribute: Unit
+[INFO] Candidate score: 0.947265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: chat.csv
+[INFO] Candidate attribute: key
+[INFO] Candidate score: 0.9443359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: AboutIsis.csv
+[INFO] Candidate attribute: tweets
+[INFO] Candidate score: 0.943359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: players.csv
+[INFO] Candidate attribute: name
+[INFO] Candidate score: 0.943359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: amenities
+[INFO] Candidate score: 0.943359375
+[INFO] --------------------------------------------------

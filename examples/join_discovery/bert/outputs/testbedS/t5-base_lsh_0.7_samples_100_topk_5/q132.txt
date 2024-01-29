@@ -1,0 +1,26 @@
+[INFO] Query table: listings_detailed.csv
+[INFO] Query attribute: room_type
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_summary.csv
+[INFO] Query answer attribute: room_type
+[INFO] ================================================================================
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: room_type
+[INFO] Candidate score: 0.9677734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: color
+[INFO] Candidate score: 0.9111328125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: animal_type
+[INFO] Candidate score: 0.90625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: animal_type
+[INFO] Candidate score: 0.89453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: 0401230100_BCN_Nomenclator.csv
+[INFO] Candidate attribute: DESCRIPCIO1
+[INFO] Candidate score: 0.8896484375
+[INFO] --------------------------------------------------

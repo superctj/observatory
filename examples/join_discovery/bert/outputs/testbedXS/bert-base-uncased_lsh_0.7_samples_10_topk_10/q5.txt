@@ -1,0 +1,46 @@
+[INFO] Query table: eo_pr.csv
+[INFO] Query attribute: STREET
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: STREET
+[INFO] ================================================================================
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: STREET
+[INFO] Candidate score: 0.9658203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: STREET
+[INFO] Candidate score: 0.9599609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-lost-and-found.csv
+[INFO] Candidate attribute: Breed
+[INFO] Candidate score: 0.9091796875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: SiteName
+[INFO] Candidate score: 0.9072265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: datasets_579296_1047868_authors.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.904296875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art-artists.csv
+[INFO] Candidate attribute: FirstName
+[INFO] Candidate score: 0.90234375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: glassdoor_wwfu_val_captions.csv
+[INFO] Candidate attribute: captions
+[INFO] Candidate score: 0.8994140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: libraries.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.8984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: PhotoCredits
+[INFO] Candidate score: 0.8916015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: SCS_Staff_Salaries_data_30th_June 2010.csv
+[INFO] Candidate attribute: Name
+[INFO] Candidate score: 0.890625
+[INFO] --------------------------------------------------

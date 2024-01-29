@@ -1,0 +1,21 @@
+[INFO] Query table: eo4.csv
+[INFO] Query attribute: NTEE_CD
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo_pr.csv
+[INFO] Query answer attribute: NTEE_CD
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo_xx.csv
+[INFO] Query answer attribute: NTEE_CD
+[INFO] ================================================================================
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: NTEE_CD
+[INFO] Candidate score: 0.962890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: NTEE_CD
+[INFO] Candidate score: 0.94921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: community-centres.csv
+[INFO] Candidate attribute: ADDRESS
+[INFO] Candidate score: 0.90625
+[INFO] --------------------------------------------------

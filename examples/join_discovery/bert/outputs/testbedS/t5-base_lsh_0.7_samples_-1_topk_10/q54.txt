@@ -1,0 +1,55 @@
+[INFO] Query table: sewer-catch-basins.csv
+[INFO] Query attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-control-valves.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: water-hydrants.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: property-addresses.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: sewer-manholes.csv
+[INFO] Query answer attribute: Geo Local Area
+[INFO] ================================================================================
+[INFO] Candidate table: property-addresses.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.994140625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: water-control-valves.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.9921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: sewer-manholes.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.98828125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: energy-usage-2010.csv
+[INFO] Candidate attribute: COMMUNITY AREA NAME
+[INFO] Candidate score: 0.96484375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: issued-building-permits.csv
+[INFO] Candidate attribute: BuildingContractor
+[INFO] Candidate score: 0.9599609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: host_name
+[INFO] Candidate score: 0.9541015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Candidate attribute: INDIAN_STATES_NAME
+[INFO] Candidate score: 0.951171875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: posts.csv
+[INFO] Candidate attribute: title
+[INFO] Candidate score: 0.9501953125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: name
+[INFO] Candidate score: 0.9443359375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-register.csv
+[INFO] Candidate attribute: Name
+[INFO] Candidate score: 0.9443359375
+[INFO] --------------------------------------------------

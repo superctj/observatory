@@ -1,0 +1,14 @@
+[INFO] Query table: aac_intakes_outcomes.csv
+[INFO] Query attribute: outcome_subtype
+[INFO] --------------------------------------------------
+[INFO] Query answer table: aac_outcomes.csv
+[INFO] Query answer attribute: outcome_subtype
+[INFO] ================================================================================
+[INFO] Candidate table: aac_outcomes.csv
+[INFO] Candidate attribute: outcome_subtype
+[INFO] Candidate score: 0.921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: oxford-covid-19-government-response-tracker.csv
+[INFO] Candidate attribute: Indicator
+[INFO] Candidate score: 0.9150390625
+[INFO] --------------------------------------------------

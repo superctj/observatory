@@ -1,0 +1,26 @@
+[INFO] Query table: global-greenhouse-gas-emissions0.csv
+[INFO] Query attribute: ISO_A3
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-greenhouse-gas-emissions.csv
+[INFO] Query answer attribute: ISO_A3
+[INFO] ================================================================================
+[INFO] Candidate table: players.csv
+[INFO] Candidate attribute: flag
+[INFO] Candidate score: 0.955078125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: CITY
+[INFO] Candidate score: 0.9541015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: property-addresses.csv
+[INFO] Candidate attribute: STD_STREET
+[INFO] Candidate score: 0.953125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-innovation-index-2015.csv
+[INFO] Candidate attribute: COUNTRY_ID
+[INFO] Candidate score: 0.9404296875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo1.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.939453125
+[INFO] --------------------------------------------------

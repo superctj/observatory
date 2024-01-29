@@ -1,0 +1,68 @@
+[INFO] Query table: global-innovation-index-2015.csv
+[INFO] Query attribute: COUNTRY_NAME
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-greenhouse-gas-emissions0.csv
+[INFO] Query answer attribute: Country
+[INFO] --------------------------------------------------
+[INFO] Query answer table: world-power-plants-list.csv
+[INFO] Query answer attribute: PLANT_COUNTRY
+[INFO] --------------------------------------------------
+[INFO] Query answer table: oxford-covid-19-government-response-tracker.csv
+[INFO] Query answer attribute: Country
+[INFO] --------------------------------------------------
+[INFO] Query answer table: agri-environmental-indicators-emissions-by-sector.csv
+[INFO] Query answer attribute: Area
+[INFO] --------------------------------------------------
+[INFO] Query answer table: global-greenhouse-gas-emissions.csv
+[INFO] Query answer attribute: Country
+[INFO] --------------------------------------------------
+[INFO] Query answer table: total-and-urban-population-annual-1950-2050.csv
+[INFO] Query answer attribute: LOCATION_NAME
+[INFO] --------------------------------------------------
+[INFO] Query answer table: emissions_agriculture_energy_e_all_data_norm.csv
+[INFO] Query answer attribute: Country
+[INFO] ================================================================================
+[INFO] Candidate table: oxford-covid-19-government-response-tracker.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.962890625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: emissions_agriculture_energy_e_all_data_norm.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.951171875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: population-estimates-and-projections-1960-2050.csv
+[INFO] Candidate attribute: COUNTRY
+[INFO] Candidate score: 0.9375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions0.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.9345703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: listings_detailed.csv
+[INFO] Candidate attribute: host_name
+[INFO] Candidate score: 0.9306640625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: district-wise-rainfall-data-for-india-2014.csv
+[INFO] Candidate attribute: INDIAN_STATES_NAME
+[INFO] Candidate score: 0.9287109375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes_outcomes.csv
+[INFO] Candidate attribute: color
+[INFO] Candidate score: 0.9267578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: aac_intakes.csv
+[INFO] Candidate attribute: name
+[INFO] Candidate score: 0.9267578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: saudi-arabia-world-development-indicators-1960-2014.csv
+[INFO] Candidate attribute: Country
+[INFO] Candidate score: 0.9267578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: global-greenhouse-gas-emissions.csv
+[INFO] Candidate attribute: IPCC_description
+[INFO] Candidate score: 0.92578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: agri-environmental-indicators-emissions-by-sector.csv
+[INFO] Candidate attribute: Area
+[INFO] Candidate score: 0.923828125
+[INFO] --------------------------------------------------

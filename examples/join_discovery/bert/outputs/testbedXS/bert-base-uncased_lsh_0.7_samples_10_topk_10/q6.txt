@@ -1,0 +1,46 @@
+[INFO] Query table: eo_pr.csv
+[INFO] Query attribute: CITY
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: CITY
+[INFO] ================================================================================
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: CITY
+[INFO] Candidate score: 0.9326171875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: CITY
+[INFO] Candidate score: 0.9111328125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: rental-standards-current-issues.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.90234375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: community-centres.csv
+[INFO] Candidate attribute: Geo Local Area
+[INFO] Candidate score: 0.8974609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: community-centres.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.8974609375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: libraries.csv
+[INFO] Candidate attribute: NAME
+[INFO] Candidate score: 0.89453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: animal-control-inventory-lost-and-found.csv
+[INFO] Candidate attribute: Name
+[INFO] Candidate score: 0.8896484375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: population-census-of-botswana-2011.csv
+[INFO] Candidate attribute: REGION_NAME
+[INFO] Candidate score: 0.8896484375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: statewise-census-data-in-india-1901-2011.csv
+[INFO] Candidate attribute: LOCATION_NAME
+[INFO] Candidate score: 0.884765625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: population-by-governorate-citizenship-and-gender.csv
+[INFO] Candidate attribute: Governorate
+[INFO] Candidate score: 0.8837890625
+[INFO] --------------------------------------------------

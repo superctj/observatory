@@ -1,0 +1,46 @@
+[INFO] Query table: eo4.csv
+[INFO] Query attribute: ZIP
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo_pr.csv
+[INFO] Query answer attribute: ZIP
+[INFO] ================================================================================
+[INFO] Candidate table: eo_pr.csv
+[INFO] Candidate attribute: ZIP
+[INFO] Candidate score: 0.984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: ZIP
+[INFO] Candidate score: 0.970703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: datasets_517172_952401_train.csv
+[INFO] Candidate attribute: id_code
+[INFO] Candidate score: 0.82958984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: road-ahead-projects-under-construction.csv
+[INFO] Candidate attribute: URL_LINK
+[INFO] Candidate score: 0.82470703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: road-ahead-current-road-closures.csv
+[INFO] Candidate attribute: URL_LINK
+[INFO] Candidate score: 0.82470703125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: cultural-spaces.csv
+[INFO] Candidate attribute: ADDRESS
+[INFO] Candidate score: 0.82177734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: road-ahead-upcoming-projects.csv
+[INFO] Candidate attribute: URL_LINK
+[INFO] Candidate score: 0.82177734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: public-art.csv
+[INFO] Candidate attribute: PhotoURL
+[INFO] Candidate score: 0.81689453125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: cultural-spaces.csv
+[INFO] Candidate attribute: TYPE
+[INFO] Candidate score: 0.80322265625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: community-centres.csv
+[INFO] Candidate attribute: URLLINK
+[INFO] Candidate score: 0.79736328125
+[INFO] --------------------------------------------------

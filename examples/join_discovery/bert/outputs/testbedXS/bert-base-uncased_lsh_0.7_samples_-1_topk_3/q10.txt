@@ -1,0 +1,18 @@
+[INFO] Query table: eo_pr.csv
+[INFO] Query attribute: SORT_NAME
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: SORT_NAME
+[INFO] ================================================================================
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: SORT_NAME
+[INFO] Candidate score: 0.9990234375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: SORT_NAME
+[INFO] Candidate score: 0.9892578125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: SCS_Staff_Salaries_data_30th_June 2010.csv
+[INFO] Candidate attribute: Notes
+[INFO] Candidate score: 0.9658203125
+[INFO] --------------------------------------------------

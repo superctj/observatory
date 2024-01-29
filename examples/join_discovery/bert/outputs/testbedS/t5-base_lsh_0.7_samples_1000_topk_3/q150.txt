@@ -1,0 +1,18 @@
+[INFO] Query table: listings_detailed.csv
+[INFO] Query attribute: cancellation_policy
+[INFO] --------------------------------------------------
+[INFO] Query answer table: listings_summary.csv
+[INFO] Query answer attribute: cancellation_policy
+[INFO] ================================================================================
+[INFO] Candidate table: listings_summary.csv
+[INFO] Candidate attribute: cancellation_policy
+[INFO] Candidate score: 0.9755859375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: AguaH.csv
+[INFO] Candidate attribute: f.1_DIC_15
+[INFO] Candidate score: 0.916015625
+[INFO] --------------------------------------------------
+[INFO] Candidate table: energy-usage-2010.csv
+[INFO] Candidate attribute: OCCUPIED HOUSING UNITS
+[INFO] Candidate score: 0.9111328125
+[INFO] --------------------------------------------------

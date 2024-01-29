@@ -1,0 +1,26 @@
+[INFO] Query table: eo_pr.csv
+[INFO] Query attribute: ZIP
+[INFO] --------------------------------------------------
+[INFO] Query answer table: eo4.csv
+[INFO] Query answer attribute: ZIP
+[INFO] ================================================================================
+[INFO] Candidate table: eo4.csv
+[INFO] Candidate attribute: ZIP
+[INFO] Candidate score: 0.984375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: eo_xx.csv
+[INFO] Candidate attribute: ZIP
+[INFO] Candidate score: 0.9658203125
+[INFO] --------------------------------------------------
+[INFO] Candidate table: datasets_517172_952401_train.csv
+[INFO] Candidate attribute: id_code
+[INFO] Candidate score: 0.83544921875
+[INFO] --------------------------------------------------
+[INFO] Candidate table: road-ahead-upcoming-projects.csv
+[INFO] Candidate attribute: URL_LINK
+[INFO] Candidate score: 0.82177734375
+[INFO] --------------------------------------------------
+[INFO] Candidate table: cultural-spaces.csv
+[INFO] Candidate attribute: ADDRESS
+[INFO] Candidate score: 0.81884765625
+[INFO] --------------------------------------------------
