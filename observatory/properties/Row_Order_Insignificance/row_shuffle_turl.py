@@ -1,14 +1,12 @@
+import os
+import time
+
 import torch
 import torch.nn as nn
-import os
 
+from observatory.common_util.analyze_embeddings import analyze_embeddings
 from observatory.models.TURL.model.configuration import TableConfig
 from observatory.models.TURL.model.model import HybridTableMaskedLM
-from observatory.common_util.analyze_embeddings import analyze_embeddings
-
-# from observatory.models.transformers import load_transformers_tokenizer
-import threading
-import time
 
 
 def set_timer(flag_list):
@@ -75,23 +73,18 @@ class TURL(nn.Module):
 
 
 if __name__ == "__main__":
-    from row_shuffle_turl_wiki_tables import TurlWikiTableDataset
-    from observatory.models.TURL.data_loader.CT_Wiki_data_loaders import CTLoader
-    from observatory.models.TURL.model.transformers import BertTokenizer
-    from observatory.models.TURL.utils.util import load_entity_vocab
     import argparse
 
-    # data_dir = ""
-    # min_ent_count = 2
+    from observatory.models.TURL.data_loader.CT_Wiki_data_loaders import (
+        CTLoader,
+    )
+    from observatory.models.TURL.model.transformers import BertTokenizer
+    from observatory.models.TURL.utils.util import load_entity_vocab
+    from row_shuffle_turl_wiki_tables import TurlWikiTableDataset
 
-    # entity_vocab = load_entity_vocab(
-    #     data_dir, ignore_bad_title=True, min_ent_count=min_ent_count
-    # )
-    # tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
-    # config = "table-base-config_v2.json"
-    # ckpt_path = "pytorch_model.bin"
-    # device = torch.device("cuda:0")
-    parser = argparse.ArgumentParser(description="Process tables and save embeddings.")
+    parser = argparse.ArgumentParser(
+        description="Process tables and save embeddings."
+    )
     parser.add_argument(
         "-d",
         "--data_dir",
@@ -100,13 +93,22 @@ if __name__ == "__main__":
         help="Directory that contains TURL specific files such as entity vocabulary",
     )
     parser.add_argument(
-        "--config_path", type=str, required=True, help="Path to TURL model config"
+        "--config_path",
+        type=str,
+        required=True,
+        help="Path to TURL model config",
     )
     parser.add_argument(
-        "--ckpt_path", type=str, required=True, help="Path to TURL model checkpoint"
+        "--ckpt_path",
+        type=str,
+        required=True,
+        help="Path to TURL model checkpoint",
     )
     parser.add_argument(
-        "--cuda_device", type=int, default=None, help="Select which cuda device to use"
+        "--cuda_device",
+        type=int,
+        default=None,
+        help="Select which cuda device to use",
     )
     parser.add_argument(
         "-s",
@@ -115,9 +117,15 @@ if __name__ == "__main__":
         required=True,
         help="Directory to save embeddings to",
     )
-    parser.add_argument("-b", "--batch_size", type=int, default=16, help="Batch Size")
     parser.add_argument(
-        "-l", "--start_line", type=int, default=0, help="The index of start table"
+        "-b", "--batch_size", type=int, default=16, help="Batch Size"
+    )
+    parser.add_argument(
+        "-l",
+        "--start_line",
+        type=int,
+        default=0,
+        help="The index of start table",
     )
 
     args = parser.parse_args()
@@ -135,52 +143,35 @@ if __name__ == "__main__":
 
     model = TURL(args.config_path, args.ckpt_path)
     model.to(device)
-   
-    
+
     save_directory_results = os.path.join(
-        args.save_directory,
-        "Row_Order_Insignificance",
-        "Turl",
-        "results"
+        args.save_directory, "Row_Order_Insignificance", "Turl", "results"
     )
     save_directory_embeddings = os.path.join(
-
         args.save_directory,
         "Row_Order_Insignificance",
         "Turl",
         "embeddings",
     )
+
     if not os.path.exists(save_directory_embeddings):
         os.makedirs(save_directory_embeddings)
+
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
+
     with open(os.path.join(args.data_dir, "test_tables.jsonl"), "r") as f:
         lines = f.readlines()
+
         for table_index in range(args.start_line, len(lines)):
             line = lines[table_index]
-            # timer_flag = [False]
-            # timer_thread = threading.Thread(target=set_timer, args=(timer_flag,))
-            # timer_thread.start()
-
-            # try:
-            #     test_dataset = TurlWikiTableDataset(line, entity_vocab, tokenizer, split="test", force_new=False)
-            # except Exception as e:
-            #     print(f"table{table_index} failed.")
-            #     print(f"Error: {e}")
-            #     continue  # if an error occurs, continue to the next line
-
-            # while timer_thread.is_alive():
-            #     time.sleep(1)  # check every second
-
-            # if timer_flag[0]:
-            #     print("Operation took too long, moving to next iteration.")
-            #     continue
             test_dataset = TurlWikiTableDataset(
                 line, entity_vocab, tokenizer, split="test", force_new=False
             )
 
             if len(test_dataset) < 24:
                 continue
+
             test_dataloader = CTLoader(
                 test_dataset, batch_size=args.batch_size, is_train=False
             )
@@ -229,17 +220,10 @@ if __name__ == "__main__":
                         input_ent_type,
                         input_ent_mask,
                     )
-                    # col_embeddings = col_embeddings.squeeze(0)
 
-                    # print("=" * 50)
-                    # print("Number of columns: ", labels.shape)
-                    # print("Column embeddings shape: ", col_embeddings.shape)
-                    # print(col_embeddings.size())
                     if all_shuffled_embeddings == []:
                         all_shuffled_embeddings = col_embeddings
-                        # print(all_shuffled_embeddings.size())
                     else:
-                        # print(all_shuffled_embeddings.size())
                         if (
                             all_shuffled_embeddings[0].size()
                             == col_embeddings[0].size()
@@ -248,28 +232,35 @@ if __name__ == "__main__":
                                 (all_shuffled_embeddings, col_embeddings), dim=0
                             )
 
-
             torch.save(
                 all_shuffled_embeddings,
                 os.path.join(
-                    save_directory_embeddings, f"table_{table_index}_embeddings.pt"
+                    save_directory_embeddings,
+                    f"table_{table_index}_embeddings.pt",
                 ),
             )
+
             (
                 avg_cosine_similarities,
                 mcvs,
                 table_avg_cosine_similarity,
                 table_avg_mcv,
             ) = analyze_embeddings(all_shuffled_embeddings)
+
             results = {
                 "avg_cosine_similarities": avg_cosine_similarities,
                 "mcvs": mcvs,
                 "table_avg_cosine_similarity": table_avg_cosine_similarity,
                 "table_avg_mcv": table_avg_mcv,
             }
+
             print(f"Table {table_index}:")
-            print("Average Cosine Similarities:", results["avg_cosine_similarities"])
+            print(
+                "Average Cosine Similarities:",
+                results["avg_cosine_similarities"],
+            )
             print("MCVs:", results["mcvs"])
+
             print(
                 "Table Average Cosine Similarity:",
                 results["table_avg_cosine_similarity"],
@@ -277,10 +268,7 @@ if __name__ == "__main__":
             print("Table Average MCV:", results["table_avg_mcv"])
             torch.save(
                 results,
-                os.path.join(save_directory_results, f"table_{table_index}_results.pt"),
+                os.path.join(
+                    save_directory_results, f"table_{table_index}_results.pt"
+                ),
             )
-            # table_index = table_index + 1
-            # print("=" * 50)
-            # print(len(all_shuffled_embeddings))
-            # print(all_shuffled_embeddings[0].shape)
-            # print("=" * 50)

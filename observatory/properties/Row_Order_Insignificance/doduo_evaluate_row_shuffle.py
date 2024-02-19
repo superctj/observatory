@@ -40,8 +40,8 @@ def get_permutations(n, m):
         # Shuffle the permutations
         random.shuffle(all_perms)
 
-        # If m > n! - 1, return all permutations
-        # (because we removed one permutation)
+        # If m > n! - 1 (because we removed one permutation)
+        #   return all permutations
         if m > len(all_perms):
             return all_perms
 

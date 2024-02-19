@@ -1,24 +1,24 @@
-import os
-os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
-
 import argparse
 import itertools
+import os
 import random
 
 import pandas as pd
 import torch
-import numpy as np
+
+from torch.linalg import norm
+
+from observatory.common_util.mcv import compute_mcv
+from observatory.common_util.row_based_truncate import row_based_truncate
 from observatory.models.huggingface_models import (
     load_transformers_model,
     load_transformers_tokenizer_and_max_length,
 )
-from observatory.common_util.row_based_truncate import row_based_truncate
-from observatory.common_util.mcv import compute_mcv
-from torch.linalg import inv, norm
 from observatory.models.hugging_face_row_embeddings import (
     get_hugging_face_row_embeddings_batched,
 )
 
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 
 
 def fisher_yates_shuffle(seq):
@@ -32,26 +32,33 @@ def get_permutations(n, m):
     if n < 10:
         # Generate all permutations
         all_perms = list(itertools.permutations(range(n)))
+
         # Remove the original sequence
         all_perms.remove(tuple(range(n)))
+
         # Shuffle the permutations
         random.shuffle(all_perms)
-        # If m > n! - 1 (because we removed one permutation), return all permutations
+
+        # If m > n! - 1 (because we removed one permutation)
+        #   return all permutations
         if m > len(all_perms):
             return [list(range(n))] + all_perms
+
         # Otherwise, return the first m permutations
         return [list(range(n))] + all_perms[:m]
     else:
         original_seq = list(range(n))
         perms = [original_seq.copy()]
+
         for _ in range(m):  # we already have one permutation
             while True:
                 new_perm = fisher_yates_shuffle(original_seq.copy())
+
                 if new_perm not in perms:
                     perms.append(new_perm)
                     break
-        return perms
 
+        return perms
 
 
 # Define the function to shuffle a dataframe and create new dataframes
@@ -61,11 +68,11 @@ def shuffle_df(df, m):
 
     # Create a new dataframe for each permutation
     dfs = [df]
+
     for perm in perms:
         dfs.append(df.iloc[list(perm)])
 
     return dfs, perms
-
 
 
 def analyze_embeddings(all_embeddings):
@@ -83,9 +90,10 @@ def analyze_embeddings(all_embeddings):
             truncated_embedding = all_embeddings[0][i]
             shuffled_embedding = all_embeddings[j][i]
 
-            cosine_similarity = torch.dot(truncated_embedding, shuffled_embedding) / (
-                norm(truncated_embedding) * norm(shuffled_embedding)
-            )
+            cosine_similarity = torch.dot(
+                truncated_embedding, shuffled_embedding
+            ) / (norm(truncated_embedding) * norm(shuffled_embedding))
+
             cosine_similarities.append(cosine_similarity.item())
 
         avg_cosine_similarity = torch.mean(torch.tensor(cosine_similarities))
@@ -94,7 +102,9 @@ def analyze_embeddings(all_embeddings):
         avg_cosine_similarities.append(avg_cosine_similarity.item())
         mcvs.append(mcv)
 
-    table_avg_cosine_similarity = torch.mean(torch.tensor(avg_cosine_similarities))
+    table_avg_cosine_similarity = torch.mean(
+        torch.tensor(avg_cosine_similarities)
+    )
     table_avg_mcv = torch.mean(torch.tensor(mcvs))
 
     return (
@@ -128,76 +138,94 @@ def process_table_wrapper(
         model_name,
         "embeddings",
     )
-    # save_directory_results  = os.path.join( args.save_directory, model_name ,'results')
-    # save_directory_embeddings  = os.path.join( args.save_directory, model_name ,'embeddings')
+
     # Create the directories if they don't exist
     if not os.path.exists(save_directory_embeddings):
         os.makedirs(save_directory_embeddings)
+
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
-        
-    tables, perms = shuffle_df(truncated_table, args.num_shuffles)
 
+    tables, perms = shuffle_df(truncated_table, args.num_shuffles)
     all_embeddings = get_hugging_face_row_embeddings_batched(
-        tables,
-        model_name,
-        tokenizer,
-        max_length,
-        model,
-        args.batch_size
+        tables, model_name, tokenizer, max_length, model, args.batch_size
     )
+
     all_ordered_embeddings = []
-    for perm ,embeddings in  zip(perms, all_embeddings):
-        
+
+    for perm, embeddings in zip(perms, all_embeddings):
         # Create a list of the same length as perm, filled with None
         ordered_embeddings = [None] * len(perm)
+
         # Assign each embedding to its original position
         for i, p in enumerate(perm):
             ordered_embeddings[p] = embeddings[i]
+
         all_ordered_embeddings.append(ordered_embeddings)
+
     all_embeddings = all_ordered_embeddings
-    if len(all_embeddings)<24:
+    if len(all_embeddings) < 24:
         print("len(all_embeddings)<24")
         return
+
     torch.save(
         all_embeddings,
-        os.path.join(save_directory_embeddings, f"table_{table_index}_embeddings.pt"),
+        os.path.join(
+            save_directory_embeddings, f"table_{table_index}_embeddings.pt"
+        ),
     )
+
     (
         avg_cosine_similarities,
         mcvs,
         table_avg_cosine_similarity,
         table_avg_mcv,
     ) = analyze_embeddings(all_embeddings)
+
     results = {
         "avg_cosine_similarities": avg_cosine_similarities,
         "mcvs": mcvs,
         "table_avg_cosine_similarity": table_avg_cosine_similarity,
         "table_avg_mcv": table_avg_mcv,
     }
+
     print(f"Table {table_index}:")
     print("Average Cosine Similarities:", results["avg_cosine_similarities"])
     print("MCVs:", results["mcvs"])
-    print("Table Average Cosine Similarity:", results["table_avg_cosine_similarity"])
+
+    print(
+        "Table Average Cosine Similarity:",
+        results["table_avg_cosine_similarity"],
+    )
     print("Table Average MCV:", results["table_avg_mcv"])
+
     torch.save(
-        results, os.path.join(save_directory_results, f"table_{table_index}_results.pt")
+        results,
+        os.path.join(save_directory_results, f"table_{table_index}_results.pt"),
     )
 
 
 def process_and_save_embeddings(model_name, args, tables):
-    tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
+    tokenizer, max_length = load_transformers_tokenizer_and_max_length(
+        model_name
+    )
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
+
     model = load_transformers_model(model_name, device)
     model.eval()
+
     padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
 
     for table_index, table in enumerate(tables):
         if table_index < args.start_index:
             continue
-        max_rows_fit = row_based_truncate(table, tokenizer, max_length, model_name)
+
+        max_rows_fit = row_based_truncate(
+            table, tokenizer, max_length, model_name
+        )
         truncated_table = table.iloc[:max_rows_fit, :]
+
         process_table_wrapper(
             table_index,
             truncated_table,
@@ -212,7 +240,9 @@ def process_and_save_embeddings(model_name, args, tables):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Process tables and save embeddings.")
+    parser = argparse.ArgumentParser(
+        description="Process tables and save embeddings."
+    )
     parser.add_argument(
         "-r",
         "--read_directory",
@@ -256,10 +286,15 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    table_files = [f for f in os.listdir(args.read_directory) if f.endswith(".csv")]
+    table_files = [
+        f for f in os.listdir(args.read_directory) if f.endswith(".csv")
+    ]
     normal_tables = []
+
     for file in table_files:
-        table = pd.read_csv(f"{args.read_directory}/{file}", keep_default_na=False)
+        table = pd.read_csv(
+            f"{args.read_directory}/{file}", keep_default_na=False
+        )
         normal_tables.append(table)
 
     if args.model_name == "":
@@ -271,9 +306,8 @@ if __name__ == "__main__":
         ]
     else:
         model_names = [args.model_name]
-    print()
-    print("Evaluate row shuffle for: ", model_names)
-    print()
+
+    print(f"\nEvaluate row shuffle for: {model_names}\n")
 
     for model_name in model_names:
         process_and_save_embeddings(model_name, args, normal_tables)
