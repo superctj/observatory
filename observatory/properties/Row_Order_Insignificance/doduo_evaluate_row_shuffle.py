@@ -40,7 +40,8 @@ def get_permutations(n, m):
         # Shuffle the permutations
         random.shuffle(all_perms)
 
-        # If m > n! - 1, return all permutations (because we removed one permutation)
+        # If m > n! - 1, return all permutations
+        # (because we removed one permutation)
         if m > len(all_perms):
             return all_perms
 
@@ -86,7 +87,9 @@ def generate_row_shuffle_embeddings(model, device, table, num_shuffles):
 
         annot_df = model.annotate_columns(processed_table)
         embeddings = annot_df.colemb
-        embeddings = [torch.tensor(embeddings[j]) for j in range(len(embeddings))]
+        embeddings = [
+            torch.tensor(embeddings[j]) for j in range(len(embeddings))
+        ]
 
         all_shuffled_embeddings.append(embeddings)
 
@@ -111,20 +114,24 @@ def analyze_embeddings(all_shuffled_embeddings):
             truncated_embedding = all_shuffled_embeddings[0][i]
             shuffled_embedding = all_shuffled_embeddings[j][i]
 
-            cosine_similarity = torch.dot(truncated_embedding, shuffled_embedding) / (
-                norm(truncated_embedding) * norm(shuffled_embedding)
-            )
+            cosine_similarity = torch.dot(
+                truncated_embedding, shuffled_embedding
+            ) / (norm(truncated_embedding) * norm(shuffled_embedding))
 
             column_cosine_similarities.append(cosine_similarity.item())
 
-        avg_cosine_similarity = torch.mean(torch.tensor(column_cosine_similarities))
+        avg_cosine_similarity = torch.mean(
+            torch.tensor(column_cosine_similarities)
+        )
 
         mcv = compute_mcv(torch.stack(column_embeddings))
 
         avg_cosine_similarities.append(avg_cosine_similarity.item())
         mcvs.append(mcv)
 
-    table_avg_cosine_similarity = torch.mean(torch.tensor(avg_cosine_similarities))
+    table_avg_cosine_similarity = torch.mean(
+        torch.tensor(avg_cosine_similarities)
+    )
 
     table_avg_mcv = torch.mean(torch.tensor(mcvs))
 
@@ -142,7 +149,10 @@ def process_table_wrapper(table_index, table, args, model_name, model, device):
     )
 
     save_directory_embeddings = os.path.join(
-        args.save_directory, "Row_Order_Insignificance", model_name, "embeddings"
+        args.save_directory,
+        "Row_Order_Insignificance",
+        model_name,
+        "embeddings",
     )
 
     # Create the directories if they don't exist
@@ -158,7 +168,9 @@ def process_table_wrapper(table_index, table, args, model_name, model, device):
 
     torch.save(
         all_shuffled_embeddings,
-        os.path.join(save_directory_embeddings, f"table_{table_index}_embeddings.pt"),
+        os.path.join(
+            save_directory_embeddings, f"table_{table_index}_embeddings.pt"
+        ),
     )
 
     (
@@ -179,11 +191,15 @@ def process_table_wrapper(table_index, table, args, model_name, model, device):
     print("Average Cosine Similarities:", results["avg_cosine_similarities"])
     print("MCVs:", results["mcvs"])
 
-    print("Table Average Cosine Similarity:", results["table_avg_cosine_similarity"])
+    print(
+        "Table Average Cosine Similarity:",
+        results["table_avg_cosine_similarity"],
+    )
     print("Table Average MCV:", results["table_avg_mcv"])
 
     torch.save(
-        results, os.path.join(save_directory_results, f"table_{table_index}_results.pt")
+        results,
+        os.path.join(save_directory_results, f"table_{table_index}_results.pt"),
     )
 
 
@@ -202,7 +218,9 @@ def process_and_save_embeddings(model_name, args, tables):
             continue
 
         try:
-            process_table_wrapper(table_index, table, args, model_name, model, device)
+            process_table_wrapper(
+                table_index, table, args, model_name, model, device
+            )
         except Exception as e:
             print("Error message:", e)
             pd.set_option("display.max_columns", None)
@@ -212,7 +230,9 @@ def process_and_save_embeddings(model_name, args, tables):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Process tables and save embeddings.")
+    parser = argparse.ArgumentParser(
+        description="Process tables and save embeddings."
+    )
 
     parser.add_argument(
         "-r",
@@ -257,15 +277,21 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    table_files = [f for f in os.listdir(args.read_directory) if f.endswith(".csv")]
+    table_files = [
+        f for f in os.listdir(args.read_directory) if f.endswith(".csv")
+    ]
 
     normal_tables = []
     for file in table_files:
-        table = pd.read_csv(f"{args.read_directory}/{file}", keep_default_na=False)
+        table = pd.read_csv(
+            f"{args.read_directory}/{file}", keep_default_na=False
+        )
         normal_tables.append(table)
 
     model_name = "bert-base-uncased"
-    tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
+    tokenizer, max_length = load_transformers_tokenizer_and_max_length(
+        model_name
+    )
     truncated_tables = []
 
     for table_index, table in enumerate(normal_tables):
