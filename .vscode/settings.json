@@ -3,8 +3,12 @@
     "editor.formatOnSave": true,
 
     "flake8.args": [
-        "--max-line-length", "88",
+        "--max-line-length", "80",
         "--extend-ignore", "E203"
+    ],
+
+    "black-formatter.args": [
+        "--line-length", "80"
     ],
 
     "[python]": {
