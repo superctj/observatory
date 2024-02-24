@@ -3,9 +3,6 @@ import os
 
 import pandas as pd
 
-
-# NON_TEXT_TYPES = {"datePublished": 100, "startDate": 100, "endDate": 100, "dateCreated": 100, "birthDate": 100, "isbn": 500, "postalCode": 500, "price": 500, "weight": 500}
-
 NON_TEXT_TYPES = {
     "numberOfPages": 300,
     "isbn": 300,
@@ -74,7 +71,7 @@ TEXT_TYPE_MAPPING = {
     "nationality": "country",
     "streetAddress": "streetAddress",
     "addressRegion": "addressRegion",
-}  # "author": "person", "director": "person", "actor": "person", "byArtist": "person"
+}
 
 
 def check_single_table(filepath):
@@ -99,7 +96,9 @@ def collect_text_type_data(annotation_dir, train_annotations):
         csv_writer.writeheader()
 
         for target_type, sample_size in TEXT_TYPES.items():
-            target_df = train_annotations.loc[train_annotations["label"] == target_type]
+            target_df = train_annotations.loc[
+                train_annotations["label"] == target_type
+            ]
             print(target_type)
             print("=" * 50)
             sample_df = target_df.sample(n=sample_size, random_state=12345)
@@ -117,40 +116,11 @@ def collect_text_type_data(annotation_dir, train_annotations):
 
 
 if __name__ == "__main__":
-    root_dir = (
-        "/ssd/congtj/data/semtab2023/Round1-SOTAB-CPA-SCH"  # Round1-SOTAB-CPA-SCH"
-    )
+    root_dir = "/ssd/congtj/data/semtab2023/Round1-SOTAB-CPA-SCH"
     annotation_dir = os.path.join(root_dir, "annotations")
     table_dir = os.path.join(root_dir, "tables")
 
-    # filename = "Product_3bears.co.uk_September2020_CPA.json.gz"
-    # filepath = os.path.join(table_dir, filename)
-    # check_single_table(filepath)
-
     train_filepath = os.path.join(annotation_dir, "sotab_cpa_train_round1.csv")
     train_annotations = pd.read_csv(train_filepath)
-    # valid_filepath = os.path.join(annotation_dir, "sotab_cpa_validation_round1.csv")
 
     collect_text_type_data(annotation_dir, train_annotations)
-
-    # unique_labels = set()
-    # for val in NON_TEXT_TYPE_MAPPING.values():
-    #     unique_labels.add(val)
-    # num_unique_labels = len(unique_labels)
-
-    # output_filepath = os.path.join(annotation_dir, f"non_textual_data_types_{num_unique_labels}_classes_metadata.csv")
-
-    # with open(output_filepath, "w") as f:
-    #     header = ["table_name", "subject_column_index", "column_index", "label"]
-    #     csv_writer = csv.DictWriter(f, fieldnames=header)
-    #     csv_writer.writeheader()
-
-    #     for target_type, sample_size in NON_TEXT_TYPES.items():
-    #         target_df = train_annotations.loc[train_annotations["label"] == target_type]
-    #         print(target_type)
-    #         print("=" * 50)
-    #         sample_df = target_df.sample(n=sample_size, random_state=12345)
-    #         label = NON_TEXT_TYPE_MAPPING[target_type]
-
-    #         for _, row in sample_df.iterrows():
-    #             csv_writer.writerow({"table_name": row["table_name"], "subject_column_index": row["main_column_index"], "column_index": row["column_index"], "label": label})

@@ -27,9 +27,7 @@ class SOTABDataLoader:
 if __name__ == "__main__":
     root_dir = "/ssd/congtj/observatory/sotab_numerical_data_type_datasets"
     dataset_dir = os.path.join(root_dir, "tables")
-    metadata_path = os.path.join(
-        root_dir, "metadata.csv"
-    )  # "nontext_types_10-classes_metadata.csv", "text_types_10-classes_metadata.csv"
+    metadata_path = os.path.join(root_dir, "metadata.csv")
 
     data_loader = SOTABDataLoader(dataset_dir, metadata_path)
     for _, row in data_loader.metadata.iterrows():
@@ -39,15 +37,17 @@ if __name__ == "__main__":
         # Only consider numerical column alone for representation inference
         numerical_col_idx = row["column_index"]
         numerical_col = table.iloc[:, numerical_col_idx]
-        representation = f(numerical_col)
+        # representation = f(numerical_col)
 
-        # Consider the subject column as context of numerical column for representation inference
+        # Consider the subject column as context of numerical column for
+        # representation inference
         subj_col_idx = row["subject_column_index"]
         two_col_table = table.iloc[:, [subj_col_idx, numerical_col]]
-        representation = f(two_col_table)
+        # representation = f(two_col_table)
 
-        # Consider the entire table as context of numerical column for representation inference
-        representation = f(table)
+        # Consider the entire table as context of numerical column for
+        # representation inference
+        # representation = f(table)
 
         """
         # Only consider numerical column alone for representation inference
@@ -55,12 +55,14 @@ if __name__ == "__main__":
         numerical_col = table.iloc[:, numerical_col_idx]
         representation = f(numerical_col)
 
-        # Consider the subject column as context of numerical column for representation inference
+        # Consider the subject column as context of numerical column for
+        representation inference
         subj_col_idx = row["subject_column_index"]
         two_col_table = table.iloc[:, [subj_col_idx, numerical_col]]
         representation = f(two_col_table)
 
-        # Consider the entire table as context of numerical column for representation inference
+        # Consider the entire table as context of numerical column for
+        representation inference
         representation = f(table)
         """
         break

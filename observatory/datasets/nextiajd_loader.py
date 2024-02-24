@@ -1,13 +1,12 @@
 import os
-import argparse
-
-from typing import Dict, List
 
 import pandas as pd
 
 
 class NextiaJDCSVDataLoader:
-    def __init__(self, dataset_dir: str, metadata_path: str, ground_truth_path: str):
+    def __init__(
+        self, dataset_dir: str, metadata_path: str, ground_truth_path: str
+    ):
         if not os.path.exists(dataset_dir):
             raise FileNotFoundError(f"{dataset_dir} does not exist.")
         if not os.path.exists(metadata_path):
@@ -64,7 +63,9 @@ class NextiaJDCSVDataLoader:
                 low_memory=False,
                 **kwargs,
             )
-        except ValueError:  # python engine of pandas does not support "low_memory" argument
+        except (
+            ValueError
+        ):  # python engine of pandas does not support "low_memory" argument
             table = pd.read_csv(
                 file_path,
                 delimiter=self.metadata[table_name]["delimiter"],
@@ -78,7 +79,9 @@ class NextiaJDCSVDataLoader:
 
         # Remove hidden characters (e.g., "\r") in DataFrame header and data
         table.columns = table.columns.str.replace("[\r]", "", regex=True)
-        table.replace(to_replace=["\r", "\n"], value="", regex=True, inplace=True)
+        table.replace(
+            to_replace=["\r", "\n"], value="", regex=True, inplace=True
+        )
 
         # Drop empty columns and rows
         if drop_nan:
@@ -87,10 +90,10 @@ class NextiaJDCSVDataLoader:
 
         return table
 
-    def get_table_names(self) -> List[str]:
+    def get_table_names(self) -> list[str]:
         return self.metadata.keys()
 
-    def get_queries(self) -> Dict[str, List[str]]:
+    def get_queries(self) -> dict[str, list[str]]:
         queries = []
 
         for _, row in self.ground_truth.iterrows():
@@ -102,13 +105,16 @@ class NextiaJDCSVDataLoader:
                     "att_name_2": row["att_name_2"],
                 }
 
+                queries.append(query)
+
         return queries
 
     def split_table(self, table: pd.DataFrame, n: int, m: int):
         total_rows = table.shape[0]
         for i in range(0, total_rows, n * m):
             yield [
-                table.iloc[j : j + n] for j in range(i, min(i + n * m, total_rows), n)
+                table.iloc[j : j + n]
+                for j in range(i, min(i + n * m, total_rows), n)
             ]
 
 
@@ -119,7 +125,9 @@ if __name__ == "__main__":
     metadata_path = os.path.join(root_dir, f"datasetInformation_{testbed}.csv")
     ground_truth_path = os.path.join(root_dir, f"groundTruth_{testbed}.csv")
 
-    data_loader = NextiaJDCSVDataLoader(dataset_dir, metadata_path, ground_truth_path)
+    data_loader = NextiaJDCSVDataLoader(
+        dataset_dir, metadata_path, ground_truth_path
+    )
 
     for i, row in data_loader.ground_truth.iterrows():
         print(f"{i} / {data_loader.ground_truth.shape[0]}")
@@ -135,7 +143,3 @@ if __name__ == "__main__":
             c2_idx = list(t2.columns).index(c2_name)
             t1_splits = data_loader.split_table(t1, n=1000)
             t2_splits = data_loader.split_table(t2, n=1000)
-            # pseudo code
-            # c1_embedding = f(t1)[c1_idx]
-            # c2_embedding = f(t2)[c2_idx]
-            # results.append((<embedding_cosine_similarity>, containment))

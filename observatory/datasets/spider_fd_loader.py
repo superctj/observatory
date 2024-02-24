@@ -1,7 +1,5 @@
 import os
 
-from typing import Dict, List
-
 import pandas as pd
 
 
@@ -13,7 +11,9 @@ class SpiderFDDataLoader:
         self.fd_metadata_path = fd_metadata_path
         self.non_fd_metadata_path = non_fd_metadata_path
 
-    def read_table(self, table_name: str, drop_nan=True, **kwargs) -> pd.DataFrame:
+    def read_table(
+        self, table_name: str, drop_nan=True, **kwargs
+    ) -> pd.DataFrame:
         table_path = os.path.join(self.dataset_dir, table_name)
         table = pd.read_csv(
             table_path, on_bad_lines="skip", lineterminator="\n", **kwargs
@@ -35,7 +35,7 @@ class SpiderFDDataLoader:
 
 
 if __name__ == "__main__":
-    root_dir = f"/ssd/congtj/observatory/spider_datasets/fd_artifact"
+    root_dir = "/ssd/congtj/observatory/spider_datasets/fd_artifact"
     dataset_dir = os.path.join(root_dir, "datasets")
     fd_metadata_path = os.path.join(root_dir, "fd_metadata.csv")
     non_fd_metadata_path = os.path.join(root_dir, "non_fd_metadata.csv")
@@ -43,17 +43,6 @@ if __name__ == "__main__":
     data_loader = SpiderFDDataLoader(
         dataset_dir, fd_metadata_path, non_fd_metadata_path
     )
-
-    # fd_metadata = data_loader.get_fd_metadata()
-    # for _, row in fd_metadata.iterrows():
-    #     table_name = row["table_name"]
-    #     determinant = row["determinant"]
-    #     dependent = row["dependent"]
-
-    #     table = data_loader.read_table(table_name)
-    #     print(table.head())
-    #     # infer cell embeddings in determinant column and dependent column
-    #     break
 
     non_fd_metadata = data_loader.get_non_fd_metadata()
     for _, row in non_fd_metadata.iterrows():
@@ -63,5 +52,5 @@ if __name__ == "__main__":
 
         table = data_loader.read_table(table_name)
         print(table.head())
-        # infer cell embeddings in col1 and col2
+
         break
