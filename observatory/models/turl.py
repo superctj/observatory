@@ -4,8 +4,6 @@ import torch.nn as nn
 from observatory.models.TURL.model.configuration import TableConfig
 from observatory.models.TURL.model.model import HybridTableMaskedLM
 
-# from observatory.models.transformers import load_transformers_tokenizer
-
 
 def load_turl_model(config, ckpt_path: str):
     model = HybridTableMaskedLM(config, is_simple=True)
@@ -103,7 +101,9 @@ class TURL(nn.Module):
 
 def get_column_embeddings_example():
     from observatory.datasets.turl_wiki_tables import TurlWikiTableDataset
-    from observatory.models.TURL.data_loader.CT_Wiki_data_loaders import CTLoader
+    from observatory.models.TURL.data_loader.CT_Wiki_data_loaders import (
+        CTLoader,
+    )
     from observatory.models.TURL.model.transformers import BertTokenizer
     from observatory.models.TURL.utils.util import load_entity_vocab
 
@@ -120,7 +120,11 @@ def get_column_embeddings_example():
     )
     test_dataloader = CTLoader(test_dataset, batch_size=1, is_train=False)
 
-    config = "/home/congtj/observatory/observatory/models/TURL/configs/table-base-config_v2.json"
+    config = (
+        "/home/congtj/observatory/observatory/models/TURL/configs/"
+        "table-base-config_v2.json"
+    )
+
     ckpt_path = "/ssd/congtj/observatory/turl_models/pytorch_model.bin"
     device = torch.device("cuda:1")
 
@@ -199,7 +203,9 @@ def get_entity_embeddings_example(data_dir, config, ckpt_path):
         data_dir, entity_vocab, tokenizer, split="test", force_new=False
     )
     line_exist = test_dataset.line_exist
-    test_dataloader = EntityEmbeddingLoader(test_dataset, batch_size=1, is_train=False)
+    test_dataloader = EntityEmbeddingLoader(
+        test_dataset, batch_size=1, is_train=False
+    )
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -207,6 +213,7 @@ def get_entity_embeddings_example(data_dir, config, ckpt_path):
     model.to(device)
     all_entity_embeddings = []
     count = 0
+
     for batch in test_dataloader:
         count += 1
         while not line_exist[count]:

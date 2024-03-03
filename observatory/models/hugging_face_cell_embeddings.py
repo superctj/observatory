@@ -1,17 +1,20 @@
 import os
 
-os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
-import argparse
 import pandas as pd
 import torch
+
 from observatory.common_util.cellbased_truncate import cellbased_truncate
+
+os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 
 
 def table2colList(table):
     cols = []
+
     for i in range(len(table.columns)):
         col_cells = [table.columns[i]] + table.iloc[:, i].astype(str).tolist()
         cols.append(col_cells)
+
     return cols
 
 
@@ -26,14 +29,20 @@ def cell_based_process_table(tokenizer, cols, max_length, model_name):
             if cell_idx == 0:  # Start of a new column
                 if model_name.startswith("t5"):
                     current_tokens += ["<s>"]
-                    token_positions.append((0, col_idx, 1))  # (row, column, flag)
+                    token_positions.append(
+                        (0, col_idx, 1)
+                    )  # (row, column, flag)
                 else:
                     current_tokens += ["[CLS]"]
-                    token_positions.append((0, col_idx, 1))  # (row, column, flag)
+                    token_positions.append(
+                        (0, col_idx, 1)
+                    )  # (row, column, flag)
 
             for token in cell_tokens:
                 current_tokens += [token]
-                token_positions.append((cell_idx, col_idx, 0))  # (row, column, flag)
+                token_positions.append(
+                    (cell_idx, col_idx, 0)
+                )  # (row, column, flag)
 
     if model_name.startswith("t5"):
         current_tokens += ["</s>"]
@@ -43,9 +52,10 @@ def cell_based_process_table(tokenizer, cols, max_length, model_name):
         token_positions.append((0, 0, 2))  # (row, column, flag)
 
     if len(current_tokens) > max_length:
-        assert (
-            False
-        ), "The length of the tokens exceeds the max length. Please run the truncate.py first."
+        assert False, (
+            "The length of the tokens exceeds the max length. Please run the "
+            "truncate.py first."
+        )
 
     if len(current_tokens) < max_length:
         padding_length = max_length - len(current_tokens)
@@ -76,8 +86,11 @@ def get_tapas_cell_embeddings(inputs, last_hidden_states):
     # Loop over all row and column id pairs (which correspond to cells)
     for row_id in range(max_row_id + 1):
         for column_id in range(1, max_column_id + 1):
-            # Find all indices where the column and row ids match the current cell
-            indices = torch.where((column_ids == column_id) & (row_ids == row_id))[0]
+            # Find all indices where the column and row ids match the current
+            # cell
+            indices = torch.where(
+                (column_ids == column_id) & (row_ids == row_id)
+            )[0]
 
             # If there are no tokens for this cell, continue
             if len(indices) == 0:
@@ -86,30 +99,26 @@ def get_tapas_cell_embeddings(inputs, last_hidden_states):
             # Get the embeddings at these indices
             embeddings = last_hidden_states[0][indices]
 
-            # Compute the average embedding and assign it to the corresponding cell
+            # Compute the average embedding and assign it to the corresponding
+            # cell
             cell_embeddings[row_id, column_id - 1] = embeddings.mean(dim=0)
 
     return cell_embeddings
 
 
-def get_hugging_face_cell_embeddings(table, model_name, model, tokenizer, max_length, device):
-    # tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
-    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-    # print(device)
-    # model = load_transformers_model(model_name, device)
-    # model.eval()
+def get_hugging_face_cell_embeddings(
+    table, model_name, model, tokenizer, max_length, device
+):
     padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
-    # truncated_tables =[]
-    # for table_index, table in enumerate(tables):
     max_rows_fit = cellbased_truncate(table, tokenizer, max_length, model_name)
+
     if max_rows_fit < 1:
         assert False, "Headers too long!"
-    truncated_table = table.iloc[:max_rows_fit, :]
-    # all_embeddings = []
-    processed_table = truncated_table
-    if model_name.startswith("google/tapas"):
 
+    truncated_table = table.iloc[:max_rows_fit, :]
+    processed_table = truncated_table
+
+    if model_name.startswith("google/tapas"):
         # for processed_table in truncated_tables:
         processed_table.columns = processed_table.columns.astype(str)
         processed_table = processed_table.reset_index(drop=True)
@@ -121,6 +130,7 @@ def get_hugging_face_cell_embeddings(table, model_name, model, tokenizer, max_le
             truncation=True,
         )
         inputs = inputs.to(device)
+
         try:
             with torch.no_grad():  # Turn off gradients to save memory
                 outputs = model(**inputs)
@@ -136,9 +146,9 @@ def get_hugging_face_cell_embeddings(table, model_name, model, tokenizer, max_le
             print()
             print(processed_table)
             assert False, "error in outputs = model(**inputs)"
+
         last_hidden_states = outputs.last_hidden_state
         cell_embeddings = get_tapas_cell_embeddings(inputs, last_hidden_states)
-        # all_embeddings.append(cell_embeddings)
 
         # Clear memory
         del inputs
@@ -146,9 +156,7 @@ def get_hugging_face_cell_embeddings(table, model_name, model, tokenizer, max_le
         del last_hidden_states
         torch.cuda.empty_cache()
     else:
-
         # for processed_table in truncated_tables:
-
         col_list = table2colList(processed_table)
         processed_tokens = cell_based_process_table(
             tokenizer, col_list, max_length, model.name_or_path
@@ -191,11 +199,13 @@ def get_hugging_face_cell_embeddings(table, model_name, model, tokenizer, max_le
             if (row, col) != current_cell or idx == len(token_positions) - 1:
                 # Compute average for the current cell and store it
                 avg_embedding = (
-                    sum_embeddings / token_count if token_count else sum_embeddings
+                    sum_embeddings / token_count
+                    if token_count
+                    else sum_embeddings
                 )
-                cell_embeddings[
-                    current_cell[0], current_cell[1]
-                ] = avg_embedding.detach().cpu()
+                cell_embeddings[current_cell[0], current_cell[1]] = (
+                    avg_embedding.detach().cpu()
+                )
 
                 # Reset counters for the next cell
                 current_cell = (row, col)

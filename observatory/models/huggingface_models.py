@@ -3,18 +3,17 @@ Load tokenizers and models from HuggingFace Transformers library
 """
 
 from transformers import (
-    BertTokenizer,
+    AutoModelForSeq2SeqLM,
+    AutoTokenizer,
     BertModel,
-    RobertaTokenizer,
+    BertTokenizer,
     RobertaModel,
-    TapasTokenizer,
+    RobertaTokenizer,
     TapasModel,
-    T5Tokenizer,
+    TapasTokenizer,
     T5Model,
-    AutoTokenizer, 
-    AutoModelForSeq2SeqLM
+    T5Tokenizer,
 )
-
 
 SUPPORTED_MODELS = ["BERT", "RoBERTa", "TAPAS", "T5", "TAPEX"]
 
@@ -22,7 +21,9 @@ SUPPORTED_MODELS = ["BERT", "RoBERTa", "TAPAS", "T5", "TAPEX"]
 def load_transformers_tokenizer(model_name: str):
     if model_name.startswith("bert"):
         try:
-            tokenizer = BertTokenizer.from_pretrained(model_name, local_files_only=True)
+            tokenizer = BertTokenizer.from_pretrained(
+                model_name, local_files_only=True
+            )
         except OSError:
             tokenizer = BertTokenizer.from_pretrained(model_name)
     elif model_name.startswith("roberta"):
@@ -41,15 +42,19 @@ def load_transformers_tokenizer(model_name: str):
             tokenizer = TapasTokenizer.from_pretrained(model_name)
     elif model_name.startswith("t5"):
         try:
-            tokenizer = T5Tokenizer.from_pretrained(model_name, local_files_only=True)
+            tokenizer = T5Tokenizer.from_pretrained(
+                model_name, local_files_only=True
+            )
         except OSError:
             tokenizer = T5Tokenizer.from_pretrained(model_name)
     elif model_name.startswith("microsoft/tapex"):
         try:
-            tokenizer = AutoTokenizer.from_pretrained(model_name, local_files_only=True)
+            tokenizer = AutoTokenizer.from_pretrained(
+                model_name, local_files_only=True
+            )
         except OSError:
             tokenizer = AutoTokenizer.from_pretrained(model_name)
-        
+
     else:
         print(f"Unrecognized tokenizer name: {model_name}")
         print(f"You may choose one of: {SUPPORTED_MODELS}")
@@ -61,12 +66,14 @@ def load_transformers_tokenizer_and_max_length(model_name: str):
     max_length = None
     if model_name.startswith("bert"):
         try:
-            tokenizer = BertTokenizer.from_pretrained(model_name, local_files_only=True)
+            tokenizer = BertTokenizer.from_pretrained(
+                model_name, local_files_only=True
+            )
         except OSError:
             tokenizer = BertTokenizer.from_pretrained(model_name)
         try:
             max_length = tokenizer.model_max_length
-        except:
+        except AttributeError:
             max_length = 512
     elif model_name.startswith("roberta"):
         try:
@@ -77,7 +84,7 @@ def load_transformers_tokenizer_and_max_length(model_name: str):
             tokenizer = RobertaTokenizer.from_pretrained(model_name)
         try:
             max_length = tokenizer.model_max_length
-        except:
+        except AttributeError:
             max_length = 512
     elif model_name.startswith("google/tapas"):
         try:
@@ -88,25 +95,29 @@ def load_transformers_tokenizer_and_max_length(model_name: str):
             tokenizer = TapasTokenizer.from_pretrained(model_name)
         try:
             max_length = tokenizer.model_max_length
-        except:
+        except AttributeError:
             max_length = 512
     elif model_name.startswith("t5"):
         try:
-            tokenizer = T5Tokenizer.from_pretrained(model_name, local_files_only=True)
+            tokenizer = T5Tokenizer.from_pretrained(
+                model_name, local_files_only=True
+            )
         except OSError:
             tokenizer = T5Tokenizer.from_pretrained(model_name)
         try:
             max_length = tokenizer.model_max_length
-        except:
+        except AttributeError:
             max_length = 512
     elif model_name.startswith("microsoft/tapex"):
         try:
-            tokenizer = AutoTokenizer.from_pretrained(model_name, local_files_only=True)
+            tokenizer = AutoTokenizer.from_pretrained(
+                model_name, local_files_only=True
+            )
         except OSError:
             tokenizer = AutoTokenizer.from_pretrained(model_name)
         try:
             max_length = tokenizer.model_max_length
-        except:
+        except AttributeError:
             max_length = 1024
     else:
         print(f"Unrecognized tokenizer name: {model_name}")
@@ -123,12 +134,16 @@ def load_transformers_model(model_name: str, device):  # "bert-base-uncased"
             model = BertModel.from_pretrained(model_name)
     elif model_name.startswith("roberta"):
         try:
-            model = RobertaModel.from_pretrained(model_name, local_files_only=True)
+            model = RobertaModel.from_pretrained(
+                model_name, local_files_only=True
+            )
         except OSError:
             model = RobertaModel.from_pretrained(model_name)
     elif model_name.startswith("google/tapas"):
         try:
-            model = TapasModel.from_pretrained(model_name, local_files_only=True)
+            model = TapasModel.from_pretrained(
+                model_name, local_files_only=True
+            )
         except OSError:
             model = TapasModel.from_pretrained(model_name)
     elif model_name.startswith("t5"):
@@ -138,7 +153,9 @@ def load_transformers_model(model_name: str, device):  # "bert-base-uncased"
             model = T5Model.from_pretrained(model_name)
     elif model_name.startswith("microsoft/tapex"):
         try:
-            model = AutoModelForSeq2SeqLM.from_pretrained(model_name, local_files_only=True)
+            model = AutoModelForSeq2SeqLM.from_pretrained(
+                model_name, local_files_only=True
+            )
         except OSError:
             model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
     else:

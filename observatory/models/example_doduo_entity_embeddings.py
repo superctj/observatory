@@ -23,7 +23,9 @@ def read_jsonl(file_path):
 def process_one_table(data, entity_id_map):
     processed_table_headers = data["processed_tableHeaders"]
     table_data = data["tableData"]
-    formatted_table_data = [[cell["text"] for cell in row] for row in table_data]
+    formatted_table_data = [
+        [cell["text"] for cell in row] for row in table_data
+    ]
     df = pd.DataFrame(formatted_table_data, columns=processed_table_headers)
 
     rows = data.get("tableData", [])
@@ -43,7 +45,7 @@ def process_one_table(data, entity_id_map):
                         ]
                         entity_text = rows[i][j]["text"]
                         tmp_entities.append([[i, j], (entity_id, entity_text)])
-                    except:
+                    except IndexError:
                         entity_cells[i][j] = 0
             else:
                 entity_cells[i][j] = 0
@@ -67,6 +69,7 @@ def test_entity_embedding_retrival(model):
         df, entity_info = process_one_table(table, entity_id_map)
         try:
             entity_embeddings = model.get_entity_embeddings(df, entity_info)
+            print(f"Entity embeddings shape: {entity_embeddings.shape}")
         except ValueError as e:
             print(e)
 
@@ -77,6 +80,7 @@ def test_entity_embedding_retrival(model):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+
     parser.add_argument(
         "--model",
         default="wikitable",
@@ -84,18 +88,11 @@ if __name__ == "__main__":
         choices=["wikitable", "viznet"],
         help="Pretrained model",
     )
-    parser.add_argument("--input", default=None, type=str, help="Input file (csv)")
+    parser.add_argument(
+        "--input", default=None, type=str, help="Input file (csv)"
+    )
+
     args = parser.parse_args()
-
-    # if args.input is None:
-    #     # Sample table
-    #     input_df = pd.read_csv(
-    #         "sample_tables/table_4702.csv")
-    # else:
-    #     input_df = pd.read_csv(args.input)
-
-    # print(input_df.shape)
-    # print(input_df.columns)
 
     doduo = Doduo(args, basedir="/ssd/congtj/observatory/doduo")
     # annotated_df = doduo.annotate_columns(input_df)
