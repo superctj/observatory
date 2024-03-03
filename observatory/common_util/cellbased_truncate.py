@@ -1,22 +1,14 @@
-import os
-import argparse
-import pandas as pd
-
-from typing import List
-from observatory.models.huggingface_models import (
-    load_transformers_tokenizer,
-    load_transformers_tokenizer_and_max_length,
-)
-
-
 def cellbased_truncate(table, tokenizer, max_length, model_name):
     table.columns = table.columns.astype(str)
     table = table.reset_index(drop=True)
     table = table.astype(str)
+
     def table2colList(table):
         cols = []
         for i in range(len(table.columns)):
-            col_cells = [table.columns[i]] + table.iloc[:, i].astype(str).tolist()
+            col_cells = [table.columns[i]] + table.iloc[:, i].astype(
+                str
+            ).tolist()
             cols.append(col_cells)
         return cols
 

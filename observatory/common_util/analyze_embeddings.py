@@ -1,6 +1,8 @@
-from observatory.common_util.mcv import compute_mcv
 import torch
-from torch.linalg import inv, norm
+
+from torch.linalg import norm
+
+from observatory.common_util.mcv import compute_mcv
 
 
 def analyze_embeddings(all_shuffled_embeddings):
@@ -19,18 +21,22 @@ def analyze_embeddings(all_shuffled_embeddings):
             truncated_embedding = all_shuffled_embeddings[0][i]
             shuffled_embedding = all_shuffled_embeddings[j][i]
 
-            cosine_similarity = torch.dot(truncated_embedding, shuffled_embedding) / (
-                norm(truncated_embedding) * norm(shuffled_embedding)
-            )
+            cosine_similarity = torch.dot(
+                truncated_embedding, shuffled_embedding
+            ) / (norm(truncated_embedding) * norm(shuffled_embedding))
             column_cosine_similarities.append(cosine_similarity.item())
 
-        avg_cosine_similarity = torch.mean(torch.tensor(column_cosine_similarities))
+        avg_cosine_similarity = torch.mean(
+            torch.tensor(column_cosine_similarities)
+        )
         mcv = compute_mcv(torch.stack(column_embeddings))
 
         avg_cosine_similarities.append(avg_cosine_similarity.item())
         mcvs.append(mcv)
 
-    table_avg_cosine_similarity = torch.mean(torch.tensor(avg_cosine_similarities))
+    table_avg_cosine_similarity = torch.mean(
+        torch.tensor(avg_cosine_similarities)
+    )
     table_avg_mcv = torch.mean(torch.tensor(mcvs))
 
     return (

@@ -1,8 +1,11 @@
-import os
-import torch
 import argparse
-from mcv import compute_mcv
-from torch.linalg import inv, norm
+import os
+
+import torch
+
+from torch.linalg import norm
+
+from observatory.common_util.mcv import compute_mcv
 
 
 def analyze_embeddings(all_shuffled_embeddings):
@@ -20,18 +23,22 @@ def analyze_embeddings(all_shuffled_embeddings):
             truncated_embedding = all_shuffled_embeddings[0][i]
             shuffled_embedding = all_shuffled_embeddings[j][i]
 
-            cosine_similarity = torch.dot(truncated_embedding, shuffled_embedding) / (
-                norm(truncated_embedding) * norm(shuffled_embedding)
-            )
+            cosine_similarity = torch.dot(
+                truncated_embedding, shuffled_embedding
+            ) / (norm(truncated_embedding) * norm(shuffled_embedding))
             column_cosine_similarities.append(cosine_similarity.item())
 
-        avg_cosine_similarity = torch.mean(torch.tensor(column_cosine_similarities))
+        avg_cosine_similarity = torch.mean(
+            torch.tensor(column_cosine_similarities)
+        )
         mcv = compute_mcv(torch.stack(column_embeddings))
 
         avg_cosine_similarities.append(avg_cosine_similarity.item())
         mcvs.append(mcv)
 
-    table_avg_cosine_similarity = torch.mean(torch.tensor(avg_cosine_similarities))
+    table_avg_cosine_similarity = torch.mean(
+        torch.tensor(avg_cosine_similarities)
+    )
     table_avg_mcv = torch.mean(torch.tensor(mcvs))
 
     return (
@@ -76,7 +83,9 @@ def fix(parent_directory):
                 }
                 torch.save(
                     results,
-                    os.path.join(save_directory_results, f"{table_index}_results.pt"),
+                    os.path.join(
+                        save_directory_results, f"{table_index}_results.pt"
+                    ),
                 )
                 continue
 
@@ -98,7 +107,10 @@ def fix(parent_directory):
 
             # print the results
             print(f"Table {table_index}:")
-            print("Average Cosine Similarities:", results["avg_cosine_similarities"])
+            print(
+                "Average Cosine Similarities:",
+                results["avg_cosine_similarities"],
+            )
             print("MCVs:", results["mcvs"])
             print(
                 "Table Average Cosine Similarity:",
@@ -109,18 +121,22 @@ def fix(parent_directory):
             # save the results
             torch.save(
                 results,
-                os.path.join(save_directory_results, f"{table_index}_results.pt"),
+                os.path.join(
+                    save_directory_results, f"{table_index}_results.pt"
+                ),
             )
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Analyze embeddings and save results.")
+    parser = argparse.ArgumentParser(
+        description="Analyze embeddings and save results."
+    )
     parser.add_argument(
         "--parent_directories",
         type=str,
         required=True,
         nargs="+",
-        help="Space separated paths to the parent directories containing embeddings and results folders.",
+        help="Space separated paths to the parent directories containing embeddings and results folders.",  # noqa: E501
     )
 
     args = parser.parse_args()
