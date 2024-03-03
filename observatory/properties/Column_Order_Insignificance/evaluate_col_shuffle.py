@@ -19,6 +19,15 @@ from observatory.models.hugging_face_column_embeddings import (
 
 
 def table2colList(table):
+    """
+    Converts a pandas dataframe to a list of strings, where each string is a column name followed by the column values joined with spaces.
+    
+    Input: 
+    table (pandas dataframe)
+    
+    Output: 
+    cols (list of strings)
+    """
     cols = []
     for column in table.columns:
         # Convert column values to strings and join them with spaces
@@ -29,6 +38,19 @@ def table2colList(table):
 
 
 def process_table(tokenizer, cols, max_length, model_name):
+    """"
+    Tokenizes the columns of a table and returns the tokens and the positions of the [CLS] tokens.
+    
+    Input: 
+    tokenizer (Hugging Face tokenizer), 
+    cols (list of strings, produced by table2colList), 
+    max_length (int): the maximum length of the tokens,
+    model_name (str): the name of the Hugging Face model, 
+    
+    Output: 
+    current_tokens (list of strings): the tokens of the columns joined together,
+    cls_positions (list of ints): the positions of the [CLS] tokens in the current_tokens list
+    """
     current_tokens = []
     cls_positions = []
 
@@ -65,6 +87,15 @@ def process_table(tokenizer, cols, max_length, model_name):
 
 
 def fisher_yates_shuffle(seq):
+    """"
+    Shuffles a sequence using the Fisher-Yates algorithm.
+    
+    Input:
+    seq (list): the sequence to shuffle
+    
+    Output:
+    seq (list): the shuffled sequence
+    """
     for i in reversed(range(1, len(seq))):
         j = random.randint(0, i)
         seq[i], seq[j] = seq[j], seq[i]
@@ -72,6 +103,16 @@ def fisher_yates_shuffle(seq):
 
 
 def get_permutations(n, m):
+    """"
+    Generates m random permutations of a sequence of length n.
+    
+    Input:
+    n (int): the length of the sequence
+    m (int): the number of permutations to generate, if m > n! - 1, all possible permutations are returned
+    
+    Output:
+    perms (list of lists): the permutations, each as a list, with the original sequence at the start, and the rest shuffled
+    """
     if n < 10:
         # Generate all permutations
         all_perms = list(itertools.permutations(range(n)))
@@ -97,6 +138,17 @@ def get_permutations(n, m):
 
 
 def shuffle_df_columns(df, m):
+    """
+    Shuffles the columns of a dataframe and returns a list of dataframes, each with a different column order.
+    
+    Input:
+    df (pandas dataframe): the dataframe to shuffle
+    m (int): the number of permutations to generate
+    
+    Output:
+    dfs (list of pandas dataframes): the shuffled dataframes
+    perms (list of lists): the permutations used to shuffle the columns
+    """
     # Get the permutations
     perms = get_permutations(len(df.columns), m)
 
@@ -110,6 +162,18 @@ def shuffle_df_columns(df, m):
 
 
 def analyze_embeddings(all_embeddings):
+    """
+    Analyzes the embeddings of a table and returns the average cosine similarities and MCVs of the columns.
+    
+    Input:
+    all_embeddings (list of lists of tensors): the embeddings of the columns, with each list representing a different permutation
+    
+    Output:
+    avg_cosine_similarities (list of floats): the average cosine similarities of the column embeddings, in the corresponding order, for example, avg_cosine_similarities[0] is the average cosine similarity of the first column
+    mcvs (list of floats): the MCVs of the column embeddings in the corresponding order, for example, mcvs[0] is the MCV of the first column
+    table_avg_cosine_similarity (float): the average cosine similarity of the table embeddings
+    table_avg_mcv (float): the average MCV of the table embeddings
+    """
     avg_cosine_similarities = []
     mcvs = []
 
