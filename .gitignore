@@ -4,4 +4,6 @@ artifacts/
 data/
 plot/
 outputs/
+
+*.txt
 **log
