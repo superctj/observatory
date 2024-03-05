@@ -221,6 +221,23 @@ def process_table_wrapper(
     max_length,
     padding_token,
 ):
+    """"
+    Processes a table and saves the embeddings and results.
+    
+    Input:
+    table_index (int): the index of the table,
+    truncated_table (pandas dataframe): the table to process,
+    args (argparse.Namespace): the arguments,
+    model_name (str): the name of the Hugging Face model,
+    model (Hugging Face model): the model,
+    tokenizer (Hugging Face tokenizer): the tokenizer,
+    device (torch.device): the device to use,
+    max_length (int): the maximum length of the tokens,
+    padding_token (str): the padding token to use
+    
+    Output:
+    None(saves the embeddings and results to the specified directories)
+    """
     save_directory_results = os.path.join(
         args.save_directory,
         "Column_Order_Insignificance",
@@ -284,6 +301,17 @@ def process_table_wrapper(
 
 
 def process_and_save_embeddings(model_name, args, tables):
+    """
+    Processes the tables and saves the embeddings and results.
+    
+    Input:
+    model_name (str): the name of the Hugging Face model,
+    args (argparse.Namespace): the arguments,
+    tables (list of pandas dataframes): the tables to process
+    
+    Output:
+    None(saves the embeddings and results to the specified directories)
+    """
     tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)

@@ -1,3 +1,9 @@
+"""
+The purpose of this script is to evaluate the effect of column order insignificance on the column embeddings of a table by using the tabert model.
+The functions used are generally the same as those in evaluate_col_shuffle.py, 
+the only difference is that it uses customized doduo model to get the embeddings of the table.
+"""
+
 #  python create_row_shuffle_embeddings.py -r normal_TD  -s RI_bert_TD -m bert-base-uncased -n 1000
 import os
 import argparse
