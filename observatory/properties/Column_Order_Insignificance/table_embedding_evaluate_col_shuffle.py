@@ -1,3 +1,8 @@
+"""
+The purpose of this script is to evaluate the effect of column order insignificance on the table embeddings of a table.
+The functions used are generally the same as those in evaluate_col_shuffle.py, 
+the only difference is that it uses get_hugging_face_table_embeddings_batched instead of get_hugging_face_column_embeddings_batched.
+"""
 import os
 import argparse
 import itertools

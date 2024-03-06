@@ -1,3 +1,9 @@
+"""
+The purpose of this script is to evaluate the effect of column order insignificance on the row embeddings of a table for the taptap model.
+The functions used are generally the same as those in evaluate_col_shuffle.py, 
+the only difference is that it uses compute_embeddings instead of get_hugging_face_row_embeddings_batched.
+"""
+
 import os
 os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
 
