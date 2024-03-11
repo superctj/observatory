@@ -3,12 +3,9 @@ import itertools
 import os
 import random
 
-from typing import List, Tuple
-
 import pandas as pd
 import torch
-
-from torch.linalg import norm
+import torch.nn as nn
 
 from observatory.common_util.mcv import compute_mcv
 from observatory.common_util.truncate import truncate_index
@@ -21,21 +18,21 @@ from observatory.models.huggingface_models import (
 )
 
 
-def fisher_yates_shuffle(seq: list) -> list:
+def fisher_yates_shuffle(seq: list) -> tuple:
     """Shuffles a sequence using the Fisher-Yates algorithm.
 
     Args:
         seq: A sequence to shuffle.
 
     Returns:
-        A shuffled sequence.
+        seq: A shuffled sequence in place.
     """
 
     for i in reversed(range(1, len(seq))):
         j = random.randint(0, i)
         seq[i], seq[j] = seq[j], seq[i]
 
-    return seq
+    return tuple(seq)
 
 
 def get_permutations(n: int, m: int) -> list[list]:
@@ -46,11 +43,11 @@ def get_permutations(n: int, m: int) -> list[list]:
     Args:
         n: The length of the sequence.
         m: The number of unique permutations to generate. If m > n! - 1, all
-            possible permutations are returned
+            possible permutations are returned.
 
     Returns:
-        A list of m+1 or n! (whichever is smaller) unique sequences with the
-        original sequence at the start.
+        uniq_permuts: A list of m+1 or n! (whichever is smaller) unique
+            sequences with the original sequence at the start.
     """
 
     if n < 10:
@@ -75,10 +72,10 @@ def get_permutations(n: int, m: int) -> list[list]:
 
         for _ in range(m):
             while True:
-                new_permut = fisher_yates_shuffle(original_seq.copy())
+                new_permut = fisher_yates_shuffle(list(original_seq))
 
                 if new_permut not in uniq_permuts:
-                    uniq_permuts.append(new_permut)
+                    uniq_permuts.add(new_permut)
                     break
 
         return uniq_permuts
@@ -86,42 +83,55 @@ def get_permutations(n: int, m: int) -> list[list]:
 
 def shuffle_df_columns(
     df: pd.DataFrame, m: int
-) -> Tuple(List[pd.DataFrame], List[List[int]]):
-    """Shuffles the columns of a dataframe and returns a list of dataframes,
-      each with a different column order.
+) -> tuple[list[pd.DataFrame], list[list[int]]]:
+    """Shuffles the columns of a dataframe by at most m+1 permutations.
 
     Args:
-        df (pandas dataframe): the dataframe to shuffle
-        m (int): the number of permutations to generate
+        df: A dataframe to shuffle.
+        m: The number of unique permutations to generate excluding the original
+            sequence.
 
     Returns:
-        dfs (list of pandas dataframes): the shuffled dataframes
-        perms (list of lists): the permutations used to shuffle the columns
+        dfs: A list of column-wise shuffled dataframes.
+        permuts: A list of permutations used to shuffle the columns.
     """
-    # Get the permutations
-    perms = get_permutations(len(df.columns), m)
+
+    # Get m+1 permutations (+1 because of the original sequence)
+    uniq_permuts = get_permutations(len(df.columns), m)
 
     # Create a new dataframe for each permutation
     dfs = []
-    for perm in perms:
-        dfs.append(df.iloc[:, list(perm)])
+    for permut in uniq_permuts:
+        dfs.append(df.iloc[:, list(permut)])
 
-    return dfs, perms
+    return dfs, uniq_permuts
 
 
-def analyze_embeddings(all_embeddings):
+def analyze_embeddings(
+    all_embeddings: list[list[torch.FloatTensor]],
+) -> tuple[list[float], list[float], float, float]:
+    """Analyzes column embedding populations induced by permutations.
+
+    Computes the average of pairwise cosine similarities and multivariate
+    coefficient of variation (MCV) for each column embedding population.
+
+    Args:
+        all_embeddings: A list of lists of column embeddings where each list
+            contains column embeddings of a table induced by a permutation.
+
+    Returns:
+        avg_cosine_similarities: A list of the average pairwise cosine
+            similarities. E.g., avg_cosine_similarities[0] is the average of
+            pairwise cosine similarities of the embedding population induced by
+            the first column in the original table.
+        mcvs: A list of MCV values. E.g., mcvs[0] is the MCV of the embedding
+            population induced by the first column in the original table.
+        table_avg_cosine_similarity: The cosine similarity averaged over
+            columns, i.e., the average of `avg_cosine_similarities`.
+        table_avg_mcv: The MCV value averaged over columns, i.e., the average
+            of `mcvs`.
     """
-    Analyzes the embeddings of a table and returns the average cosine similarities and MCVs of the columns.
 
-    Input:
-    all_embeddings (list of lists of tensors): the embeddings of the columns, with each list representing a different permutation
-
-    Output:
-    avg_cosine_similarities (list of floats): the average cosine similarities of the column embeddings, in the corresponding order, for example, avg_cosine_similarities[0] is the average cosine similarity of the first column
-    mcvs (list of floats): the MCVs of the column embeddings in the corresponding order, for example, mcvs[0] is the MCV of the first column
-    table_avg_cosine_similarity (float): the average cosine similarity of the table embeddings
-    table_avg_mcv (float): the average MCV of the table embeddings
-    """
     avg_cosine_similarities = []
     mcvs = []
 
@@ -136,60 +146,61 @@ def analyze_embeddings(all_embeddings):
             truncated_embedding = all_embeddings[0][i]
             shuffled_embedding = all_embeddings[j][i]
 
-            cosine_similarity = torch.dot(
-                truncated_embedding, shuffled_embedding
-            ) / (norm(truncated_embedding) * norm(shuffled_embedding))
+            cosine_similarity = nn.functional.cosine_similarity(
+                truncated_embedding, shuffled_embedding, dim=0
+            )
             column_cosine_similarities.append(cosine_similarity.item())
 
-        avg_cosine_similarity = torch.mean(
-            torch.tensor(column_cosine_similarities)
+        avg_cosine_similarity = sum(column_cosine_similarities) / len(
+            column_cosine_similarities
         )
         mcv = compute_mcv(torch.stack(column_embeddings))
 
-        avg_cosine_similarities.append(avg_cosine_similarity.item())
+        avg_cosine_similarities.append(avg_cosine_similarity)
         mcvs.append(mcv)
 
-    table_avg_cosine_similarity = torch.mean(
-        torch.tensor(avg_cosine_similarities)
+    table_avg_cosine_similarity = sum(avg_cosine_similarities) / len(
+        avg_cosine_similarities
     )
-    table_avg_mcv = torch.mean(torch.tensor(mcvs))
+    table_avg_mcv = sum(mcvs) / len(mcvs)
 
     return (
         avg_cosine_similarities,
         mcvs,
-        table_avg_cosine_similarity.item(),
-        table_avg_mcv.item(),
+        table_avg_cosine_similarity,
+        table_avg_mcv,
     )
 
 
 def process_table_wrapper(
-    table_index,
-    truncated_table,
-    args,
-    model_name,
+    table_index: int,
+    truncated_table: pd.DataFrame,
+    model_name: str,
     model,
     tokenizer,
-    device,
-    max_length,
-    padding_token,
-):
-    """ "
-    Processes a table and saves the embeddings and results.
+    max_length: int,
+    padding_token: str,
+    args: argparse.Namespace,
+    device: torch.device,
+) -> None:
+    """Processes a single table and saves the embeddings and results.
 
-    Input:
-    table_index (int): the index of the table,
-    truncated_table (pandas dataframe): the table to process,
-    args (argparse.Namespace): the arguments,
-    model_name (str): the name of the Hugging Face model,
-    model (Hugging Face model): the model,
-    tokenizer (Hugging Face tokenizer): the tokenizer,
-    device (torch.device): the device to use,
-    max_length (int): the maximum length of the tokens,
-    padding_token (str): the padding token to use
+    Args:
+        table_index: The index of the table to process.
+        truncated_table: The table to process.
+        model_name: The name of a Hugging Face model.
+        model: A Hugging Face model for embedding inference.
+        tokenizer: A Hugging Face tokenizer.
+        max_length: The maximum length of input tokens.
+        padding_token: The padding token.
+        args: The command-line arguments.
+        device: The torch device.
 
-    Output:
-    None(saves the embeddings and results to the specified directories)
+    Returns:
+        None (saves the embeddings and results to the specified directories).
     """
+
+    # Create the directories if they do not exist
     save_directory_results = os.path.join(
         args.save_directory,
         "Column_Order_Insignificance",
@@ -202,14 +213,13 @@ def process_table_wrapper(
         model_name,
         "embeddings",
     )
-    # save_directory_results  = os.path.join( args.save_directory, model_name ,'results')
-    # save_directory_embeddings  = os.path.join( args.save_directory, model_name ,'embeddings')
-    # Create the directories if they don't exist
-    if not os.path.exists(save_directory_embeddings):
-        os.makedirs(save_directory_embeddings)
+
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
-    tables, perms = shuffle_df_columns(table, args.num_shuffles)
+    if not os.path.exists(save_directory_embeddings):
+        os.makedirs(save_directory_embeddings)
+
+    tables, perms = shuffle_df_columns(truncated_table, args.num_shuffles)
     all_embeddings = get_hugging_face_column_embeddings_batched(
         tables=tables,
         model_name=model_name,
@@ -220,34 +230,38 @@ def process_table_wrapper(
     )
 
     all_ordered_embeddings = []
-    for perm, embeddings in zip(perms, all_embeddings):
 
+    for perm, embeddings in zip(perms, all_embeddings):
         # Create a list of the same length as perm, filled with None
         ordered_embeddings = [None] * len(perm)
         # Assign each embedding to its original position
         for i, p in enumerate(perm):
             ordered_embeddings[p] = embeddings[i]
-        all_ordered_embeddings.append(ordered_embeddings)
-    all_embeddings = all_ordered_embeddings
 
+        all_ordered_embeddings.append(ordered_embeddings)
+
+    all_embeddings = all_ordered_embeddings
     torch.save(
         all_embeddings,
         os.path.join(
             save_directory_embeddings, f"table_{table_index}_embeddings.pt"
         ),
     )
+
     (
         avg_cosine_similarities,
         mcvs,
         table_avg_cosine_similarity,
         table_avg_mcv,
     ) = analyze_embeddings(all_embeddings)
+
     results = {
         "avg_cosine_similarities": avg_cosine_similarities,
         "mcvs": mcvs,
         "table_avg_cosine_similarity": table_avg_cosine_similarity,
         "table_avg_mcv": table_avg_mcv,
     }
+
     print(f"Table {table_index}:")
     print("Average Cosine Similarities:", results["avg_cosine_similarities"])
     print("MCVs:", results["mcvs"])
@@ -256,48 +270,54 @@ def process_table_wrapper(
         results["table_avg_cosine_similarity"],
     )
     print("Table Average MCV:", results["table_avg_mcv"])
+
     torch.save(
         results,
         os.path.join(save_directory_results, f"table_{table_index}_results.pt"),
     )
 
 
-def process_and_save_embeddings(model_name, args, tables):
-    """
-    Processes the tables and saves the embeddings and results.
+def process_and_save_embeddings(
+    model_name: str, tables: list[pd.DataFrame], args: argparse.Namespace
+) -> None:
+    """Processes the tables and saves the embeddings and results.
 
-    Input:
-    model_name (str): the name of the Hugging Face model,
-    args (argparse.Namespace): the arguments,
-    tables (list of pandas dataframes): the tables to process
+    Args:
+        model_name: The name of a Hugging Face model for embedding inference.
+        tables: A list of tables in dataframes to process.
+        args: Command-line arguments.
 
-    Output:
-    None(saves the embeddings and results to the specified directories)
+    Returns:
+        None (saves the embeddings and results to the specified directories).
     """
+
     tokenizer, max_length = load_transformers_tokenizer_and_max_length(
         model_name
     )
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(device)
     model = load_transformers_model(model_name, device)
     model.eval()
+
     padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
 
     for table_index, table in enumerate(tables):
         if table_index < args.start_index:
             continue
+
         max_rows_fit = truncate_index(table, tokenizer, max_length, model_name)
         truncated_table = table.iloc[:max_rows_fit, :]
+
         process_table_wrapper(
             table_index,
             truncated_table,
-            args,
             model_name,
             model,
             tokenizer,
-            device,
             max_length,
             padding_token,
+            args,
+            device,
         )
 
 
@@ -352,6 +372,7 @@ if __name__ == "__main__":
         f for f in os.listdir(args.read_directory) if f.endswith(".csv")
     ]
     normal_tables = []
+
     for file in table_files:
         table = pd.read_csv(
             f"{args.read_directory}/{file}", keep_default_na=False
@@ -367,9 +388,8 @@ if __name__ == "__main__":
         ]
     else:
         model_names = [args.model_name]
-    print()
-    print("Evaluate row shuffle for: ", model_names)
-    print()
+
+    print(f"\nEvaluate row shuffle for: {model_names}\n")
 
     for model_name in model_names:
         process_and_save_embeddings(model_name, args, normal_tables)
