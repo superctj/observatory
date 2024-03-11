@@ -1,6 +1,9 @@
 import math
+import time
 
 from collections import Counter
+
+import torch
 
 from observatory.properties.Column_Order_Insignificance.evaluate_col_shuffle import (  # noqa: E501
     fisher_yates_shuffle,
@@ -52,3 +55,22 @@ def test_get_permutations():
 
 def test_shuffle_df_columns():
     pass
+
+
+def test_builtin_and_torch_mean():
+    x = list(range(1000))
+
+    start = time.time()
+    builtin_mean = sum(x) / len(x)
+    end = time.time()
+    builtin_time = end - start
+
+    start = time.time()
+    torch_mean = torch.mean(torch.FloatTensor(x)).item()
+    end = time.time()
+    torch_time = end - start
+
+    assert builtin_mean == torch_mean
+    print(f"\nBuilt-in average computing time: {builtin_time} s")
+    print(f"Torch average computing time: {torch_time} s")
+    assert builtin_time < torch_time
