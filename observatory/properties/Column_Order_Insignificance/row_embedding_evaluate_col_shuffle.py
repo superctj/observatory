@@ -366,4 +366,4 @@ if __name__ == "__main__":
     print()
 
     for model_name in model_names:
-        process_and_save_embeddings(model_name, args, normal_tables)
+        process_and_save_embeddings(model_name, normal_tables, args)
