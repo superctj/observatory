@@ -92,7 +92,7 @@ def shuffle_df(
 
     Returns:
         dfs: A list of row-wise shuffled dataframes.
-        permuts: A list of permutations used to shuffle the rows.
+        uniq_permuts: A list of permutations used to shuffle the rows.
     """
     # Get m+1 permutations (+1 because of the original sequence)
     uniq_permuts = get_permutations(len(df.columns), m)

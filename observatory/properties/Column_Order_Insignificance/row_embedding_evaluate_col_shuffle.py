@@ -94,7 +94,7 @@ def shuffle_df_columns(
 
     Returns:
         dfs: A list of column-wise shuffled dataframes.
-        permuts: A list of permutations used to shuffle the columns.
+        uniq_permuts: A list of permutations used to shuffle the columns.
     """
 
     # Get m+1 permutations (+1 because of the original sequence)
