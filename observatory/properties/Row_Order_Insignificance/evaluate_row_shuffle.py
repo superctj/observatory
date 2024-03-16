@@ -1,16 +1,10 @@
-
-
 import argparse
 import itertools
 import os
 import random
-
 import pandas as pd
 import torch
 import torch.nn as nn
-
-from torch.linalg import norm
-
 from observatory.models.huggingface_models import (
     load_transformers_model,
     load_transformers_tokenizer_and_max_length,
@@ -37,6 +31,7 @@ def fisher_yates_shuffle(seq: list) -> tuple:
         seq[i], seq[j] = seq[j], seq[i]
 
     return tuple(seq)
+
 
 def get_permutations(n: int, m: int) -> list[list]:
     """Generates m unique permutations of the sequence [0, 1, ..., n-1].
@@ -84,7 +79,6 @@ def get_permutations(n: int, m: int) -> list[list]:
         return uniq_permuts
 
 
-# Define the function to shuffle a dataframe and create new dataframes
 def shuffle_df(
         df: pd.DataFrame, m: int
 ) -> tuple[list[pd.DataFrame], list[list[int]]]:
@@ -185,7 +179,7 @@ def process_table_wrapper(
     device: torch.device,
     max_length: int,
     padding_token: str,
-)-> None:
+) -> None:
     """Processes a single table and saves the embeddings and results.
 
     Args:
@@ -263,7 +257,8 @@ def process_table_wrapper(
 
     torch.save(
         results,
-        os.path.join(save_directory_results, f"table_{table_index}_results.pt"),
+        os.path.join(save_directory_results,
+                     f"table_{table_index}_results.pt"),
     )
 
 

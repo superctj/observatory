@@ -273,7 +273,8 @@ def process_table_wrapper(
 
     torch.save(
         results,
-        os.path.join(save_directory_results, f"table_{table_index}_results.pt"),
+        os.path.join(save_directory_results,
+                     f"table_{table_index}_results.pt"),
     )
 
 

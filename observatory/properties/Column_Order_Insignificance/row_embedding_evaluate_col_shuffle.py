@@ -1,7 +1,6 @@
 
 
 import os
-os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
 
 import argparse
 import itertools
@@ -10,18 +9,16 @@ import torch.nn as nn
 
 import pandas as pd
 import torch
-import numpy as np
 from observatory.models.huggingface_models import (
     load_transformers_model,
     load_transformers_tokenizer_and_max_length,
 )
 from observatory.common_util.row_based_truncate import row_based_truncate
 from observatory.common_util.mcv import compute_mcv
-from torch.linalg import inv, norm
 from observatory.models.hugging_face_row_embeddings import (
     get_hugging_face_row_embeddings_batched,
 )
-
+os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
 
 
 def fisher_yates_shuffle(seq: list) -> tuple:
@@ -109,7 +106,6 @@ def shuffle_df_columns(
         dfs.append(df.iloc[:, list(permut)])
 
     return dfs, uniq_permuts
-
 
 
 def analyze_embeddings(
@@ -233,12 +229,13 @@ def process_table_wrapper(
         model,
         args.batch_size
     )
-    if len(all_embeddings)<24:
+    if len(all_embeddings) < 24:
         print("len(all_embeddings)<24")
         return
     torch.save(
         all_embeddings,
-        os.path.join(save_directory_embeddings, f"table_{table_index}_embeddings.pt"),
+        os.path.join(save_directory_embeddings,
+                     f"table_{table_index}_embeddings.pt"),
     )
     (
         avg_cosine_similarities,
@@ -253,12 +250,17 @@ def process_table_wrapper(
         "table_avg_mcv": table_avg_mcv,
     }
     print(f"Table {table_index}:")
-    print("Average Cosine Similarities:", results["avg_cosine_similarities"])
-    print("MCVs:", results["mcvs"])
-    print("Table Average Cosine Similarity:", results["table_avg_cosine_similarity"])
-    print("Table Average MCV:", results["table_avg_mcv"])
+    print("Average Cosine Similarities:")
+    print(results["avg_cosine_similarities"])
+    print("MCVs:")
+    print(results["mcvs"])
+    print("Table Average Cosine Similarity:")
+    print(results["table_avg_cosine_similarity"])
+    print("Table Average MCV:")
+    print(results["table_avg_mcv"])
     torch.save(
-        results, os.path.join(save_directory_results, f"table_{table_index}_results.pt")
+        results, os.path.join(save_directory_results,
+                              f"table_{table_index}_results.pt")
     )
 
 
@@ -276,7 +278,9 @@ def process_and_save_embeddings(
         None (saves the embeddings and results to the specified directories).
     """
     
-    tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
+    tokenizer, max_length = load_transformers_tokenizer_and_max_length(
+        model_name
+    )
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
     model = load_transformers_model(model_name, device)
@@ -286,7 +290,9 @@ def process_and_save_embeddings(
     for table_index, table in enumerate(tables):
         if table_index < args.start_index:
             continue
-        max_rows_fit = row_based_truncate(table, tokenizer, max_length, model_name)
+        max_rows_fit = row_based_truncate(
+            table, tokenizer, max_length, model_name
+        )
         truncated_table = table.iloc[:max_rows_fit, :]
         process_table_wrapper(
             table_index,
@@ -302,7 +308,9 @@ def process_and_save_embeddings(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Process tables and save embeddings.")
+    parser = argparse.ArgumentParser(
+        description="Process tables and save embeddings."
+    )
     parser.add_argument(
         "-r",
         "--read_directory",
@@ -346,10 +354,12 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    table_files = [f for f in os.listdir(args.read_directory) if f.endswith(".csv")]
+    table_files = [f for f in
+                   os.listdir(args.read_directory) if f.endswith(".csv")]
     normal_tables = []
     for file in table_files:
-        table = pd.read_csv(f"{args.read_directory}/{file}", keep_default_na=False)
+        table = pd.read_csv(f"{args.read_directory}/{file}",
+                            keep_default_na=False)
         normal_tables.append(table)
 
     if args.model_name == "":
