@@ -267,7 +267,19 @@ def process_table_wrapper(
     )
 
 
-def process_and_save_embeddings(model_name, args, tables):
+def process_and_save_embeddings(
+    model_name: str, tables: list[pd.DataFrame], args: argparse.Namespace
+) -> None:
+    """Processes the tables and saves the embeddings and results.
+
+    Args:
+        model_name: The name of a Hugging Face model for embedding inference.
+        tables: A list of tables in dataframes to process.
+        args: Command-line arguments.
+
+    Returns:
+        None (saves the embeddings and results to the specified directories).
+    """
     tokenizer, max_length = load_transformers_tokenizer_and_max_length(
         model_name
     )
@@ -369,4 +381,4 @@ if __name__ == "__main__":
     print(f"\nEvaluate row shuffle for: {model_names}\n")
 
     for model_name in model_names:
-        process_and_save_embeddings(model_name, args, normal_tables)
+        process_and_save_embeddings(model_name, normal_tables, args)
