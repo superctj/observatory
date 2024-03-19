@@ -219,7 +219,7 @@ def process_table_wrapper(
     if not os.path.exists(save_directory_embeddings):
         os.makedirs(save_directory_embeddings)
 
-    tables, perms = shuffle_df_columns(truncated_table, args.num_shuffles)
+    tables, all_permuts = shuffle_df_columns(truncated_table, args.num_shuffles)
     all_embeddings = get_hugging_face_column_embeddings_batched(
         tables=tables,
         model_name=model_name,
@@ -231,18 +231,17 @@ def process_table_wrapper(
 
     all_ordered_embeddings = []
 
-    for perm, embeddings in zip(perms, all_embeddings):
+    for permut, embeddings in zip(all_permuts, all_embeddings):
         # Create a list of the same length as perm, filled with None
-        ordered_embeddings = [None] * len(perm)
+        ordered_embeddings = [None] * len(permut)
         # Assign each embedding to its original position
-        for i, p in enumerate(perm):
+        for i, p in enumerate(permut):
             ordered_embeddings[p] = embeddings[i]
 
         all_ordered_embeddings.append(ordered_embeddings)
 
-    all_embeddings = all_ordered_embeddings
     torch.save(
-        all_embeddings,
+        all_ordered_embeddings,
         os.path.join(
             save_directory_embeddings, f"table_{table_index}_embeddings.pt"
         ),
@@ -253,7 +252,7 @@ def process_table_wrapper(
         mcvs,
         table_avg_cosine_similarity,
         table_avg_mcv,
-    ) = analyze_embeddings(all_embeddings)
+    ) = analyze_embeddings(all_ordered_embeddings)
 
     results = {
         "avg_cosine_similarities": avg_cosine_similarities,
@@ -273,8 +272,7 @@ def process_table_wrapper(
 
     torch.save(
         results,
-        os.path.join(save_directory_results,
-                     f"table_{table_index}_results.pt"),
+        os.path.join(save_directory_results, f"table_{table_index}_results.pt"),
     )
 
 
@@ -292,14 +290,12 @@ def process_and_save_embeddings(
         None (saves the embeddings and results to the specified directories).
     """
 
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = load_transformers_model(model_name, device)
+
     tokenizer, max_length = load_transformers_tokenizer_and_max_length(
         model_name
     )
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = load_transformers_model(model_name, device)
-    model.eval()
-
     padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
 
     for table_index, table in enumerate(tables):
