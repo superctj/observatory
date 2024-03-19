@@ -1,8 +1,3 @@
-"""
-The purpose of this script is to evaluate the effect of column order insignificance on the table embeddings of a table.
-The functions used are generally the same as those in evaluate_col_shuffle.py, 
-the only difference is that it uses get_hugging_face_table_embeddings_batched instead of get_hugging_face_column_embeddings_batched.
-"""
 import os
 import argparse
 import itertools
@@ -10,18 +5,16 @@ import random
 
 import pandas as pd
 import torch
-import numpy as np
+import torch.nn as nn
 from observatory.models.huggingface_models import (
     load_transformers_model,
     load_transformers_tokenizer_and_max_length,
 )
 from observatory.common_util.table_based_truncate import table_based_truncate
 from observatory.common_util.mcv import compute_mcv
-from torch.linalg import inv, norm
 from observatory.models.hugging_face_table_embeddings import (
     get_hugging_face_table_embeddings_batched,
 )
-
 
 
 def fisher_yates_shuffle(seq: list) -> tuple:
@@ -97,7 +90,7 @@ def shuffle_df_columns(
 
     Returns:
         dfs: A list of column-wise shuffled dataframes.
-        permuts: A list of permutations used to shuffle the columns.
+        uniq_permuts: A list of permutations used to shuffle the columns.
     """
 
     # Get m+1 permutations (+1 because of the original sequence)
@@ -109,7 +102,6 @@ def shuffle_df_columns(
         dfs.append(df.iloc[:, list(permut)])
 
     return dfs, uniq_permuts
-
 
 
 def analyze_embeddings(
@@ -126,7 +118,7 @@ def analyze_embeddings(
 
     Returns:
         avg_cosine_similaritiy: An average pairwise cosine
-            similarities. 
+            similarities.
         mcv:  MCV value of the embedding
             population induced by the table itself.
         table_avg_cosine_similarity: The same as `avg_cosine_similaritiy`.
@@ -134,28 +126,22 @@ def analyze_embeddings(
     """
     table_embeddings = []
     for j in range(len(all_embeddings)):
-            table_embeddings.append(all_embeddings[j])
+        table_embeddings.append(all_embeddings[j])
 
     cosine_similarities = []
     for j in range(1, len(all_embeddings)):
         truncated_embedding = all_embeddings[0]
         shuffled_embedding = all_embeddings[j]
 
-        cosine_similarity = torch.dot(truncated_embedding, shuffled_embedding) / (
-            norm(truncated_embedding) * norm(shuffled_embedding)
+        cosine_similarity = nn.functional.cosine_similarity(
+            truncated_embedding, shuffled_embedding, dim=0
         )
         cosine_similarities.append(cosine_similarity.item())
-    
+
     avg_cosine_similarity = torch.mean(torch.tensor(cosine_similarities))
     mcv = compute_mcv(torch.stack(table_embeddings))
 
-
-    return (
-        avg_cosine_similarity,
-        mcv,
-        avg_cosine_similarity,
-        mcv
-    )
+    return (avg_cosine_similarity, mcv, avg_cosine_similarity, mcv)
 
 
 def process_table_wrapper(
@@ -168,7 +154,7 @@ def process_table_wrapper(
     device: torch.device,
     max_length: int,
     padding_token: str,
-)-> None:
+) -> None:
     """Processes a single table and saves the embeddings and results.
 
     Args:
@@ -185,7 +171,7 @@ def process_table_wrapper(
     Returns:
         None (saves the embeddings and results to the specified directories).
     """
-    
+
     save_directory_results = os.path.join(
         args.save_directory,
         "Table_embedding_Column_Order_Insignificance",
@@ -203,23 +189,22 @@ def process_table_wrapper(
         os.makedirs(save_directory_embeddings)
     if not os.path.exists(save_directory_results):
         os.makedirs(save_directory_results)
-        
+
     tables, perms = shuffle_df_columns(truncated_table, args.num_shuffles)
 
     all_embeddings = get_hugging_face_table_embeddings_batched(
-        tables,
-        model_name,
-        tokenizer,
-        max_length,
-        model,
-        args.batch_size
+        tables, model_name, tokenizer, max_length, model, args.batch_size
     )
-    if len(all_embeddings)<24:
+    if len(all_embeddings) < 24:
         print("len(all_embeddings)<24")
         return
     torch.save(
         all_embeddings,
-        os.path.join(save_directory_embeddings, f"table_{table_index}_embeddings.pt"),
+        os.path.join(
+            save_directory_embeddings,
+            "table_" + str(table_index) +
+            "_embeddings.pt"
+        ),
     )
     (
         avg_cosine_similarities,
@@ -227,7 +212,7 @@ def process_table_wrapper(
         table_avg_cosine_similarity,
         table_avg_mcv,
     ) = analyze_embeddings(all_embeddings)
-    
+
     results = {
         "avg_cosine_similarities": avg_cosine_similarities,
         "mcvs": mcvs,
@@ -237,14 +222,16 @@ def process_table_wrapper(
     print(f"Table {table_index}:")
     print("Average Cosine Similarities:", results["avg_cosine_similarities"])
     print("MCVs:", results["mcvs"])
-    print("Table Average Cosine Similarity:", results["table_avg_cosine_similarity"])
+    print("Table Average Cosine Similarity:",
+          results["table_avg_cosine_similarity"])
     print("Table Average MCV:", results["table_avg_mcv"])
     torch.save(
-        results, os.path.join(save_directory_results, f"table_{table_index}_results.pt")
+        results, os.path.join(save_directory_results,
+                              f"table_{table_index}_results.pt")
     )
 
 
-def process_and_save_embeddings( 
+def process_and_save_embeddings(
     model_name: str, tables: list[pd.DataFrame], args: argparse.Namespace
 ) -> None:
     """Processes the tables and saves the embeddings and results.
@@ -257,8 +244,10 @@ def process_and_save_embeddings(
     Returns:
         None (saves the embeddings and results to the specified directories).
     """
-    
-    tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
+
+    tokenizer, max_length = load_transformers_tokenizer_and_max_length(
+        model_name
+    )
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
     model = load_transformers_model(model_name, device)
@@ -268,7 +257,9 @@ def process_and_save_embeddings(
     for table_index, table in enumerate(tables):
         if table_index < args.start_index:
             continue
-        max_rows_fit = table_based_truncate(table, tokenizer, max_length, model_name)
+        max_rows_fit = table_based_truncate(
+            table, tokenizer, max_length, model_name
+        )
         truncated_table = table.iloc[:max_rows_fit, :]
         process_table_wrapper(
             table_index,
@@ -284,7 +275,9 @@ def process_and_save_embeddings(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Process tables and save embeddings.")
+    parser = argparse.ArgumentParser(
+        description="Process tables and save embeddings."
+    )
     parser.add_argument(
         "-r",
         "--read_directory",
@@ -328,10 +321,14 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    table_files = [f for f in os.listdir(args.read_directory) if f.endswith(".csv")]
+    table_files = [
+        f for f in os.listdir(args.read_directory) if f.endswith(".csv")
+    ]
     normal_tables = []
     for file in table_files:
-        table = pd.read_csv(f"{args.read_directory}/{file}", keep_default_na=False)
+        table = pd.read_csv(
+            f"{args.read_directory}/{file}", keep_default_na=False
+        )
         normal_tables.append(table)
 
     if args.model_name == "":
@@ -348,4 +345,4 @@ if __name__ == "__main__":
     print()
 
     for model_name in model_names:
-        process_and_save_embeddings(model_name, args, normal_tables)
+        process_and_save_embeddings(model_name, normal_tables, args)

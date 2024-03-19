@@ -93,7 +93,7 @@ def shuffle_df_columns(
 
     Returns:
         dfs: A list of column-wise shuffled dataframes.
-        permuts: A list of permutations used to shuffle the columns.
+        uniq_permuts: A list of permutations used to shuffle the columns.
     """
 
     # Get m+1 permutations (+1 because of the original sequence)
@@ -273,7 +273,8 @@ def process_table_wrapper(
 
     torch.save(
         results,
-        os.path.join(save_directory_results, f"table_{table_index}_results.pt"),
+        os.path.join(save_directory_results,
+                     f"table_{table_index}_results.pt"),
     )
 
 
@@ -392,4 +393,4 @@ if __name__ == "__main__":
     print(f"\nEvaluate row shuffle for: {model_names}\n")
 
     for model_name in model_names:
-        process_and_save_embeddings(model_name, args, normal_tables)
+        process_and_save_embeddings(model_name, normal_tables, args)

@@ -5,9 +5,7 @@ import random
 
 import pandas as pd
 import torch
-
-from torch.linalg import norm
-
+import torch.nn as nn
 from observatory.common_util.mcv import compute_mcv
 from observatory.common_util.table_based_truncate import table_based_truncate
 from observatory.models.huggingface_models import (
@@ -19,60 +17,114 @@ from observatory.models.hugging_face_table_embeddings import (
 )
 
 
-def fisher_yates_shuffle(seq):
+def fisher_yates_shuffle(seq: list) -> tuple:
+    """Shuffles a sequence using the Fisher-Yates algorithm.
+
+    Args:
+        seq: A sequence to shuffle.
+
+    Returns:
+        seq: A shuffled sequence in place.
+    """
+
     for i in reversed(range(1, len(seq))):
         j = random.randint(0, i)
         seq[i], seq[j] = seq[j], seq[i]
-    return seq
+
+    return tuple(seq)
 
 
-def get_permutations(n, m):
+def get_permutations(n: int, m: int) -> list[list]:
+    """Generates m unique permutations of the sequence [0, 1, ..., n-1].
+
+    The original sequence is not included in the m permutations.
+
+    Args:
+        n: The length of the sequence.
+        m: The number of unique permutations to generate. If m > n! - 1, all
+            possible permutations are returned.
+
+    Returns:
+        uniq_permuts: A list of m+1 or n! (whichever is smaller) unique
+            sequences with the original sequence at the start.
+    """
+
     if n < 10:
         # Generate all permutations
-        all_perms = list(itertools.permutations(range(n)))
+        all_permuts = list(itertools.permutations(range(n)))
 
         # Remove the original sequence
-        all_perms.remove(tuple(range(n)))
+        all_permuts.remove(tuple(range(n)))
 
         # Shuffle the permutations
-        random.shuffle(all_perms)
+        random.shuffle(all_permuts)
 
-        # If m > n! - 1 (because we removed one permutation)
-        # return all permutations
-        if m > len(all_perms):
-            return [list(range(n))] + all_perms
-
-        # Otherwise, return the first m permutations
-        return [list(range(n))] + all_perms[:m]
+        # If m > n! - 1 (we removed the original sequence), return all
+        # permutations
+        if m > len(all_permuts):
+            return [list(range(n))] + all_permuts
+        else:
+            return [list(range(n))] + all_permuts[:m]
     else:
-        original_seq = list(range(n))
-        perms = [original_seq.copy()]
+        original_seq = tuple(range(n))
+        uniq_permuts = set([original_seq])
 
-        for _ in range(m):  # we already have one permutation
+        for _ in range(m):
             while True:
-                new_perm = fisher_yates_shuffle(original_seq.copy())
+                new_permut = fisher_yates_shuffle(list(original_seq))
 
-                if new_perm not in perms:
-                    perms.append(new_perm)
+                if new_permut not in uniq_permuts:
+                    uniq_permuts.add(new_permut)
                     break
 
-        return perms
+        return uniq_permuts
 
 
-# Define the function to shuffle a dataframe and create new dataframes
-def shuffle_df(df, m):
-    # Get the permutations
-    perms = get_permutations(len(df), m)
+def shuffle_df(
+        df: pd.DataFrame, m: int
+) -> tuple[list[pd.DataFrame], list[list[int]]]:
+    """Shuffles the rows of a dataframe by at most m+1 permutations.
+
+    Args:
+        df: A dataframe to shuffle.
+        m: The number of unique permutations to generate excluding the original
+            sequence.
+
+    Returns:
+        dfs: A list of row-wise shuffled dataframes.
+        uniq_permuts: A list of permutations used to shuffle the rows.
+    """
+    # Get m+1 permutations (+1 because of the original sequence)
+    uniq_permuts = get_permutations(len(df.columns), m)
 
     # Create a new dataframe for each permutation
-    dfs = [df]
-    for perm in perms:
-        dfs.append(df.iloc[list(perm)])
+    dfs = []
+    for permut in uniq_permuts:
+        dfs.append(df.iloc[list(permut)])
 
-    return dfs, perms
+    return dfs, uniq_permuts
 
 
-def analyze_embeddings(all_embeddings):
+def analyze_embeddings(
+    all_embeddings: list[torch.FloatTensor],
+) -> tuple[float, float, float, float]:
+    """Analyzes table embedding populations induced by permutations.
+
+    Computes the average of pairwise table similarities and multivariate
+    coefficient of variation (MCV) for each table embedding population.
+
+    Args:
+        all_embeddings: A list of table embeddings where each list
+            contains table embeddings of a table induced by a permutation.
+
+    Returns:
+        avg_cosine_similaritiy: An average pairwise cosine
+            similarities.
+        mcv:  MCV value of the embedding
+            population induced by the table itself.
+        table_avg_cosine_similarity: The same as `avg_cosine_similaritiy`.
+        table_avg_mcv: The same as `mcv`.
+    """
     table_embeddings = []
     for j in range(len(all_embeddings)):
         table_embeddings.append(all_embeddings[j])
@@ -82,28 +134,48 @@ def analyze_embeddings(all_embeddings):
         truncated_embedding = all_embeddings[0]
         shuffled_embedding = all_embeddings[j]
 
-        cosine_similarity = torch.dot(
-            truncated_embedding, shuffled_embedding
-        ) / (norm(truncated_embedding) * norm(shuffled_embedding))
+        cosine_similarity = nn.functional.cosine_similarity(
+                truncated_embedding, shuffled_embedding, dim=0
+            )
         cosine_similarities.append(cosine_similarity.item())
 
-    avg_cosine_similarity = torch.mean(torch.tensor(cosine_similarities))
+    avg_cosine_similarity = sum(cosine_similarities) / len(cosine_similarities)
     mcv = compute_mcv(torch.stack(table_embeddings))
-
-    return (avg_cosine_similarity, mcv, avg_cosine_similarity, mcv)
+    return (
+        avg_cosine_similarity,
+        mcv,
+        avg_cosine_similarity,
+        mcv
+    )
 
 
 def process_table_wrapper(
-    table_index,
-    truncated_table,
-    args,
-    model_name,
+    table_index: int,
+    truncated_table: pd.DataFrame,
+    args: argparse.Namespace,
+    model_name: str,
     model,
     tokenizer,
-    device,
-    max_length,
-    padding_token,
-):
+    device: torch.device,
+    max_length: int,
+    padding_token: str,
+) -> None:
+    """Processes a single table and saves the embeddings and results.
+
+    Args:
+        table_index: The index of the table to process.
+        truncated_table: The table to process.
+        args: The command-line arguments.
+        model_name: The name of a Hugging Face model.
+        model: A Hugging Face model for embedding inference.
+        tokenizer: A Hugging Face tokenizer.
+        device: The torch device.
+        max_length: The maximum length of input tokens.
+        padding_token: The padding token.
+
+    Returns:
+        None (saves the embeddings and results to the specified directories).
+    """
     save_directory_results = os.path.join(
         args.save_directory,
         "Table_embedding_Row_Order_Insignificance",
@@ -166,11 +238,25 @@ def process_table_wrapper(
 
     torch.save(
         results,
-        os.path.join(save_directory_results, f"table_{table_index}_results.pt"),
+        os.path.join(save_directory_results,
+                     f"table_{table_index}_results.pt"),
     )
 
 
-def process_and_save_embeddings(model_name, args, tables):
+def process_and_save_embeddings(
+    model_name: str, tables: list[pd.DataFrame], args: argparse.Namespace
+) -> None:
+    """Processes the tables and saves the embeddings and results.
+
+    Args:
+        model_name: The name of a Hugging Face model for embedding inference.
+        tables: A list of tables in dataframes to process.
+        args: Command-line arguments.
+
+    Returns:
+        None (saves the embeddings and results to the specified directories).
+    """
+
     tokenizer, max_length = load_transformers_tokenizer_and_max_length(
         model_name
     )
@@ -274,4 +360,4 @@ if __name__ == "__main__":
     print(f"\nEvaluate row shuffle for: {model_names}\n")
 
     for model_name in model_names:
-        process_and_save_embeddings(model_name, args, normal_tables)
+        process_and_save_embeddings(model_name, normal_tables, args)
