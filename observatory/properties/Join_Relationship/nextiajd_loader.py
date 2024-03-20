@@ -89,7 +89,7 @@ def multiset_jaccard_similarity(
     df2: pd.DataFrame,
     col1: str,
     col2: str,
-) -> float:
+) -> tuple[float, float]:
     """Compute the multiset Jaccard similarity between two columns of two DataFrames.
     
     Args:
@@ -100,6 +100,7 @@ def multiset_jaccard_similarity(
     
     Returns:
         multiset_jaccard_sim: The multiset Jaccard similarity between the two columns
+        weighted_jaccard_coeff: The weighted Jaccard coefficient between the two columns
     """
     
     multiset1 = Counter(df1[col1])
