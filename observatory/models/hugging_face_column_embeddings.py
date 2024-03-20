@@ -115,23 +115,24 @@ def get_tapas_column_embeddings(inputs, last_hidden_states):
 
 
 def get_hugging_face_column_embeddings_batched(
-    tables, model_name, tokenizer, max_length, model, batch_size=32
+    tables, model_name, tokenizer, max_length, model, batch_size=32, device=None
 ):
-    model = model.eval()
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
+    if not device:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+    padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
     truncated_tables = []
-    for table_index, table in enumerate(tables):
+
+    for _, tbl in enumerate(tables):
         max_rows_fit = column_based_truncate(
-            table, tokenizer, max_length, model_name
+            tbl, tokenizer, max_length, model_name
         )
         if max_rows_fit < 1:
             # for other properties, do something here
             continue
 
-        truncated_table = table.iloc[:max_rows_fit, :]
-        truncated_tables.append(truncated_table)
+        truncated_tbl = tbl.iloc[:max_rows_fit, :]
+        truncated_tables.append(truncated_tbl)
 
     num_all_tables = len(truncated_tables)
     all_embeddings = []
@@ -141,7 +142,7 @@ def get_hugging_face_column_embeddings_batched(
     batch_token_type_ids = []
     batch_cls_positions = []
 
-    for table_num, processed_table in enumerate(truncated_tables):
+    for table_idx, processed_table in enumerate(truncated_tables):
         if model_name.startswith("google/tapas"):
             processed_table.columns = processed_table.columns.astype(str)
             processed_table = processed_table.reset_index(drop=True)
@@ -162,7 +163,7 @@ def get_hugging_face_column_embeddings_batched(
             # the batch.
             if (
                 len(batch_input_ids) == batch_size
-                or num_all_tables == table_num + 1
+                or num_all_tables == table_idx + 1
             ):
                 batched_inputs = {
                     "input_ids": torch.stack(batch_input_ids, dim=0).to(device),
@@ -229,7 +230,7 @@ def get_hugging_face_column_embeddings_batched(
             # the batch.
             if (
                 len(batch_input_ids) == batch_size
-                or num_all_tables == table_num + 1
+                or num_all_tables == table_idx + 1
             ):
                 input_ids_tensor = torch.stack(batch_input_ids, dim=0).to(
                     device
@@ -250,20 +251,22 @@ def get_hugging_face_column_embeddings_batched(
                         last_hidden_states = tapex_inference(
                             model, input_ids_tensor, attention_mask_tensor
                         )
-
                     else:
                         outputs = model(
                             input_ids=input_ids_tensor,
                             attention_mask=attention_mask_tensor,
                         )
                         last_hidden_states = outputs.last_hidden_state
+
                 for i, last_hidden_state in enumerate(last_hidden_states):
                     embeddings = []
+
                     for position in batch_cls_positions[i]:
                         cls_embedding = (
                             last_hidden_state[position, :].detach().cpu()
                         )
                         embeddings.append(cls_embedding)
+
                     all_embeddings.append(embeddings)
 
                 # Clear the batch lists
