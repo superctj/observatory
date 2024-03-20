@@ -2,7 +2,6 @@ import argparse
 import math
 import os
 import shutil
-import sys
 import time
 import unittest
 
@@ -159,7 +158,6 @@ class HuggingFaceModels(unittest.TestCase):
                 model,
                 tokenizer,
                 max_length,
-                padding_token=None,
                 args=self.args,
                 device=device,
             )
