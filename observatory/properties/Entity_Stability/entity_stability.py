@@ -132,7 +132,7 @@ def process_one_table(
     # data, entity_id_map):
     data: dict, 
     entity_id_map: dict
-) -> pd.DataFrame, list:
+) -> tuple[pd.DataFrame, list]:
     """ Process a single table and return a DataFrame and a list of entities.
     
     Args:
@@ -140,7 +140,8 @@ def process_one_table(
         entity_id_map: A dictionary mapping entity IDs to entity names.
     
     Returns:
-        A tuple containing a DataFrame and a list of entities.
+        df: A pandas DataFrame containing the table data.
+        tmp_entities: A list of entities in the table.
     """
     processed_table_headers = data["processed_tableHeaders"]
     table_data = data["tableData"]
