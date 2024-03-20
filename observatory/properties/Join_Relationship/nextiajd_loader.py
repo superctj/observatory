@@ -15,11 +15,30 @@ from observatory.models.huggingface_models import (
 import itertools
 import pandas as pd
 from collections import Counter
-from typing import Callable
-def chunk_neighbor_tables_quick(tables, column_name, n, max_length, max_row=None, max_token_per_cell=20):
+from typing import Callable, Generator
+def chunk_neighbor_tables_quick(
+    # tables, column_name, n, max_length, max_row=None, max_token_per_cell=20):
+    tables: List[pd.DataFrame],
+    column_name: str,
+    n: int,
+    max_length: int,
+    max_row: int = None,
+    max_token_per_cell: int = 20,
+) -> Generator[Dict, None, None]:
+    """Chunk the tables into smaller tables based on the specified column and its neighboring columns.
+    
+    Args:
+        tables: The list of tables
+        column_name: The name of the column
+        n: The number of neighboring columns to consider
+        max_length: The maximum length of the input sequence
+        max_row: The maximum number of rows to consider
+        max_token_per_cell: The maximum number of tokens per cell
+        
+    Returns:
+        A generator that yields dictionaries containing the chunked tables and their relevant information
     """
-    Chunk tables based on a central column and its neighbors.
-    """
+
 
     for table_index, df in enumerate(tables):
         
