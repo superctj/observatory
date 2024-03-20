@@ -120,53 +120,60 @@ def analyze_embeddings(
             contains column embeddings of a table induced by a permutation.
 
     Returns:
-        avg_cosine_similarities: A list of the average pairwise cosine
-            similarities. E.g., avg_cosine_similarities[0] is the average of
-            pairwise cosine similarities of the embedding population induced by
-            the first column in the original table.
-        mcvs: A list of MCV values. E.g., mcvs[0] is the MCV of the embedding
-            population induced by the first column in the original table.
+        colwise_avg_cosine_similarities: Average pairwise cosine similarities
+            per column. E.g., colwise_avg_cosine_similarities[0] is the
+            average of pairwise cosine similarities of the embedding population
+            induced by the first column in the original table.
+        colwise_mcvs: MCV values per column. E.g., colwise_mcvs[0] is the MCV
+            value of the embedding population induced by the first column in the
+            original table.
         table_avg_cosine_similarity: The cosine similarity averaged over
-            columns, i.e., the average of `avg_cosine_similarities`.
+            columns, i.e., the average of `colwise_avg_cosine_similarities`.
         table_avg_mcv: The MCV value averaged over columns, i.e., the average
-            of `mcvs`.
+            of `colwise_mcvs`.
     """
 
-    avg_cosine_similarities = []
-    mcvs = []
+    colwise_avg_cosine_similarities = []
+    colwise_mcvs = []
 
+    # TODO: Vectorize the computation of cosine similarities and MCV
+    # iterate over columns
     for i in range(len(all_embeddings[0])):
         column_cosine_similarities = []
-        column_embeddings = []
 
-        for j in range(len(all_embeddings)):
-            column_embeddings.append(all_embeddings[j][i])
-
+        # iterate over permutations
         for j in range(1, len(all_embeddings)):
-            truncated_embedding = all_embeddings[0][i]
+            # embedding of a column inferred from the original table
+            col_embedding = all_embeddings[0][i]
+            # embedding of the same column inferred from a shuffled table
             shuffled_embedding = all_embeddings[j][i]
 
             cosine_similarity = nn.functional.cosine_similarity(
-                truncated_embedding, shuffled_embedding, dim=0
+                col_embedding, shuffled_embedding, dim=0
             )
             column_cosine_similarities.append(cosine_similarity.item())
 
         avg_cosine_similarity = sum(column_cosine_similarities) / len(
             column_cosine_similarities
         )
+        colwise_avg_cosine_similarities.append(avg_cosine_similarity)
+
+        # compute MCV
+        column_embeddings = []
+        for j in range(len(all_embeddings)):
+            column_embeddings.append(all_embeddings[j][i])
+
         mcv = compute_mcv(torch.stack(column_embeddings))
+        colwise_mcvs.append(mcv)
 
-        avg_cosine_similarities.append(avg_cosine_similarity)
-        mcvs.append(mcv)
-
-    table_avg_cosine_similarity = sum(avg_cosine_similarities) / len(
-        avg_cosine_similarities
+    table_avg_cosine_similarity = sum(colwise_avg_cosine_similarities) / len(
+        colwise_avg_cosine_similarities
     )
-    table_avg_mcv = sum(mcvs) / len(mcvs)
+    table_avg_mcv = sum(colwise_mcvs) / len(colwise_mcvs)
 
     return (
-        avg_cosine_similarities,
-        mcvs,
+        colwise_avg_cosine_similarities,
+        colwise_mcvs,
         table_avg_cosine_similarity,
         table_avg_mcv,
     )
@@ -179,7 +186,6 @@ def process_table_wrapper(
     model,
     tokenizer,
     max_length: int,
-    padding_token: str,
     args: argparse.Namespace,
     device: torch.device,
 ) -> None:
@@ -192,7 +198,6 @@ def process_table_wrapper(
         model: A Hugging Face model for embedding inference.
         tokenizer: A Hugging Face tokenizer.
         max_length: The maximum length of input tokens.
-        padding_token: The padding token.
         args: The command-line arguments.
         device: The torch device.
 
@@ -219,30 +224,32 @@ def process_table_wrapper(
     if not os.path.exists(save_directory_embeddings):
         os.makedirs(save_directory_embeddings)
 
-    tables, perms = shuffle_df_columns(truncated_table, args.num_shuffles)
+    shuffled_tables, all_permuts = shuffle_df_columns(
+        truncated_table, args.num_shuffles
+    )
     all_embeddings = get_hugging_face_column_embeddings_batched(
-        tables=tables,
+        tables=shuffled_tables,
         model_name=model_name,
         tokenizer=tokenizer,
         max_length=max_length,
         model=model,
         batch_size=args.batch_size,
+        device=device,
     )
 
     all_ordered_embeddings = []
 
-    for perm, embeddings in zip(perms, all_embeddings):
+    for permut, embeddings in zip(all_permuts, all_embeddings):
         # Create a list of the same length as perm, filled with None
-        ordered_embeddings = [None] * len(perm)
+        ordered_embeddings = [None] * len(permut)
         # Assign each embedding to its original position
-        for i, p in enumerate(perm):
+        for i, p in enumerate(permut):
             ordered_embeddings[p] = embeddings[i]
 
         all_ordered_embeddings.append(ordered_embeddings)
 
-    all_embeddings = all_ordered_embeddings
     torch.save(
-        all_embeddings,
+        all_ordered_embeddings,
         os.path.join(
             save_directory_embeddings, f"table_{table_index}_embeddings.pt"
         ),
@@ -253,7 +260,7 @@ def process_table_wrapper(
         mcvs,
         table_avg_cosine_similarity,
         table_avg_mcv,
-    ) = analyze_embeddings(all_embeddings)
+    ) = analyze_embeddings(all_ordered_embeddings)
 
     results = {
         "avg_cosine_similarities": avg_cosine_similarities,
@@ -273,8 +280,7 @@ def process_table_wrapper(
 
     torch.save(
         results,
-        os.path.join(save_directory_results,
-                     f"table_{table_index}_results.pt"),
+        os.path.join(save_directory_results, f"table_{table_index}_results.pt"),
     )
 
 
@@ -292,15 +298,12 @@ def process_and_save_embeddings(
         None (saves the embeddings and results to the specified directories).
     """
 
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = load_transformers_model(model_name, device)
+
     tokenizer, max_length = load_transformers_tokenizer_and_max_length(
         model_name
     )
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = load_transformers_model(model_name, device)
-    model.eval()
-
-    padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
 
     for table_index, table in enumerate(tables):
         if table_index < args.start_index:
@@ -316,7 +319,6 @@ def process_and_save_embeddings(
             model,
             tokenizer,
             max_length,
-            padding_token,
             args,
             device,
         )
@@ -372,25 +374,24 @@ if __name__ == "__main__":
     table_files = [
         f for f in os.listdir(args.read_directory) if f.endswith(".csv")
     ]
-    normal_tables = []
+    all_tables = []
 
-    for file in table_files:
+    for f in table_files:
         table = pd.read_csv(
-            f"{args.read_directory}/{file}", keep_default_na=False
+            os.path.join(args.read_directory, f), keep_default_na=False
         )
-        normal_tables.append(table)
+        all_tables.append(table)
 
     if args.model_name == "":
-        model_names = [
+        all_model_names = [
             "bert-base-uncased",
             "roberta-base",
             "t5-base",
             "google/tapas-base",
         ]
     else:
-        model_names = [args.model_name]
+        all_model_names = [args.model_name]
 
-    print(f"\nEvaluate row shuffle for: {model_names}\n")
-
-    for model_name in model_names:
-        process_and_save_embeddings(model_name, normal_tables, args)
+    for model_name in all_model_names:
+        print(f"\nEvaluate column order insignificance for: {model_name}\n")
+        process_and_save_embeddings(model_name, all_tables, args)
