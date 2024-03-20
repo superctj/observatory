@@ -15,11 +15,30 @@ from observatory.models.huggingface_models import (
 import itertools
 import pandas as pd
 from collections import Counter
+from typing import Callable, Generator
+def chunk_neighbor_tables_quick(
+    # tables, column_name, n, max_length, max_row=None, max_token_per_cell=20):
+    tables: List[pd.DataFrame],
+    column_name: str,
+    n: int,
+    max_length: int,
+    max_row: int = None,
+    max_token_per_cell: int = 20,
+) -> Generator[Dict, None, None]:
+    """Chunk the tables into smaller tables based on the specified column and its neighboring columns.
+    
+    Args:
+        tables: The list of tables
+        column_name: The name of the column
+        n: The number of neighboring columns to consider
+        max_length: The maximum length of the input sequence
+        max_row: The maximum number of rows to consider
+        max_token_per_cell: The maximum number of tokens per cell
+        
+    Returns:
+        A generator that yields dictionaries containing the chunked tables and their relevant information
+    """
 
-def chunk_neighbor_tables_quick(tables, column_name, n, max_length, max_row=None, max_token_per_cell=20):
-    """
-    Chunk tables based on a central column and its neighbors.
-    """
 
     for table_index, df in enumerate(tables):
         
@@ -58,7 +77,23 @@ def chunk_neighbor_tables_quick(tables, column_name, n, max_length, max_row=None
             start_row = start_row + optimal_rows
 
 
-def jaccard_similarity(df1, df2, col1, col2):
+def jaccard_similarity(
+    df1: pd.DataFrame,
+    df2: pd.DataFrame, 
+    col1: str, 
+    col2: str 
+) -> float:
+    """Compute the Jaccard similarity between two columns of two DataFrames.
+    
+    Args:
+        df1: The first DataFrame
+        df2: The second DataFrame
+        col1: The name of the first column, which is in df1
+        col2: The name of the second column, which is in df2
+    
+    Returns:
+        jaccard_sim: The Jaccard similarity between the two columns
+    """
     set1 = set(df1[col1])
     set2 = set(df2[col2])
 
@@ -68,7 +103,25 @@ def jaccard_similarity(df1, df2, col1, col2):
     return jaccard_sim
 
 
-def multiset_jaccard_similarity(df1, df2, col1, col2):
+def multiset_jaccard_similarity(
+    df1: pd.DataFrame,
+    df2: pd.DataFrame,
+    col1: str,
+    col2: str,
+) -> tuple[float, float]:
+    """Compute the multiset Jaccard similarity between two columns of two DataFrames.
+    
+    Args:
+        df1: The first DataFrame
+        df2: The second DataFrame
+        col1: The name of the first column, which is in df1
+        col2: The name of the second column, which is in df2
+    
+    Returns:
+        multiset_jaccard_sim: The multiset Jaccard similarity between the two columns
+        weighted_jaccard_coeff: The weighted Jaccard coefficient between the two columns
+    """
+    
     multiset1 = Counter(df1[col1])
     multiset2 = Counter(df2[col2])
 
@@ -180,7 +233,31 @@ class NextiaJDCSVDataLoader:
 
 
 
-def get_average_embedding(table, column_name, get_embedding, model_name, tokenizer, max_length,  n=1, batch_size=10):
+def get_average_embedding(
+    table: pd.DataFrame,
+    column_name: str,
+    get_embedding: Callable,
+    model_name: str,
+    tokenizer,
+    max_length: int,
+    n: int = 1,
+    batch_size: int = 10,
+) -> torch.Tensor:
+    """Get the average embedding of a column in a table.
+    
+    Args:
+        table: The table
+        column_name: The name of the column
+        get_embedding: The function to get the embedding of a table
+        model_name: The name of the model
+        tokenizer: The tokenizer
+        max_length: The maximum length of the input sequence
+        n: The number of nearby columns to consider
+        batch_size: The batch size for inference
+    
+    Returns:
+        avg_embedding: The average embedding of the column
+    """
     # m = max(min(100 // len(table.columns.tolist()), 3), 1)
     sum_embeddings = None
     num_embeddings = 0

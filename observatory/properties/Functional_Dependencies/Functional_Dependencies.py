@@ -50,7 +50,21 @@ class SpiderFDDataLoader:
 import pandas as pd
 
 
-def find_groups(df, determinant_col, dependent_col):
+def find_groups(
+    df: pd.DataFrame,
+    determinant_col: str,
+    dependent_col: str
+) -> Dict:
+    """Find groups of rows with the same pair of values in the determinant and dependent columns.
+    
+    Args:
+        df: The DataFrame to find groups in.
+        determinant_col: The name of the column that determines the group.
+        dependent_col: The name of the column that is dependent on the determinant column. 
+    
+    Returns:
+        A dictionary with the pair of values as the key and a list of indices as the value.
+    """
     # Create a new DataFrame with only the two columns of interest and the index
     df_temp = df[[determinant_col, dependent_col]].reset_index()
     df_temp["pair"] = list(zip(df_temp[determinant_col], df_temp[dependent_col]))

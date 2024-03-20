@@ -13,11 +13,22 @@ from observatory.common_util.truncate import truncate_index
 from readCompare import compare_directories
 
 # from concurrent.futures import ThreadPoolExecutor
-from torch.linalg import inv, norm
+import torch.nn as nn 
 
 
-
-def analyze_embeddings(all_embeddings, changed_column_lists):
+def analyze_embeddings(
+    all_embeddings: list[list[torch.FloatTensor]], 
+    changed_column_lists: list[list[int]]
+) -> dict[int, list[float]]:
+    """ Analyze the embeddings and return a dictionary of cosine similarities for each column.
+    
+    Args:
+        all_embeddings: A list of lists of embeddings for each table.
+        changed_column_lists: A list of lists of column indices that were changed.
+        
+    Returns:
+        cosine_similarities_dict: A dictionary of cosine similarities for each column.
+    """
     cosine_similarities_dict = {}
 
     for table_index, changed_columns in enumerate(changed_column_lists):
@@ -25,8 +36,8 @@ def analyze_embeddings(all_embeddings, changed_column_lists):
             original_embedding = all_embeddings[0][column_index]
             shuffled_embedding = all_embeddings[table_index + 1][column_index]
 
-            cosine_similarity = torch.dot(original_embedding, shuffled_embedding) / (
-                norm(original_embedding) * norm(shuffled_embedding)
+            cosine_similarity = nn.functional.cosine_similarity(
+                original_embedding, shuffled_embedding, dim=0
             )
 
             if column_index not in cosine_similarities_dict:
@@ -38,17 +49,34 @@ def analyze_embeddings(all_embeddings, changed_column_lists):
 
 
 def process_table_wrapper(
-    truncated_tables,
-    args,
-    model_name,
+    truncated_tables: list[pd.DataFrame],
+    args: argparse.Namespace,
+    model_name: str,
     model,
     tokenizer,
-    device,
-    max_length,
-    padding_token,
-    key,
-    changed_column_list,
-):
+    device: torch.device,
+    max_length: int,
+    padding_token: str,
+    key: str,
+    changed_column_list: list[int],
+)  -> None:
+    """Processes a single table and saves the embeddings and results.
+    
+    Args:
+        truncated_tables: A list of truncated DataFrames.
+        args: The command line arguments.
+        model_name: The name of the Hugging Face model to use.
+        model: The Hugging Face model.
+        tokenizer: The Hugging Face tokenizer.
+        device: The device to use for processing.
+        max_length: The maximum length of the input sequence.
+        padding_token: The padding token for the tokenizer.
+        key: The key for the table in the result dictionary.
+        changed_column_list: A list of column indices that were changed.
+    
+    Returns:
+        None (saves the embeddings and results to the specified directories).
+    """
     save_directory_results = os.path.join(
         args.save_directory, "Perturbation_Robustness", model_name, "results"
     )
@@ -82,7 +110,21 @@ def process_table_wrapper(
     )
 
 
-def process_and_save_embeddings(model_name, args, result_dict):
+def process_and_save_embeddings(
+    model_name: str, 
+    args: argparse.Namespace, 
+    result_dict: dict[str, tuple[pd.DataFrame, list[int]]]
+) -> None:
+    """Processes and saves the embeddings for the tables in the result dictionary.
+    
+    Args:
+        model_name: The name of the Hugging Face model to use.
+        args: The command line arguments.
+        result_dict: A dictionary of table keys and values.
+    
+    Returns:
+        None (saves the embeddings and results to the specified directories).
+    """
     tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)

@@ -17,8 +17,8 @@ import itertools
 import pandas as pd
 from collections import Counter
 import random
-
-
+import torch.nn as nn
+from typing import Callable
 
 
 class NextiaJDCSVDataLoader:
@@ -122,8 +122,30 @@ class NextiaJDCSVDataLoader:
 
 
 
-def get_average_embeddings(table, get_embedding, model_name, tokenizer, max_length, max_row=10,  max_col=10, batch_size=256):
-
+def get_average_embeddings(
+    table: pd.DataFrame, 
+    get_embedding: Callable, 
+    model_name: str, 
+    tokenizer, 
+    max_length: int, 
+    max_row: int = 10,  
+    max_col: int = 10, 
+    batch_size: int = 256
+) -> List[torch.Tensor]:
+    """Get the average embeddings for each row in the table using the given model.
+    Args:
+        table: The table to get the embeddings for.
+        get_embedding: The function to use to get the embeddings.
+        model_name: The name of the model to use.
+        tokenizer: The tokenizer to use.
+        max_length: The maximum length of the input sequence.
+        max_row: The maximum number of rows to read in a chunk.
+        max_col: The maximum number of columns to read in a chunk.
+        batch_size: The batch size to use for inference.
+        
+    Returns:
+        A list of average embeddings for each row in the table.
+    """
     chunks_generator = chunk_tables(tables = [table,], \
         model_name=model_name, \
             max_length=max_length,
@@ -155,50 +177,119 @@ def get_average_embeddings(table, get_embedding, model_name, tokenizer, max_leng
     all_avg_row_embeddings = [sum_embedding / num_embedding for sum_embedding, num_embedding in zip(all_sum_row_embeddings, all_row_count)]
     return all_avg_row_embeddings
 
-def fisher_yates_shuffle(seq):
+def fisher_yates_shuffle(seq: list) -> tuple:
+    """Shuffles a sequence using the Fisher-Yates algorithm.
+
+    Args:
+        seq: A sequence to shuffle.
+
+    Returns:
+        seq: A shuffled sequence in place.
+    """
+
     for i in reversed(range(1, len(seq))):
         j = random.randint(0, i)
         seq[i], seq[j] = seq[j], seq[i]
-    return seq
+
+    return tuple(seq)
 
 
-def get_permutations(n, m):
+def get_permutations(n: int, m: int) -> list[list]:
+    """Generates m unique permutations of the sequence [0, 1, ..., n-1].
+
+    The original sequence is not included in the m permutations.
+
+    Args:
+        n: The length of the sequence.
+        m: The number of unique permutations to generate. If m > n! - 1, all
+            possible permutations are returned.
+
+    Returns:
+        uniq_permuts: A list of m+1 or n! (whichever is smaller) unique
+            sequences with the original sequence at the start.
+    """
+
     if n < 10:
         # Generate all permutations
-        all_perms = list(itertools.permutations(range(n)))
+        all_permuts = list(itertools.permutations(range(n)))
+
         # Remove the original sequence
-        all_perms.remove(tuple(range(n)))
+        all_permuts.remove(tuple(range(n)))
+
         # Shuffle the permutations
-        random.shuffle(all_perms)
-        # If m > n! - 1 (because we removed one permutation), return all permutations
-        if m > len(all_perms):
-            return [list(range(n))] + all_perms
-        # Otherwise, return the first m permutations
-        return [list(range(n))] + all_perms[:m]
+        random.shuffle(all_permuts)
+
+        # If m > n! - 1 (we removed the original sequence), return all
+        # permutations
+        if m > len(all_permuts):
+            return [list(range(n))] + all_permuts
+        else:
+            return [list(range(n))] + all_permuts[:m]
     else:
-        original_seq = list(range(n))
-        perms = [original_seq.copy()]
-        for _ in range(m):  # we already have one permutation
+        original_seq = tuple(range(n))
+        uniq_permuts = set([original_seq])
+
+        for _ in range(m):
             while True:
-                new_perm = fisher_yates_shuffle(original_seq.copy())
-                if new_perm not in perms:
-                    perms.append(new_perm)
+                new_permut = fisher_yates_shuffle(list(original_seq))
+
+                if new_permut not in uniq_permuts:
+                    uniq_permuts.add(new_permut)
                     break
-        return perms
+
+        return uniq_permuts
 
 
-def shuffle_df_columns(df, m):
-    # Get the permutations
-    perms = get_permutations(len(df.columns), m)
+def shuffle_df_columns(
+    df: pd.DataFrame, m: int
+) -> tuple[list[pd.DataFrame], list[list[int]]]:
+    """Shuffles the columns of a dataframe by at most m+1 permutations.
+
+    Args:
+        df: A dataframe to shuffle.
+        m: The number of unique permutations to generate excluding the original
+            sequence.
+
+    Returns:
+        dfs: A list of column-wise shuffled dataframes.
+        uniq_permuts: A list of permutations used to shuffle the columns.
+    """
+
+    # Get m+1 permutations (+1 because of the original sequence)
+    uniq_permuts = get_permutations(len(df.columns), m)
 
     # Create a new dataframe for each permutation
     dfs = []
-    for perm in perms:
-        dfs.append(df.iloc[:, list(perm)])
+    for permut in uniq_permuts:
+        dfs.append(df.iloc[:, list(permut)])
 
-    return dfs, perms
+    return dfs, uniq_permuts
 
-def analyze_embeddings(all_embeddings):
+def analyze_embeddings(
+    all_embeddings: list[list[torch.FloatTensor]],
+) -> tuple[list[float], list[float], float, float]:
+    """Analyzes column embedding populations induced by permutations.
+
+    Computes the average of pairwise cosine similarities and multivariate
+    coefficient of variation (MCV) for each column embedding population.
+
+    Args:
+        all_embeddings: A list of lists of column embeddings where each list
+            contains column embeddings of a table induced by a permutation.
+
+    Returns:
+        avg_cosine_similarities: A list of the average pairwise cosine
+            similarities. E.g., avg_cosine_similarities[0] is the average of
+            pairwise cosine similarities of the embedding population induced by
+            the first column in the original table.
+        mcvs: A list of MCV values. E.g., mcvs[0] is the MCV of the embedding
+            population induced by the first column in the original table.
+        table_avg_cosine_similarity: The cosine similarity averaged over
+            columns, i.e., the average of `avg_cosine_similarities`.
+        table_avg_mcv: The MCV value averaged over columns, i.e., the average
+            of `mcvs`.
+    """
+
     avg_cosine_similarities = []
     mcvs = []
 
@@ -213,25 +304,29 @@ def analyze_embeddings(all_embeddings):
             truncated_embedding = all_embeddings[0][i]
             shuffled_embedding = all_embeddings[j][i]
 
-            cosine_similarity = torch.dot(truncated_embedding, shuffled_embedding) / (
-                norm(truncated_embedding) * norm(shuffled_embedding)
+            cosine_similarity = nn.functional.cosine_similarity(
+                truncated_embedding, shuffled_embedding, dim=0
             )
             column_cosine_similarities.append(cosine_similarity.item())
 
-        avg_cosine_similarity = torch.mean(torch.tensor(column_cosine_similarities))
+        avg_cosine_similarity = sum(column_cosine_similarities) / len(
+            column_cosine_similarities
+        )
         mcv = compute_mcv(torch.stack(column_embeddings))
 
-        avg_cosine_similarities.append(avg_cosine_similarity.item())
+        avg_cosine_similarities.append(avg_cosine_similarity)
         mcvs.append(mcv)
 
-    table_avg_cosine_similarity = torch.mean(torch.tensor(avg_cosine_similarities))
-    table_avg_mcv = torch.mean(torch.tensor(mcvs))
+    table_avg_cosine_similarity = sum(avg_cosine_similarities) / len(
+        avg_cosine_similarities
+    )
+    table_avg_mcv = sum(mcvs) / len(mcvs)
 
     return (
         avg_cosine_similarities,
         mcvs,
-        table_avg_cosine_similarity.item(),
-        table_avg_mcv.item(),
+        table_avg_cosine_similarity,
+        table_avg_mcv,
     )
 
 

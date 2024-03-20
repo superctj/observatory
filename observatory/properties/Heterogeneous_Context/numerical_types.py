@@ -1,7 +1,7 @@
 import os
 
 os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
-
+from typing import Callable, Generator
 import argparse
 import torch
 import functools
@@ -22,13 +22,44 @@ import pandas as pd
 device = torch.device("cpu")
 
 
-def split_table(table: pd.DataFrame, m: int, n: int):
+def split_table(
+    table: pd.DataFrame, 
+    m: int, 
+    n: int
+) -> Generator:
+    """ Split a table into chunks with at most m rows and n columns.
+    
+    Args:
+        table: The table to split.
+        m: The maximum number of rows in each chunk.
+        n: The maximum number of columns in each chunk.
+    
+    Returns:
+        Iterator over the chunks of the table.
+    """
     total_rows = table.shape[0]
     for i in range(0, total_rows, m * n):
         yield [table.iloc[j : j + m] for j in range(i, min(i + m * n, total_rows), m)]
 
 
-def get_average_embedding(table, index, n, get_embedding):
+def get_average_embedding(
+    # table, index, n, get_embedding):
+    table: pd.DataFrame,
+    index: int,
+    n: int,
+    get_embedding: Callable,
+) -> torch.Tensor:
+    """ Get the average embedding of a table.
+    
+    Args:
+        table: The table to get the average embedding of.
+        index: The index of the column to get the average embedding of.
+        n: The maximum number of columns in each chunk that the table is split into.
+        get_embedding: A callable that takes a pandas DataFrame and returns a torch.Tensor of embeddings.
+        
+    Returns:
+        The average column embeddings of the table.
+    """
     m = min(100 // len(list(table.columns)), 3)
     sum_embeddings = None
     num_embeddings = 0

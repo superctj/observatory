@@ -12,17 +12,31 @@ from observatory.models.hugging_face_cell_embeddings import (
 )
 from observatory.models.turl import get_entity_embeddings_example
 from observatory.models.doduo_entity_embeddings import Doduo
-
+from typing import Callable
 
 def load_and_process_data(
-    get_embedding,
-    save_directory,
-    start,
-    file_path,
-    data_dir,
-    ifentity_info=False,
-    min_ent_count=2,
-):
+    get_embedding: Callable,
+    save_directory: str,
+    start: int,
+    file_path: str,
+    data_dir: str,
+    ifentity_info: bool = False,
+    min_ent_count: int = 2,
+) -> None:
+    """ Load and process the data from the given directory, and save the embeddings to the given directory.
+    
+    Args:
+        get_embedding: A callable that takes a pandas DataFrame and returns a torch.Tensor of embeddings.
+        save_directory: The directory to save the embeddings to.
+        start: The line number to start processing from.
+        file_path: The path to the jsonl file of the turl dataset.
+        data_dir: The data directory for the Turl dataset.
+        ifentity_info: A boolean indicating whether to save entity embeddings.
+        min_ent_count: The minimum number of times an entity must appear in the dataset to be included in the vocabulary.
+    
+    Returns:
+        None
+    """
     # load entity vocabulary
     entity_vocab = load_entity_vocab(
         data_dir, ignore_bad_title=True, min_ent_count=min_ent_count
@@ -96,7 +110,17 @@ def load_and_process_data(
                 # ...
 
 
-def read_jsonl(file_path):
+def read_jsonl(
+    file_path: str,
+) -> list:
+    """ Read a jsonl file and return a list of dictionaries.
+    
+    Args:
+        file_path: The path to the jsonl file.
+    
+    Returns:
+        A list of dictionaries.
+    """
     data = []
     with open(file_path, "r", encoding="utf-8") as file:
         for line in file:
@@ -104,7 +128,21 @@ def read_jsonl(file_path):
     return data
 
 
-def process_one_table(data, entity_id_map):
+def process_one_table(
+    # data, entity_id_map):
+    data: dict, 
+    entity_id_map: dict
+) -> tuple[pd.DataFrame, list]:
+    """ Process a single table and return a DataFrame and a list of entities.
+    
+    Args:
+        data: A dictionary containing the table data.
+        entity_id_map: A dictionary mapping entity IDs to entity names.
+    
+    Returns:
+        df: A pandas DataFrame containing the table data.
+        tmp_entities: A list of entities in the table.
+    """
     processed_table_headers = data["processed_tableHeaders"]
     table_data = data["tableData"]
     formatted_table_data = [[cell["text"] for cell in row] for row in table_data]
