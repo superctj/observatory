@@ -15,7 +15,7 @@ from observatory.models.huggingface_models import (
 import itertools
 import pandas as pd
 from collections import Counter
-
+from typing import Callable
 def chunk_neighbor_tables_quick(tables, column_name, n, max_length, max_row=None, max_token_per_cell=20):
     """
     Chunk tables based on a central column and its neighbors.
@@ -217,7 +217,7 @@ class NextiaJDCSVDataLoader:
 def get_average_embedding(
     table: pd.DataFrame,
     column_name: str,
-    get_embedding: callable,
+    get_embedding: Callable,
     model_name: str,
     tokenizer,
     max_length: int,

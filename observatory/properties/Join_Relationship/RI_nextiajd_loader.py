@@ -18,7 +18,7 @@ import pandas as pd
 from collections import Counter
 import random
 import torch.nn as nn
-
+from typing import Callable
 
 
 class NextiaJDCSVDataLoader:
@@ -124,7 +124,7 @@ class NextiaJDCSVDataLoader:
 
 def get_average_embeddings(
     table: pd.DataFrame, 
-    get_embedding: callable, 
+    get_embedding: Callable, 
     model_name: str, 
     tokenizer, 
     max_length: int, 

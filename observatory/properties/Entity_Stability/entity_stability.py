@@ -12,10 +12,10 @@ from observatory.models.hugging_face_cell_embeddings import (
 )
 from observatory.models.turl import get_entity_embeddings_example
 from observatory.models.doduo_entity_embeddings import Doduo
-
+from typing import Callable
 
 def load_and_process_data(
-    get_embedding: callable,
+    get_embedding: Callable,
     save_directory: str,
     start: int,
     file_path: str,
