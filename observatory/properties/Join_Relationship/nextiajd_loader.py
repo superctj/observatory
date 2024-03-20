@@ -58,7 +58,23 @@ def chunk_neighbor_tables_quick(tables, column_name, n, max_length, max_row=None
             start_row = start_row + optimal_rows
 
 
-def jaccard_similarity(df1, df2, col1, col2):
+def jaccard_similarity(
+    df1: pd.DataFrame,
+    df2: pd.DataFrame, 
+    col1: str, 
+    col2: str 
+) -> float:
+    """Compute the Jaccard similarity between two columns of two DataFrames.
+    
+    Args:
+        df1: The first DataFrame
+        df2: The second DataFrame
+        col1: The name of the first column, which is in df1
+        col2: The name of the second column, which is in df2
+    
+    Returns:
+        jaccard_sim: The Jaccard similarity between the two columns
+    """
     set1 = set(df1[col1])
     set2 = set(df2[col2])
 
@@ -68,7 +84,24 @@ def jaccard_similarity(df1, df2, col1, col2):
     return jaccard_sim
 
 
-def multiset_jaccard_similarity(df1, df2, col1, col2):
+def multiset_jaccard_similarity(
+    df1: pd.DataFrame,
+    df2: pd.DataFrame,
+    col1: str,
+    col2: str,
+) -> float:
+    """Compute the multiset Jaccard similarity between two columns of two DataFrames.
+    
+    Args:
+        df1: The first DataFrame
+        df2: The second DataFrame
+        col1: The name of the first column, which is in df1
+        col2: The name of the second column, which is in df2
+    
+    Returns:
+        multiset_jaccard_sim: The multiset Jaccard similarity between the two columns
+    """
+    
     multiset1 = Counter(df1[col1])
     multiset2 = Counter(df2[col2])
 
@@ -180,7 +213,31 @@ class NextiaJDCSVDataLoader:
 
 
 
-def get_average_embedding(table, column_name, get_embedding, model_name, tokenizer, max_length,  n=1, batch_size=10):
+def get_average_embedding(
+    table: pd.DataFrame,
+    column_name: str,
+    get_embedding: callable,
+    model_name: str,
+    tokenizer,
+    max_length: int,
+    n: int = 1,
+    batch_size: int = 10,
+) -> torch.Tensor:
+    """Get the average embedding of a column in a table.
+    
+    Args:
+        table: The table
+        column_name: The name of the column
+        get_embedding: The function to get the embedding of a table
+        model_name: The name of the model
+        tokenizer: The tokenizer
+        max_length: The maximum length of the input sequence
+        n: The number of nearby columns to consider
+        batch_size: The batch size for inference
+    
+    Returns:
+        avg_embedding: The average embedding of the column
+    """
     # m = max(min(100 // len(table.columns.tolist()), 3), 1)
     sum_embeddings = None
     num_embeddings = 0
