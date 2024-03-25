@@ -9,7 +9,17 @@ from observatory.models.tapex import tapex_inference
 os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 
 
-def row2strList(table):
+def row2strList(
+    table: pd.DataFrame
+) -> list[str]:
+    """Convert a table to a list of rows, where each row is a string.
+    
+    Args:
+        table: A pandas DataFrame representing a table.
+        
+    Returns:
+        A list of rows, where each row is a string.
+    """
     rows = []
 
     for index, row in table.iterrows():
@@ -21,7 +31,22 @@ def row2strList(table):
     return rows
 
 
-def row_based_process_table(tokenizer, table, max_length, model_name):
+def row_based_process_table(
+    # tokenizer, table, max_length, model_name):
+    tokenizer, table: pd.DataFrame, max_length: int, model_name: str
+) -> tuple[list[str], list[int]]:
+    """Process a table by tokenizing its rows and adding special tokens.
+    
+    Args:
+        tokenizer: The tokenizer to use.
+        table: A pandas DataFrame representing a table.
+        max_length: The maximum length of the tokens.
+        model_name: The name of the model.
+        
+    Returns:
+        current_tokens: A list of tokens representing the table.
+        cls_positions: A list of positions of the [CLS] tokens.
+    """
     table.columns = table.columns.astype(str)
     table = table.reset_index(drop=True)
     table = table.astype(str)
@@ -94,8 +119,26 @@ def row_based_process_table(tokenizer, table, max_length, model_name):
 
 
 def get_hugging_face_row_embeddings_batched(
-    tables, model_name, tokenizer, max_length, model, batch_size=32
-):
+    tables: list[pd.DataFrame], 
+    model_name: str,
+    tokenizer,
+    max_length: int,
+    model,
+    batch_size: int = 32
+) -> list[list[torch.Tensor]]:
+    """Get row embeddings for a list of tables using a model.
+    
+    Args:
+        tables: A list of pandas DataFrames representing tables.
+        model_name: The name of the model.
+        tokenizer: The tokenizer to use.
+        max_length: The maximum length of the tokens.
+        model: The model to use.
+        batch_size: The batch size to use.
+        
+    Returns:
+        A list of lists of row embeddings for each table.
+    """
     model = model.eval()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"

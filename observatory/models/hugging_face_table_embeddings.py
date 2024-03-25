@@ -1,5 +1,5 @@
 import torch
-
+import pandas as pd
 from observatory.common_util.table_based_truncate import (
     table_based_truncate,
     table2str_using_columns,
@@ -7,7 +7,24 @@ from observatory.common_util.table_based_truncate import (
 from observatory.models.tapex import tapex_inference
 
 
-def table_based_process_table(tokenizer, table, max_length, model_name):
+def table_based_process_table(
+    tokenizer,
+    table: pd.DataFrame,
+    max_length: int,
+    model_name: str,
+) -> tuple[list[str], list[int]]:
+    """Process a table by tokenizing its cells and adding special tokens.
+    
+    Args:
+        tokenizer: The tokenizer to use.
+        table: A pandas DataFrame representing a table.
+        max_length: The maximum length of the tokens.
+        model_name: The name of the model.
+        
+    Returns:
+        current_tokens: A list of tokens representing the table.
+        cls_position: A list of integers representing the positions of the [CLS] tokens.
+    """
     table.columns = table.columns.astype(str)
     table = table.reset_index(drop=True)
     table = table.astype(str)
@@ -38,8 +55,26 @@ def table_based_process_table(tokenizer, table, max_length, model_name):
 
 
 def get_hugging_face_table_embeddings_batched(
-    tables, model_name, tokenizer, max_length, model, batch_size=32
-):
+    tables: list[pd.DataFrame],
+    model_name: str,
+    tokenizer,
+    max_length: int,
+    model,
+    batch_size: int = 32,
+) -> list[torch.Tensor]:
+    """Get table embeddings using a Hugging Face model.
+    
+    Args:
+        tables: A list of tables to get the embeddings of.
+        model_name: The name of the model.
+        tokenizer: The tokenizer to use.
+        max_length: The maximum length of the tokens.
+        model: The model to use.
+        batch_size: The batch size to use.
+        
+    Returns:
+        all_embeddings: A list of tensors representing the embeddings of the tables.
+    """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
 
