@@ -157,6 +157,7 @@ def get_hugging_face_column_embeddings_batched(
     max_length: int,
     model,
     batch_size: int = 32,
+    device: torch.device = None,
 ) -> list[list[torch.Tensor]]:
     """Get the column embeddings for a list of tables using a Hugging Face model.
     
@@ -167,12 +168,14 @@ def get_hugging_face_column_embeddings_batched(
         max_length: The maximum length of the tokens.
         model: The model to use.
         batch_size: The batch size to use.
+        device: The device to use.
     
     Returns:
         all_embeddings: A list of lists of column embeddings for each table.
     """
     model = model.eval()
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if device is None:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
 
     truncated_tables = []
