@@ -32,7 +32,6 @@ def row2strList(
 
 
 def row_based_process_table(
-    # tokenizer, table, max_length, model_name):
     tokenizer, table: pd.DataFrame, max_length: int, model_name: str
 ) -> tuple[list[str], list[int]]:
     """Process a table by tokenizing its rows and adding special tokens.

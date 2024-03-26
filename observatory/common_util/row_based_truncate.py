@@ -1,22 +1,45 @@
 import pandas as pd
 
 
-def table2rowList(table):
+def row2strList(
+    table: pd.DataFrame
+) -> list[str]:
+    """Convert a table to a list of rows, where each row is a string.
+    
+    Args:
+        table: A pandas DataFrame representing a table.
+        
+    Returns:
+        A list of rows, where each row is a string.
+    """
     rows = []
 
     for index, row in table.iterrows():
         row_str = " ".join(
-            [
-                f"{col} {cell}"
-                for col, cell in zip(table.columns, row.astype(str).tolist())
-            ]
+            [f"{col} {str(val)}" for col, val in zip(table.columns, row)]
         )
         rows.append(row_str)
 
     return rows
 
 
-def is_fit(table, tokenizer, max_length, model_name):
+def is_fit(
+    table: pd.DataFrame,
+    tokenizer,
+    max_length: int,
+    model_name: str
+) -> bool:
+    """Check if the table fits within the maximum token length.
+    
+    Args:
+        table: A pandas DataFrame representing a table.
+        tokenizer: The tokenizer to use.
+        max_length: The maximum length of the tokens.
+        model_name: The name of the model.
+        
+    Returns:
+        A boolean indicating if the table fits within the maximum token length.
+    """
     if model_name.startswith("microsoft/tapex"):
         result = [tokenizer.cls_token_id]
 
@@ -35,7 +58,7 @@ def is_fit(table, tokenizer, max_length, model_name):
     else:
         current_tokens = []
 
-        rows = table2rowList(table)
+        rows = row2strList(table)
 
         for row in rows:
             # Tokenize row without special tokens
@@ -64,7 +87,24 @@ def is_fit(table, tokenizer, max_length, model_name):
     return True
 
 
-def row_based_truncate(table, tokenizer, max_length, model_name):
+def row_based_truncate(
+    # table, tokenizer, max_length, model_name):
+    table: pd.DataFrame,
+    tokenizer,
+    max_length: int,
+    model_name: str
+) -> int:
+    """Truncate a table based on the maximum token length and row-based linearalization.
+    
+    Args:
+        table: A pandas DataFrame representing a table.
+        tokenizer: The tokenizer to use.
+        max_length: The maximum length of the tokens.
+        model_name: The name of the model.
+    
+    Returns:
+        low: The maximum number of rows that fit within the maximum token length.
+    """
     table.columns = table.columns.astype(str)
     table = table.reset_index(drop=True)
     table = table.astype(str)
