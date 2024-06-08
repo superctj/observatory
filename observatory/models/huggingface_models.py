@@ -1,7 +1,7 @@
 """
 Load tokenizers and models from HuggingFace Transformers library
 """
-
+import torch
 from transformers import (
     AutoModelForSeq2SeqLM,
     AutoTokenizer,
@@ -18,7 +18,15 @@ from transformers import (
 SUPPORTED_MODELS = ["BERT", "RoBERTa", "TAPAS", "T5", "TAPEX"]
 
 
-def load_transformers_tokenizer(model_name: str):
+def load_transformers_tokenizer(model_name: str) -> object:
+    """Load a tokenizer from the HuggingFace Transformers library.
+    
+    Args:
+        model_name: The name of the model.
+        
+    Returns:
+        tokenizer: The tokenizer.
+    """
     if model_name.startswith("bert"):
         try:
             tokenizer = BertTokenizer.from_pretrained(
@@ -62,7 +70,16 @@ def load_transformers_tokenizer(model_name: str):
     return tokenizer
 
 
-def load_transformers_tokenizer_and_max_length(model_name: str):
+def load_transformers_tokenizer_and_max_length(model_name: str) -> tuple:
+    """Load a tokenizer from the HuggingFace Transformers library.
+    
+    Args:
+        model_name: The name of the model.
+        
+    Returns:
+        tokenizer: The tokenizer.
+        max_length: The maximum length of the tokens.
+    """
     max_length = None
     if model_name.startswith("bert"):
         try:
@@ -126,7 +143,17 @@ def load_transformers_tokenizer_and_max_length(model_name: str):
     return tokenizer, max_length
 
 
-def load_transformers_model(model_name: str, device):  # "bert-base-uncased"
+def load_transformers_model(model_name: str, device: torch.device) -> object:
+    """Load a model from the HuggingFace Transformers library.
+    
+    Args:
+        model_name: The name of the model.
+        device: The device to use.
+        
+    Returns:
+        model: The model.
+    """
+# "bert-base-uncased"
     if model_name.startswith("bert"):
         try:
             model = BertModel.from_pretrained(model_name, local_files_only=True)

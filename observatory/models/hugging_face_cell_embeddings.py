@@ -8,7 +8,18 @@ from observatory.common_util.cellbased_truncate import cellbased_truncate
 os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 
 
-def table2colList(table):
+def table2colList(
+    # table):
+    table: pd.DataFrame
+) -> list[list[str]]:
+    """Convert a table to a list of columns, where each column is a list of cells.
+    
+    Args:
+        table: A pandas DataFrame representing a table.
+    
+    Returns:
+        A list of columns, where each column is a list of cells.
+    """
     cols = []
 
     for i in range(len(table.columns)):
@@ -18,7 +29,24 @@ def table2colList(table):
     return cols
 
 
-def cell_based_process_table(tokenizer, cols, max_length, model_name):
+def cell_based_process_table(
+    tokenizer, 
+    cols: list[list[str]],
+    max_length: int,
+    model_name: str
+) -> tuple[list[str], list[tuple[int, int, int]]]:
+    """Process a table by tokenizing its cells and adding special tokens.
+    
+    Args:
+        tokenizer: The tokenizer to use.
+        cols: A list of columns, where each column is a list of cells.
+        max_length: The maximum length of the tokens.
+        model_name: The name of the model.
+        
+    Returns:
+        current_tokens: A list of tokens representing the table.
+        token_positions: A list of tuples representing the cell positions of the tokens.
+    """
     current_tokens = []
     token_positions = []
 
@@ -66,7 +94,18 @@ def cell_based_process_table(tokenizer, cols, max_length, model_name):
     return current_tokens, token_positions
 
 
-def get_tapas_cell_embeddings(inputs, last_hidden_states):
+def get_tapas_cell_embeddings(
+    inputs: dict[str, torch.Tensor], last_hidden_states: torch.Tensor
+) -> torch.Tensor:
+    """Get the cell embeddings from the last hidden states of a TAPAS model.
+    
+    Args:
+        inputs: The inputs to the model.
+        last_hidden_states: The last hidden states of the model.
+        
+    Returns:
+        cell_embeddings: The cell embeddings.
+    """
     # Extract the column and row ids from the token type ids
     column_ids = inputs["token_type_ids"][0][:, 1]
     row_ids = inputs["token_type_ids"][0][:, 2]
@@ -107,8 +146,27 @@ def get_tapas_cell_embeddings(inputs, last_hidden_states):
 
 
 def get_hugging_face_cell_embeddings(
-    table, model_name, model, tokenizer, max_length, device
-):
+    # table, model_name, model, tokenizer, max_length, device
+    table: pd.DataFrame,
+    model_name: str,
+    model,
+    tokenizer,
+    max_length: int,
+    device: torch.device
+) -> torch.Tensor:
+    """Get the cell embeddings of a table using a Hugging Face model.
+    
+    Args:
+        table: The table to get the cell embeddings of.
+        model_name: The name of the model.
+        model: The model to use.
+        tokenizer: The tokenizer to use.
+        max_length: The maximum length of the tokens.
+        device: The device to use.
+        
+    Returns:
+        cell_embeddings: The cell embeddings of the table.
+    """
     padding_token = "<pad>" if model_name.startswith("t5") else "[PAD]"
     max_rows_fit = cellbased_truncate(table, tokenizer, max_length, model_name)
 

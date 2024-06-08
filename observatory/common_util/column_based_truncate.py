@@ -8,17 +8,44 @@ from observatory.models.huggingface_models import (
 )
 
 
-def table2colList(table):
+def table2colList(
+    table: pd.DataFrame
+) -> list[str]:
+    """Convert a table to a list of columns, where each column is a string.
+    
+    Args:
+        table: A pandas DataFrame representing a table.
+    
+    Returns:
+        A list of columns, where each column is a string.
+    """
     cols = []
-    for column in table.columns:
-        # Convert column values to strings and join them with spaces
-        string_values = " ".join(table[column].astype(str).tolist())
-        col_str = f"{column} {string_values}"
+
+    for i in range(len(table.columns)):
+        string_values = " ".join(table.iloc[:, i].astype(str).tolist())
+        col_str = f"{table.columns[i]} {string_values}"
         cols.append(col_str)
+
     return cols
 
 
-def is_fit(sample_table, tokenizer, max_length, model_name):
+def is_fit(
+    sample_table: pd.DataFrame,
+    tokenizer,
+    max_length: int,
+    model_name: str
+) -> bool:
+    """Check if the table fits within the maximum token length.
+    
+    Args:
+        sample_table: A pandas DataFrame representing a sample table.
+        tokenizer: The tokenizer to use.
+        max_length: The maximum length of the tokens.
+        model_name: The name of the model.
+        
+    Returns:
+        A boolean indicating if the table fits within the maximum token length.
+    """
     if model_name.startswith("microsoft/tapex"):
         # Initialize result
         result = [tokenizer.cls_token_id]
@@ -66,7 +93,24 @@ def is_fit(sample_table, tokenizer, max_length, model_name):
     return True
 
 
-def column_based_truncate(table, tokenizer, max_length, model_name):
+def column_based_truncate(
+    # table, tokenizer, max_length, model_name):
+    table: pd.DataFrame,
+    tokenizer,
+    max_length: int,
+    model_name: str
+) -> int:
+    """Truncate a table based on the maximum token length and column-based linearalization.
+    
+    Args:
+        table: A pandas DataFrame representing a table.
+        tokenizer: The tokenizer to use.
+        max_length: The maximum length of the tokens.
+        model_name: The name of the model.
+        
+    Returns:
+        The maximum number of rows that fit within the maximum token length.
+    """
     table.columns = table.columns.astype(str)
     table = table.reset_index(drop=True)
     table = table.astype(str)
@@ -84,37 +128,6 @@ def column_based_truncate(table, tokenizer, max_length, model_name):
 
     # When low == high, we have found the maximum number of rows
     return low
-
-
-def main(args):
-    # Load tokenizer and max_length
-    tokenizer, max_length = load_transformers_tokenizer_and_max_length(
-        args.model_name
-    )
-
-    # Read tables
-    table_files = [
-        f for f in os.listdir(args.read_directory) if f.endswith(".csv")
-    ]
-    normal_tables = []
-    for file in table_files:
-        table = pd.read_csv(
-            f"{args.read_directory}/{file}", keep_default_na=False
-        )
-        normal_tables.append(table)
-
-    # Save truncated tables
-    if not os.path.exists(args.save_directory):
-        os.makedirs(args.save_directory)
-
-    for i, table in enumerate(normal_tables):
-        max_rows_fit = column_based_truncate(
-            table, tokenizer, max_length, args.model_name
-        )
-        truncated_table = table.iloc[:max_rows_fit, :]
-        truncated_table.to_csv(
-            f"{args.save_directory}/table_{i}.csv", index=False, na_rep=""
-        )
 
 
 if __name__ == "__main__":
@@ -146,4 +159,31 @@ if __name__ == "__main__":
     # help='Max length for tokenizer (default: 512)')
     args = parser.parse_args()
 
-    main(args)
+    # Load tokenizer and max_length
+    tokenizer, max_length = load_transformers_tokenizer_and_max_length(
+        args.model_name
+    )
+
+    # Read tables
+    table_files = [
+        f for f in os.listdir(args.read_directory) if f.endswith(".csv")
+    ]
+    normal_tables = []
+    for file in table_files:
+        table = pd.read_csv(
+            f"{args.read_directory}/{file}", keep_default_na=False
+        )
+        normal_tables.append(table)
+
+    # Save truncated tables
+    if not os.path.exists(args.save_directory):
+        os.makedirs(args.save_directory)
+
+    for i, table in enumerate(normal_tables):
+        max_rows_fit = column_based_truncate(
+            table, tokenizer, max_length, args.model_name
+        )
+        truncated_table = table.iloc[:max_rows_fit, :]
+        truncated_table.to_csv(
+            f"{args.save_directory}/table_{i}.csv", index=False, na_rep=""
+        )
