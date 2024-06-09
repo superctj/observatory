@@ -97,7 +97,8 @@ class HuggingFaceModels(unittest.TestCase):
         self.args = argparse.Namespace(**args_dict)
 
         self.test_data_dir = os.path.join(
-            os.path.abspath(os.path.dirname(__file__)), "data/web_tables_csv"
+            os.path.abspath(os.path.dirname(__file__)),
+            "sample_data/wiki_tables",
         )
         self.table_files = [
             f for f in os.listdir(self.test_data_dir) if f.endswith(".csv")
