@@ -9,14 +9,12 @@ from observatory.models.tapex import tapex_inference
 os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 
 
-def table2colList(
-    table: pd.DataFrame
-) -> list[str]:
+def table2colList(table: pd.DataFrame) -> list[str]:
     """Convert a table to a list of columns, where each column is a string.
-    
+
     Args:
         table: A pandas DataFrame representing a table.
-    
+
     Returns:
         A list of columns, where each column is a string.
     """
@@ -34,18 +32,18 @@ def column_based_process_table(
     tokenizer, table: pd.DataFrame, max_length: int, model_name: str
 ) -> tuple[list[int], list[int]]:
     """Process a table by tokenizing its columns and adding special tokens.
-    
+
     Args:
         tokenizer: The tokenizer to use.
         table: A pandas DataFrame representing a table.
         max_length: The maximum length of the tokens.
         model_name: The name of the model.
-        
+
     Returns:
         result: A list of tokens representing the table.
         cls_positions: A list of positions of the [CLS] tokens.
     """
-    
+
     cls_positions = []
     table.columns = table.columns.astype(str)
     table = table.reset_index(drop=True)
@@ -118,14 +116,14 @@ def column_based_process_table(
 
 
 def get_tapas_column_embeddings(
-    inputs: dict[str, torch.Tensor], last_hidden_states: torch.Tensor   
-) -> torch.Tensor:  
+    inputs: dict[str, torch.Tensor], last_hidden_states: torch.Tensor
+) -> torch.Tensor:
     """Get the column embeddings from the last hidden states of a TAPAS model.
-    
+
     Args:
         inputs: The inputs to the model.
         last_hidden_states: The last hidden states of the model.
-        
+
     Returns:
         column_embeddings: The column embeddings.
     """
@@ -159,22 +157,23 @@ def get_hugging_face_column_embeddings_batched(
     batch_size: int = 32,
     device: torch.device = None,
 ) -> list[list[torch.Tensor]]:
-    """Get the column embeddings for a list of tables using a Hugging Face model.
-    
+    """Get the column embeddings for a list of tables using a Hugging Face
+    model.
+
     Args:
-        tables: A list of tables to get the column embeddings of.
+        tables: A list of tables for inferring column embeddings.
         model_name: The name of the model.
         tokenizer: The tokenizer to use.
         max_length: The maximum length of the tokens.
         model: The model to use.
         batch_size: The batch size to use.
         device: The device to use.
-    
+
     Returns:
         all_embeddings: A list of lists of column embeddings for each table.
     """
     model = model.eval()
-   
+
     if not device:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
