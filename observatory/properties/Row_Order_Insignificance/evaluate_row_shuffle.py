@@ -11,8 +11,8 @@ from observatory.models.huggingface_models import (
 )
 from observatory.common_util.mcv import compute_mcv
 from observatory.common_util.truncate import truncate_index
-from observatory.models.hugging_face_column_embeddings import (
-    get_hugging_face_column_embeddings_batched,
+from observatory.models.huggingface_column_embeddings import (
+    get_huggingface_column_embeddings_batched,
 )
 
 
@@ -80,7 +80,7 @@ def get_permutations(n: int, m: int) -> list[list]:
 
 
 def shuffle_df(
-        df: pd.DataFrame, m: int
+    df: pd.DataFrame, m: int
 ) -> tuple[list[pd.DataFrame], list[list[int]]]:
     """Shuffles the rows of a dataframe by at most m+1 permutations.
 
@@ -215,7 +215,7 @@ def process_table_wrapper(
         os.makedirs(save_directory_results)
 
     tables, uniq_permuts = shuffle_df(truncated_table, args.num_shuffles)
-    all_shuffled_embeddings = get_hugging_face_column_embeddings_batched(
+    all_shuffled_embeddings = get_huggingface_column_embeddings_batched(
         tables=tables,
         model_name=model_name,
         tokenizer=tokenizer,
@@ -257,8 +257,7 @@ def process_table_wrapper(
 
     torch.save(
         results,
-        os.path.join(save_directory_results,
-                     f"table_{table_index}_results.pt"),
+        os.path.join(save_directory_results, f"table_{table_index}_results.pt"),
     )
 
 

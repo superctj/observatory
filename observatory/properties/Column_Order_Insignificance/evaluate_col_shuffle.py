@@ -9,8 +9,8 @@ import torch.nn as nn
 
 from observatory.common_util.mcv import compute_mcv
 from observatory.common_util.truncate import truncate_index
-from observatory.models.hugging_face_column_embeddings import (
-    get_hugging_face_column_embeddings_batched,
+from observatory.models.huggingface_column_embeddings import (
+    get_huggingface_column_embeddings_batched,
 )
 from observatory.models.huggingface_models import (
     load_transformers_model,
@@ -227,7 +227,7 @@ def process_table_wrapper(
     shuffled_tables, all_permuts = shuffle_df_columns(
         truncated_table, args.num_shuffles
     )
-    all_embeddings = get_hugging_face_column_embeddings_batched(
+    all_embeddings = get_huggingface_column_embeddings_batched(
         tables=shuffled_tables,
         model_name=model_name,
         tokenizer=tokenizer,

@@ -9,37 +9,34 @@ import functools
 from observatory.datasets.sotab_loader import SOTABDataLoader
 from observatory.models.huggingface_models import (
     load_transformers_model,
-    load_transformers_tokenizer_and_max_length
-
+    load_transformers_tokenizer_and_max_length,
 )
 
-from observatory.models.hugging_face_column_embeddings import (
-    get_hugging_face_column_embeddings_batched,
-
+from observatory.models.huggingface_column_embeddings import (
+    get_huggingface_column_embeddings_batched,
 )
 import pandas as pd
 
 device = torch.device("cpu")
 
 
-def split_table(
-    table: pd.DataFrame, 
-    m: int, 
-    n: int
-) -> Generator:
-    """ Split a table into chunks with at most m rows and n columns.
-    
+def split_table(table: pd.DataFrame, m: int, n: int) -> Generator:
+    """Split a table into chunks with at most m rows and n columns.
+
     Args:
         table: The table to split.
         m: The maximum number of rows in each chunk.
         n: The maximum number of columns in each chunk.
-    
+
     Returns:
         Iterator over the chunks of the table.
     """
     total_rows = table.shape[0]
     for i in range(0, total_rows, m * n):
-        yield [table.iloc[j : j + m] for j in range(i, min(i + m * n, total_rows), m)]
+        yield [
+            table.iloc[j : j + m]
+            for j in range(i, min(i + m * n, total_rows), m)
+        ]
 
 
 def get_average_embedding(
@@ -49,14 +46,14 @@ def get_average_embedding(
     n: int,
     get_embedding: Callable,
 ) -> torch.Tensor:
-    """ Get the average embedding of a table.
-    
+    """Get the average embedding of a table.
+
     Args:
         table: The table to get the average embedding of.
         index: The index of the column to get the average embedding of.
         n: The maximum number of columns in each chunk that the table is split into.
         get_embedding: A callable that takes a pandas DataFrame and returns a torch.Tensor of embeddings.
-        
+
     Returns:
         The average column embeddings of the table.
     """
@@ -109,13 +106,21 @@ if __name__ == "__main__":
     metadata_path = os.path.join(root_dir, args.metadata_path)
 
     data_loader = SOTABDataLoader(dataset_dir, metadata_path)
-    tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
-    
-    model = load_transformers_model(model_name, torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+    tokenizer, max_length = load_transformers_tokenizer_and_max_length(
+        model_name
+    )
+
+    model = load_transformers_model(
+        model_name, torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    )
     model.eval()
     get_embedding = functools.partial(
-        get_hugging_face_column_embeddings_batched, model_name=model_name, \
-            tokenizer=tokenizer, max_length=max_length, model=model, batch_size=args.batch_size
+        get_huggingface_column_embeddings_batched,
+        model_name=model_name,
+        tokenizer=tokenizer,
+        max_length=max_length,
+        model=model,
+        batch_size=args.batch_size,
     )
 
     col_itself = []
@@ -145,10 +150,17 @@ if __name__ == "__main__":
 
         if numerical_col_idx > 0 and numerical_col_idx < num_cols - 1:
             three_col_table = table.iloc[
-                :, [numerical_col_idx - 1, numerical_col_idx, numerical_col_idx + 1]
+                :,
+                [
+                    numerical_col_idx - 1,
+                    numerical_col_idx,
+                    numerical_col_idx + 1,
+                ],
             ]
         elif numerical_col_idx == num_cols - 1:
-            three_col_table = table.iloc[:, [numerical_col_idx - 1, numerical_col_idx]]
+            three_col_table = table.iloc[
+                :, [numerical_col_idx - 1, numerical_col_idx]
+            ]
 
         # input_tables.append(three_col_table)
 
@@ -249,7 +261,9 @@ if __name__ == "__main__":
             continue
 
         col_itself.append((col_itself_embedding, row["label"]))
-        subj_col_as_context.append((subj_col_as_context_embedding, row["label"]))
+        subj_col_as_context.append(
+            (subj_col_as_context_embedding, row["label"])
+        )
         neighbor_col_as_context.append(
             (neighbor_col_as_context_embedding, row["label"])
         )

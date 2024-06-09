@@ -1,13 +1,16 @@
 import os
 import argparse
 import torch
-from observatory.models.hugging_face_column_embeddings import (
-    get_hugging_face_column_embeddings_batched,
+from observatory.models.huggingface_column_embeddings import (
+    get_huggingface_column_embeddings_batched,
 )
 from typing import Dict, List
 from torch.linalg import inv, norm
 import functools
-from observatory.datasets.huggingface_dataset import batch_generator, chunk_tables
+from observatory.datasets.huggingface_dataset import (
+    batch_generator,
+    chunk_tables,
+)
 from observatory.models.huggingface_models import (
     load_transformers_model,
     load_transformers_tokenizer_and_max_length,
@@ -22,7 +25,9 @@ from typing import Callable
 
 
 class NextiaJDCSVDataLoader:
-    def __init__(self, dataset_dir: str, metadata_path: str, ground_truth_path: str):
+    def __init__(
+        self, dataset_dir: str, metadata_path: str, ground_truth_path: str
+    ):
         if not os.path.exists(dataset_dir):
             raise FileNotFoundError(f"{dataset_dir} does not exist.")
         if not os.path.exists(metadata_path):
@@ -80,7 +85,9 @@ class NextiaJDCSVDataLoader:
                 low_memory=False,
                 **kwargs,
             )
-        except ValueError:  # python engine of pandas does not support "low_memory" argument
+        except (
+            ValueError
+        ):  # python engine of pandas does not support "low_memory" argument
             table = pd.read_csv(
                 file_path,
                 delimiter=self.metadata[table_name]["delimiter"],
@@ -94,7 +101,9 @@ class NextiaJDCSVDataLoader:
 
         # Remove hidden characters (e.g., "\r") in DataFrame header and data
         table.columns = table.columns.str.replace("[\r]", "", regex=True)
-        table.replace(to_replace=["\r", "\n"], value="", regex=True, inplace=True)
+        table.replace(
+            to_replace=["\r", "\n"], value="", regex=True, inplace=True
+        )
 
         # Drop empty columns and rows
         if drop_nan:
@@ -121,19 +130,18 @@ class NextiaJDCSVDataLoader:
         return queries
 
 
-
 def get_average_embeddings(
-    table: pd.DataFrame, 
-    get_embedding: Callable, 
-    model_name: str, 
-    tokenizer, 
-    max_length: int, 
-    max_row: int = 10,  
-    max_col: int = 10, 
-    batch_size: int = 256
+    table: pd.DataFrame,
+    get_embedding: Callable,
+    model_name: str,
+    tokenizer,
+    max_length: int,
+    max_row: int = 10,
+    max_col: int = 10,
+    batch_size: int = 256,
 ) -> List[torch.FloatTensor]:
     """Get the average embeddings of the columns of a table.
-    
+
     Args:
         table: A dataframe representing the table.
         get_embedding: A function that returns the embeddings of a table.
@@ -143,19 +151,22 @@ def get_average_embeddings(
         max_row: The maximum number of rows to consider in each chunk.
         max_col: The maximum number of columns to consider in each chunk.
         batch_size: The batch size for inference.
-        
+
     Returns:
         all_avg_column_embeddings: A list of average embeddings of the columns of the table.
     """
 
-    chunks_generator = chunk_tables(tables = [table,], \
-        model_name=model_name, \
-            max_length=max_length,
-            tokenizer=tokenizer,
-            max_col= max_col,
-            max_row= max_row,
-            max_token_per_cell= 20, 
-        )
+    chunks_generator = chunk_tables(
+        tables=[
+            table,
+        ],
+        model_name=model_name,
+        max_length=max_length,
+        tokenizer=tokenizer,
+        max_col=max_col,
+        max_row=max_row,
+        max_token_per_cell=20,
+    )
 
     all_sum_column_embeddings = [None for col in table.columns]
     all_column_count = [0 for col in table.columns]
@@ -166,19 +177,29 @@ def get_average_embeddings(
         col_list = [chunk_dict["position"][0] for chunk_dict in batch_tables]
 
         all_embeddings = get_embedding(tables_list)
-        
+
         for embeddings, col_range in zip(all_embeddings, col_list):
             start_col = col_range[0]
             end_col = col_range[1]
             # start_col = start_col.item()
             # end_col = end_col.item()
-            for col_index, embeding in zip(range(start_col, end_col), embeddings):
+            for col_index, embeding in zip(
+                range(start_col, end_col), embeddings
+            ):
                 if all_sum_column_embeddings[col_index] is None:
-                    all_sum_column_embeddings[col_index] = torch.zeros(embeding.size())
+                    all_sum_column_embeddings[col_index] = torch.zeros(
+                        embeding.size()
+                    )
                 all_sum_column_embeddings[col_index] += embeding
                 all_column_count[col_index] += 1
-    all_avg_column_embeddings = [sum_embeddings / num_embeddings for sum_embeddings, num_embeddings in zip(all_sum_column_embeddings, all_column_count)]
+    all_avg_column_embeddings = [
+        sum_embeddings / num_embeddings
+        for sum_embeddings, num_embeddings in zip(
+            all_sum_column_embeddings, all_column_count
+        )
+    ]
     return all_avg_column_embeddings
+
 
 def fisher_yates_shuffle(seq: list) -> tuple:
     """Shuffles a sequence using the Fisher-Yates algorithm.
@@ -242,7 +263,7 @@ def get_permutations(n: int, m: int) -> list[list]:
 
 
 def shuffle_df(
-        df: pd.DataFrame, m: int
+    df: pd.DataFrame, m: int
 ) -> tuple[list[pd.DataFrame], list[list[int]]]:
     """Shuffles the rows of a dataframe by at most m+1 permutations.
 
@@ -353,7 +374,10 @@ if __name__ == "__main__":
     parser.add_argument("--start", type=int, required=True)
     parser.add_argument("--num_tables", type=int, required=True)
     parser.add_argument(
-        "--value", default=None, type=int, help="An optional max number of rows to read"
+        "--value",
+        default=None,
+        type=int,
+        help="An optional max number of rows to read",
     )
     parser.add_argument(
         "--batch_size",
@@ -383,14 +407,16 @@ if __name__ == "__main__":
     args = parser.parse_args()
     model_name = args.model_name
     batch_size = args.batch_size
-    
-    tokenizer, max_length = load_transformers_tokenizer_and_max_length(model_name)
+
+    tokenizer, max_length = load_transformers_tokenizer_and_max_length(
+        model_name
+    )
     device = torch.device("cuda")
     print(device)
     model = load_transformers_model(model_name, device)
     model = model.eval()
     get_embedding = functools.partial(
-        get_hugging_face_column_embeddings_batched,
+        get_huggingface_column_embeddings_batched,
         model_name=model_name,
         tokenizer=tokenizer,
         max_length=max_length,
@@ -403,7 +429,9 @@ if __name__ == "__main__":
     dataset_dir = os.path.join(root_dir, "datasets")
     metadata_path = os.path.join(root_dir, f"datasetInformation_{testbed}.csv")
     ground_truth_path = os.path.join(root_dir, f"groundTruth_{testbed}.csv")
-    data_loader = NextiaJDCSVDataLoader(dataset_dir, metadata_path, ground_truth_path)
+    data_loader = NextiaJDCSVDataLoader(
+        dataset_dir, metadata_path, ground_truth_path
+    )
     save_directory_results = os.path.join(
         args.save_dir,
         "RI_Column_embedding_Join_Relationship",
@@ -424,11 +452,11 @@ if __name__ == "__main__":
         os.makedirs(save_directory_results)
     results = []
     filename = "table_names.txt"
-    
+
     # Check if the file already exists
     if os.path.exists(filename):
         # If it exists, read the file and get the table names
-        with open(filename, 'r') as f:
+        with open(filename, "r") as f:
             table_names = f.readlines()
         table_names = [name.strip() for name in table_names]
     else:
@@ -439,14 +467,14 @@ if __name__ == "__main__":
                 t1_name, t2_name = row["ds_name"], row["ds_name_2"]
                 table_names_set.add(t1_name)
                 table_names_set.add(t2_name)
-        
+
         # Convert the set to a list
         table_names = list(table_names_set)
-        
+
         # Save the table names into a file
-        with open(filename, 'w') as f:
+        with open(filename, "w") as f:
             for name in table_names:
-                f.write(name + '\n')
+                f.write(name + "\n")
 
     # Iterate over the table names
     for i, table_name in enumerate(table_names):
@@ -456,19 +484,28 @@ if __name__ == "__main__":
             break
         print(f"{i} / {len(table_names)}")
         # Read the table
-        table = data_loader.read_table(table_name, drop_nan=False, nrows=args.value)
+        table = data_loader.read_table(
+            table_name, drop_nan=False, nrows=args.value
+        )
         tables = shuffle_df(table, args.num_shuffles)
         all_embeddings = []
         for table in tables:
-            column_embeddings = get_average_embeddings(table, get_embedding=get_embedding, \
-                model_name=model_name, tokenizer=tokenizer, max_length=max_length, \
-                    max_row= args.max_row,  max_col= args.max_col, batch_size = batch_size)
-            
+            column_embeddings = get_average_embeddings(
+                table,
+                get_embedding=get_embedding,
+                model_name=model_name,
+                tokenizer=tokenizer,
+                max_length=max_length,
+                max_row=args.max_row,
+                max_col=args.max_col,
+                batch_size=batch_size,
+            )
+
             all_embeddings.append(column_embeddings)
-            
+
         # all_ordered_embeddings = []
         # for perm ,embeddings in  zip(perms, all_embeddings):
-            
+
         #     # Create a list of the same length as perm, filled with None
         #     ordered_embeddings = [None] * len(perm)
         #     # Assign each embedding to its original position
@@ -476,10 +513,13 @@ if __name__ == "__main__":
         #         ordered_embeddings[p] = embeddings[i]
         #     all_ordered_embeddings.append(ordered_embeddings)
         # all_embeddings = all_ordered_embeddings
-        
+
         torch.save(
             all_embeddings,
-            os.path.join(save_directory_embeddings, f"table_{table_name}_{i}_embeddings.pt"),
+            os.path.join(
+                save_directory_embeddings,
+                f"table_{table_name}_{i}_embeddings.pt",
+            ),
         )
         (
             avg_cosine_similarities,
@@ -494,12 +534,18 @@ if __name__ == "__main__":
             "table_avg_mcv": table_avg_mcv,
         }
         print(f"Table {table_name}, the {i}th table:")
-        print("Average Cosine Similarities:", results["avg_cosine_similarities"])
+        print(
+            "Average Cosine Similarities:", results["avg_cosine_similarities"]
+        )
         print("MCVs:", results["mcvs"])
-        print("Table Average Cosine Similarity:", results["table_avg_cosine_similarity"])
+        print(
+            "Table Average Cosine Similarity:",
+            results["table_avg_cosine_similarity"],
+        )
         print("Table Average MCV:", results["table_avg_mcv"])
         torch.save(
-            results, os.path.join(save_directory_results, f"table_{table_name}_{i}_results.pt")
-        )   
-
-
+            results,
+            os.path.join(
+                save_directory_results, f"table_{table_name}_{i}_results.pt"
+            ),
+        )

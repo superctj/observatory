@@ -148,7 +148,7 @@ def get_tapas_column_embeddings(
     return column_embeddings
 
 
-def get_hugging_face_column_embeddings_batched(
+def get_huggingface_column_embeddings_batched(
     tables: list[pd.DataFrame],
     model_name: str,
     tokenizer,

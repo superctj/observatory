@@ -12,8 +12,8 @@ from observatory.common_util.mcv import compute_mcv
 import random
 import math
 import itertools
-from observatory.models.hugging_face_column_embeddings import (
-    get_hugging_face_column_embeddings_batched
+from observatory.models.huggingface_column_embeddings import (
+    get_huggingface_column_embeddings_batched,
 )
 
 
@@ -32,18 +32,18 @@ def get_subsets(n: int, m: int, portion: float) -> list[list[int]]:
 
     Returns:
         list: A list of m distinct subsets of size n * portion.
-        """
+    """
     portion_size = int(n * portion)
     max_possible_tables = math.comb(n, portion_size)
 
     if max_possible_tables <= 10 * m:
-        # If the number of combinations is small, generate all combinations 
+        # If the number of combinations is small, generate all combinations
         # and randomly select from them
         all_subsets = list(itertools.combinations(range(n), portion_size))
         random.shuffle(all_subsets)
         return [list(subset) for subset in all_subsets[:m]]
     else:
-        # If the number of combinations is large, use random sampling 
+        # If the number of combinations is large, use random sampling
         # to generate distinct subsets
         subsets = set()
         while len(subsets) < min(m, max_possible_tables):
@@ -53,7 +53,7 @@ def get_subsets(n: int, m: int, portion: float) -> list[list[int]]:
 
 
 def sample_df(
-        df: pd.DataFrame, m: int, portion: float
+    df: pd.DataFrame, m: int, portion: float
 ) -> tuple[list[pd.DataFrame], list[list[int]]]:
     """Sample the rows of a dataframe by at most m samples.
 
@@ -192,13 +192,13 @@ def process_table_wrapper(
         truncated_table, args.num_samples, args.sample_portion
     )
 
-    all_embeddings = get_hugging_face_column_embeddings_batched(
+    all_embeddings = get_huggingface_column_embeddings_batched(
         tables=sampled_tables,
         model_name=model_name,
         tokenizer=tokenizer,
         max_length=max_length,
         model=model,
-        batch_size=args.batch_size
+        batch_size=args.batch_size,
     )
 
     save_file_path = os.path.join(
@@ -213,9 +213,7 @@ def process_table_wrapper(
             existing_embeddings = all_embeddings
         else:
             # Substitute the elements
-            existing_embeddings[
-                : len(all_embeddings)
-            ] = all_embeddings
+            existing_embeddings[: len(all_embeddings)] = all_embeddings
 
         # Save the modified embeddings
         torch.save(existing_embeddings, save_file_path)
@@ -238,12 +236,14 @@ def process_table_wrapper(
     print(f"Table {table_index}:")
     print("Average Cosine Similarities:", results["avg_cosine_similarities"])
     print("MCVs:", results["mcvs"])
-    print("Table Average Cosine Similarity:",
-          results["table_avg_cosine_similarity"])
+    print(
+        "Table Average Cosine Similarity:",
+        results["table_avg_cosine_similarity"],
+    )
     print("Table Average MCV:", results["table_avg_mcv"])
     torch.save(
-        results, os.path.join(save_directory_results,
-                              f"table_{table_index}_results.pt")
+        results,
+        os.path.join(save_directory_results, f"table_{table_index}_results.pt"),
     )
 
 
@@ -290,7 +290,7 @@ def process_and_save_embeddings(
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Process tables and save embeddings."
-        )
+    )
     parser.add_argument(
         "-r",
         "--read_directory",
@@ -347,8 +347,7 @@ if __name__ == "__main__":
     normal_tables = []
     for file in table_files:
         table = pd.read_csv(
-            f"{args.read_directory}/{file}",
-            keep_default_na=False
+            f"{args.read_directory}/{file}", keep_default_na=False
         )
         normal_tables.append(table)
 
