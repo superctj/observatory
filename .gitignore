@@ -2,6 +2,7 @@ __pycache__/
 
 artifacts/
 data/
+sample_data/
 plot/
 outputs/
 
