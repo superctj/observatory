@@ -1,7 +1,7 @@
 # Observatory
 Codebase of paper [Observatory: Characterizing Embeddings of Relational Tables](https://www.vldb.org/pvldb/vol17/p849-cong.pdf) (VLDB 2024).
 
-:rocket: Update: We have open-sourced the [Observatory library](https://github.com/superctj/observatory-library) for embedding inference of relational tabular data. It is currently released for a beta test and we welcome feedbacks and/or contributions!
+:rocket: Update: We have open-sourced the [Observatory library](https://github.com/superctj/observatory-library) for embedding inference of relational tabular data. It is currently released for a beta test and we welcome feedback and/or contributions!
  
 ## Environment Setup
 Assume using [Miniconda](https://docs.conda.io/projects/miniconda/en/latest/) for Python package management on Linux machines. 
